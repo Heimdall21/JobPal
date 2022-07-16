@@ -13,7 +13,6 @@ export const useChromeLocalStorage = (key: string, initVal: any) => {
             }
             setActualVal(newVal);
             setTempVal(newVal);
-            console.log(`initial get ${key}: ${JSON.stringify(newVal)}`);
         });
     }, [key]);
 
@@ -24,15 +23,21 @@ export const useChromeLocalStorage = (key: string, initVal: any) => {
                 setActualVal(newValue);
                 console.log(`update ${key}: ${JSON.stringify(newValue)}`);
             }
-            //  else {
-            //     console.log(`area: ${areaName}, changes: ${JSON.stringify(changes)}`);
-            // }
+
         });
     }, [key]);
 
     const storeVal = () => {
-        chrome.storage.local.set({[key]: tempVal}, ()=>console.log(`stored ${key}: ${JSON.stringify(tempVal)}`));
+        chrome.storage.local.set({[key]: tempVal});
     }
 
     return [tempVal, setTempVal, actualVal, storeVal];
+}
+
+export const setAsyncChromeLocal = (key: string, val: any) => {
+    return chrome.storage.local.set({[key]: val})
+}
+
+export const getAsyncChromeLocal = (key: string) => {
+    return chrome.storage.local.get(key)
 }
