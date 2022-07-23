@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-export const useChromeLocalStorage = (key: string, initVal: any) => {
+export const useChromeLocalStorage = (key: string, initVal: any, {initGetCallback=()=>{}, setValCallback=()=>{}} = {}) => {
     const [tempVal, setTempVal] = useState(initVal);
 
     const [actualVal, setActualVal] = useState(initVal);
@@ -11,21 +11,23 @@ export const useChromeLocalStorage = (key: string, initVal: any) => {
             if (newVal === undefined) {
                 return;
             }
+            initGetCallback();
             setActualVal(newVal);
             setTempVal(newVal);
         });
-    }, [key]);
+    }, [initGetCallback, key]);
 
     useEffect(()=>{
         chrome.storage.onChanged.addListener((changes, areaName) => {
             if (areaName === 'local' && key in changes) {
                 const {newValue} = changes[key];
                 setActualVal(newValue);
-                console.log(`update ${key}: ${JSON.stringify(newValue)}`);
+                setValCallback();
+                // console.log(`update ${key}: ${JSON.stringify(newValue)}`);
             }
 
         });
-    }, [key]);
+    }, [key, setValCallback]);
 
     const storeVal = () => {
         chrome.storage.local.set({[key]: tempVal});
