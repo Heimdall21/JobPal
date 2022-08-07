@@ -6,7 +6,7 @@ export const useChromeLocalStorage = (key: string, initVal: any, {initGetCallbac
     const [actualVal, setActualVal] = useState(initVal);
 
     useEffect(() => {
-        chrome.storage.local.get(key, val => {
+        chrome.storage.sync.get(key, val => {
             let newVal = val[key]
             if (newVal === undefined) {
                 return;
@@ -19,7 +19,7 @@ export const useChromeLocalStorage = (key: string, initVal: any, {initGetCallbac
 
     useEffect(()=>{
         chrome.storage.onChanged.addListener((changes, areaName) => {
-            if (areaName === 'local' && key in changes) {
+            if (areaName === 'sync' && key in changes) {
                 const {newValue} = changes[key];
                 setActualVal(newValue);
                 setValCallback();
@@ -30,16 +30,16 @@ export const useChromeLocalStorage = (key: string, initVal: any, {initGetCallbac
     }, [key, setValCallback]);
 
     const storeVal = () => {
-        chrome.storage.local.set({[key]: tempVal});
+        chrome.storage.sync.set({[key]: tempVal});
     }
 
     return [tempVal, setTempVal, actualVal, storeVal];
 }
 
 export const setAsyncChromeLocal = (key: string, val: any) => {
-    return chrome.storage.local.set({[key]: val})
+    return chrome.storage.sync.set({[key]: val})
 }
 
 export const getAsyncChromeLocal = (key: string) => {
-    return chrome.storage.local.get(key)
+    return chrome.storage.sync.get(key)
 }
