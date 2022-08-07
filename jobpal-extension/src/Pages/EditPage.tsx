@@ -1,8 +1,8 @@
-import { useChromeLocalStorage } from '../Lib/storageHandler';
+import { useChromeStorage } from '../Lib/storageHandler';
 import '../App.css';
 
 function Edit() {
-    const [profile, setProfile, _, storeProfile] = useChromeLocalStorage('profile', {});
+    const [profile, setProfile, _, storeProfile] = useChromeStorage('profile', {});
 
     const handleSubmit = (e:  React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
