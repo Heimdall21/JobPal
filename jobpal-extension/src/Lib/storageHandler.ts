@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import {PrefillData} from "./StorageType"
 
 export const useChromeStorage = (key: string, initVal: any, {initGetCallback=()=>{}, setValCallback=()=>{}} = {}) => {
     const [tempVal, setTempVal] = useState(initVal);
@@ -41,4 +42,14 @@ export const setAsyncChromeStroage = (key: string, val: any) => {
 
 export const getAsyncChromeStroage = (key: string) => {
     return chrome.storage.sync.get(key)
+}
+
+export const getPrefillData = (getCallback: (data: PrefillData)=>void) => {
+    return chrome.storage.sync.get('profile', pair=>{
+        getCallback(pair['profile']);
+    });
+}
+
+export const setPrefillData = (data: PrefillData, setCallback=()=>{}) => {
+    return chrome.storage.sync.set({'profile': data}, setCallback);
 }
