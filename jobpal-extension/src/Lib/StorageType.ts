@@ -1,18 +1,19 @@
 export interface PrefillData {
-    common: CommonePrefillData,
+    common: CommonPrefillData,
     specific: {
         [url: string]: SpecificPrefillData,
     }
 }
 
-export interface CommonePrefillData {
+export interface CommonPrefillData {
     givenName: string,
     additionalName?: string,
     familyName: string,
     email: string,
     sex: 'M'| 'F' | 'X',
     dateOfBirth: Date,
-    address: Address,
+    address: string,
+    postalCode?: string,
     university: string,
     degree: string,
     yearOfGrad: string,
@@ -30,9 +31,4 @@ export interface SpecificPrefillData {
     additional: {
         [other: string]: string
     }
-}
-
-type Address = {
-    address: string,
-    postalCode: string
 }
