@@ -37,6 +37,7 @@ export default function AdditionalForm({setAdditional, data}: {
     console.log("additional data: ", data);
 
     return (<>
+        <div className='Category'>Additional Information</div>
         <button type="button" onClick={addNewRow}>Add Information</button>
         {data.map((elem)=><Row key={elem.id} _key={elem.key} value={elem.value} 
             updateRow={updateRow(elem.id)} 

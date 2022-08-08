@@ -49,11 +49,10 @@ function Edit() {
             <div>General Information</div>
             <div className={styles.FormContainer}>
                 <GeneralForm commonData={commonData} setCommonData={setCommonData} />
-                <div className='Category'>Additional Information</div>
                 <AdditionalForm data={additionalCommonData} setAdditional={setAdditionalCommonData}/>
             </div>
             <div>Information For Specific Applications</div>
-            <SpecificForm specificData={specificData} setSpecificData={setSpecificData}/>
+            <SpecificForm data={specificData} setData={setSpecificData}/>
             <button type="submit">Save</button>
         </form>
     );
