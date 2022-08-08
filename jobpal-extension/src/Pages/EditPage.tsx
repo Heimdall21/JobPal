@@ -17,9 +17,7 @@ function Edit() {
                 return;
             }
             setIsLoading(false);
-            // const {additional: additional, ...commonData} = data.common;
             setCommonData(data.common);
-            // setCommonAdditionalData(new Map(Object.entries(tempAdditional)));
             setSpecificData(new Map(Object.entries(data.specific)));
         })
     }, []);
