@@ -1,7 +1,7 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import {CommonPrefillData, ExtendedCommonPrefillData} from '../Lib/StorageType';
 import AdditionalForm from './AdditionalForm';
-import { DateString } from './DateString';
+import { DateString } from '../Lib/DateString';
 import styles from "./Form.module.css";
 
 export default function GeneralForm({commonData, setCommonData}: {
@@ -100,7 +100,7 @@ export default function GeneralForm({commonData, setCommonData}: {
     function FormDateOfBirthField() {
         const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
             const val = e.target.value;
-            console.log(val);
+            console.log("dateOfBirth", val);
             if (DateString.validate(val)) {
                 updateGeneralField('dateOfBirth', val);
             } else if (val.trimStart() === '') {
@@ -117,23 +117,6 @@ export default function GeneralForm({commonData, setCommonData}: {
         }
         onChange={handleChange}></input>
         </>);
-    }
-
-    function FormYearOfGradField() {
-        const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-            const val = e.target.value;
-            const num = parseInt(val, 10);
-            if (!isNaN(num) && num > 0 && num <= 9999) {
-                updateGeneralField('yearOfGrad', num);
-            } else {
-                removeGeneralField('yearOfGrad');
-            }
-        }
-
-        return (<>
-        <label htmlFor={'yearOfGrad'}> Year of Graduation</label>
-        <input type="number" min="1900" max="2099" step="1" value={generalData.yearOfGrad === undefined? '': generalData.yearOfGrad.toString()} placeholder={"Predicted Year of Graduation"} onChange={handleChange}></input>
-        </>)
     }
 
     return (
@@ -153,8 +136,7 @@ export default function GeneralForm({commonData, setCommonData}: {
         <div className='Category'>Education</div>
         {FormInputField("university", "University")}
         {FormInputField("degree", "Degree")}
-        {FormYearOfGradField()}
-
+        <FormYearOfGradField updateGeneralField={updateGeneralField} removeGeneralField={removeGeneralField} generalData={generalData}/>
 
         <div className='Category'>Links</div>
         {FormInputField("github", "Github Link")}
@@ -165,3 +147,38 @@ export default function GeneralForm({commonData, setCommonData}: {
     </div>
     );
 }
+
+function FormYearOfGradField({updateGeneralField, generalData, removeGeneralField}:{
+    updateGeneralField: <K extends keyof CommonPrefillData>
+    (field: K, value: CommonPrefillData[K])=>void,
+    removeGeneralField: <K extends keyof CommonPrefillData>(field: K)=>void,
+    generalData: CommonPrefillData
+}) {
+    const field = 'yearOfGrad';
+    const [invalid, setInvalid] = useState(false);
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        const num = parseInt(val, 10);
+        console.log("yearOfGrad", val, num)
+        if (!isNaN(num)) {
+            updateGeneralField(field, num);
+            if (num < 1900 || num > 2099) {
+                setInvalid(true);
+            } else {
+                setInvalid(false);
+            }
+        } else if (val === '') {
+            removeGeneralField(field);
+        } else {
+            removeGeneralField(field);
+            setInvalid(true);
+        }
+    }
+
+    return (<>
+    <label htmlFor={field}> Year of Graduation</label>
+    <input type="number" min="1900" max="2099" step="1" value={generalData.yearOfGrad === undefined? '': generalData.yearOfGrad.toString()} placeholder={"Predicted Year of Graduation"} onChange={handleChange}></input>
+    {invalid && <div className={styles.WarningText}>The number should be between 1900 to 2099.</div>}
+    </>)
+}
+

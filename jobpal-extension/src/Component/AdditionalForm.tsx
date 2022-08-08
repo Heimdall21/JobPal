@@ -6,6 +6,6 @@ export default function AdditionalForm({addFields, removeFields, updateFields, d
     data: AdditionalPrefillData,
     updateFields: (key: string, val: string)=>void
 }) {
-    console.log(data);
+    
     return <></>;
 }

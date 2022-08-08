@@ -25,3 +25,7 @@
     padding: 12px 12px 12px 0;
     display: inline-block;
 }
+
+.FormContainer .WarningText {
+    color: red;
+}
