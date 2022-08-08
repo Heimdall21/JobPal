@@ -28,7 +28,7 @@ export interface CommonPrefillData {
     postalCode?: string,
     university?: string,
     degree?: string,
-    yearOfGrad?: string,
+    yearOfGrad?: number,
     github?: string,
     linkedin?: string
 }

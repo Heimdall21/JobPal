@@ -1,5 +1,6 @@
 import React from 'react';
 import {CommonPrefillData, ExtendedCommonPrefillData} from '../Lib/StorageType';
+import AdditionalForm from './AdditionalForm';
 import styles from "./Form.module.css";
 
 export default function GeneralForm({commonData, setCommonData}: {
@@ -48,16 +49,53 @@ export default function GeneralForm({commonData, setCommonData}: {
         })
     }
 
+    function toFormInputField<K extends keyof Omit<CommonPrefillData,'dateOfBirth'| 'yearOfGrad' |'sex'>>(field: K, labelText: string) {
+        return (<>
+            <label htmlFor={field}>{labelText}</label>
+            <input type={"text"} id={field} name={field} value={generalData[field] || ''}></input>
+        </>);
+    }
+
     return (
     <div className={styles.FormContainer}>
-        <label htmlFor='givenName'>First Name</label>
-        <input type={"text"} id="givenName" name='givenName' value={generalData.givenName || ""} placeholder={"Your Given Name"}></input>
-        <label htmlFor='familyName'>Last Name</label>
-        <input type={"text"} id="familyName" name="familyName" value={generalData.familyName || ""} placeholder={"Your Family Name"}></input>
-        <label htmlFor='additionalName'>Additional Name</label>
-        <input type={"text"} id="additionalName" name='additionalName' value={generalData.additionalName || ""} placeholder={"Your Additional Name"}></input>
-        <label htmlFor='email'>Email</label>
-        <input></input>
+        <div className='Category'>Personal Information</div>
+        {toFormInputField("givenName", "First Name")}
+        {toFormInputField("familyName", "Last Name")}
+        {toFormInputField("email", "Email")}
+
+        <label htmlFor='sex'>Sex</label>
+        <select id="sex" name="sex" value={generalData.sex || ""}>
+            <option value="" disabled={true} hidden={true}>Please Choose Your Sex</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+            <option value="X">Other</option>
+        </select>
+
+        <label htmlFor={'dateOfBirth'}>Date Of Birth</label>
+        <input type={"date"} id={'dateOfBirth'} name={'dateOfBirth'} value={
+            generalData.dateOfBirth === undefined ? '' : dateToString(generalData.dateOfBirth)
+        }></input>
+
+        {toFormInputField("address", "Address")}
+        {toFormInputField("postalCode", "Postal Code")}
+
+        <div className='Category'>Education</div>
+        {toFormInputField("university", "University")}
+        {toFormInputField("degree", "Degree")}
+
+        <label htmlFor={'yearOfGrad'}> Year of Graduation</label>
+        <input type="number" min="1900" max="2099" step="1" value={generalData.yearOfGrad === undefined? '': generalData.yearOfGrad.toString()} placeholder={"Predicted Year of Graduation"}></input>
+
+        <div className='Category'>Links</div>
+        {toFormInputField("github", "Github Link")}
+        {toFormInputField("linkedin", "LinkedIn Link")}
+
+        <div className='Category'>Additional Information</div>
+        <AdditionalForm data={additionalData} addFields={addAdditionalField} removeFields={removeAdditionalField} updateFields={updateAdditionalField}/>
     </div>
     );
+}
+
+function dateToString(date: Date):string {
+    return date.toISOString().slice(0, 10);
 }
