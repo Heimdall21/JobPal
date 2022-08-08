@@ -1,34 +1,40 @@
 export interface PrefillData {
-    common: CommonPrefillData,
+    common: ExtendedCommonPrefillData,
     specific: {
-        [url: string]: SpecificPrefillData,
+        [url: string]: ExtendedSpecificPrefillData,
     }
+}
+
+export interface ExtendedCommonPrefillData extends CommonPrefillData {
+    additional: AdditionalPrefillData
+}
+
+export interface ExtendedSpecificPrefillData extends SpecificPrefillData {
+    additional: AdditionalPrefillData
+}
+
+export interface AdditionalPrefillData {
+    [other: string]: string
 }
 
 export interface CommonPrefillData {
-    givenName: string,
+    givenName?: string,
     additionalName?: string,
-    familyName: string,
-    email: string,
-    sex: 'M'| 'F' | 'X',
-    dateOfBirth: Date,
-    address: string,
+    familyName?: string,
+    email?: string,
+    sex?: 'M'| 'F' | 'X',
+    dateOfBirth?: Date,
+    address?: string,
     postalCode?: string,
-    university: string,
-    degree: string,
-    yearOfGrad: string,
+    university?: string,
+    degree?: string,
+    yearOfGrad?: string,
     github?: string,
-    linkedin?: string,
-    additional: {
-        [other: string]: string
-    }
+    linkedin?: string
 }
 
 export interface SpecificPrefillData {
-    companyName: string,
-    role: string,
-    shortcut?: string,
-    additional: {
-        [other: string]: string
-    }
+    companyName?: string,
+    role?: string,
+    shortcut?: string
 }
