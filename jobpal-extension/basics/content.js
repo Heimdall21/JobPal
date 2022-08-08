@@ -9,8 +9,6 @@ var testVariable = [
   { name: 'inputField5'}
 ]
 
-
-
 // input variables
 var inputFieldHTML = '';
 testVariable.forEach(function(inputVariable, index){
@@ -43,13 +41,40 @@ couponButton.innerHTML = 'JP';
 document.body.appendChild(couponButton);
 
 
+
+// basic button ====
+var testButton = document.createElement('button');
+testButton.className = '_testButton';
+testButton.innerHTML = `
+  <h1>Hello, World<h1/>
+  <p>And all who inhabit it</p>
+`;
+testButton.style.cssText = `
+  height: 200px;
+  width: 200px;
+  border-radius=10px;
+  border: 1px solid;
+  background:white;
+  color:blue;
+  'z-index:9999999999;
+  display:flex;
+  justify-content:center; 
+  align-items:center';
+`
+uiDisplay = document.querySelector('._uiDisplay');
+uiDisplay.appendChild(testButton);
+// basic button ====
+
+
+
+
+
 var createEvent = function(){
   document.querySelector('._coupon__button').addEventListener('click', function(event){
     console.log('jobpal button clicked!');
     if(isDisplayed === true) {
       document.querySelector('._uiDisplay').style.display = 'none';
       isDisplayed = false;
-      
     } else {
       // display it again
       document.querySelector('._uiDisplay').style.display = 'block';
