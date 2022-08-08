@@ -12,11 +12,13 @@ function Edit() {
 
     useEffect(()=>{
         getPrefillData((data)=>{
+            setIsLoading(false);
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
                 return;
+            } else if (data === undefined) {
+                return;
             }
-            setIsLoading(false);
             setCommonData(data.common);
             setSpecificData(new Map(Object.entries(data.specific)));
         })
