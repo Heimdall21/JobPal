@@ -1,0 +1,27 @@
+.FormContainer {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+.FormContainer * {
+    box-sizing: border-box;
+}
+
+.FormContainer input[type=text], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.FormContainer input[type=text]:focus {
+    border: 3px solid rgb(0, 85, 255);
+    outline-color: rgb(0, 85, 255);
+}
+
+.FormContainer label {
+    padding: 12px 12px 12px 0;
+    display: inline-block;
+}
