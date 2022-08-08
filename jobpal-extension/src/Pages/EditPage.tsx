@@ -6,7 +6,7 @@ import { ViewCommonData, ViewAdditionalType, ViewSpecificData } from '../Lib/Vie
 import GeneralForm from '../Component/GeneralForm';
 import SpecificForm from '../Component/SpecificForm';
 import AdditionalForm from '../Component/AdditionalForm';
-import styles from "./Form.module.css";
+import styles from '../Component/Form.module.css';
 
 function Edit() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -104,9 +104,10 @@ function toViewAdditionalType(additionalData: AdditionalPrefillData): ViewAdditi
 }
 
 function getViewSpecificData(data: PrefillData): ViewSpecificData[] {
-    return Object.entries(data.specific).map(([url, val])=>{
+    return Object.entries(data.specific).map(([url, val], index)=>{
         const {companyName, role, shortcut, additional} = val;
         return {
+            id: index,
             url: url,
             companyName: companyName || '',
             role: role || '',
@@ -140,8 +141,8 @@ function filterEmptyString(obj: any): any {
 
 function toAdditionalDataModel(additionalData: ViewAdditionalType): AdditionalPrefillData {
     let ret: AdditionalPrefillData = {};
-    additionalData.forEach(({key, value, isUpdating}) => {
-        if (key !== '' && value !== '' && !isUpdating) {
+    additionalData.forEach(({key, value}) => {
+        if (key !== '' && value !== '') {
             ret[key] = value;
         }
     });

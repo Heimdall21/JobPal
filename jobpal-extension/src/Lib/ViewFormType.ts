@@ -17,6 +17,7 @@ export interface ViewCommonData {
 export type ViewAdditionalType = {id: number, key: string, value: string}[];
 
 export interface ViewSpecificData {
+    id: number,
     url: string,
     companyName: string,
     role: string,
