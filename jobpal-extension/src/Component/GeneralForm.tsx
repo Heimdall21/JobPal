@@ -1,63 +1,29 @@
 import React, { ChangeEvent, useState } from 'react';
-import {CommonPrefillData, ExtendedCommonPrefillData} from '../Lib/StorageType';
-import AdditionalForm from './AdditionalForm';
 import { DateString } from '../Lib/DateString';
+import { ViewCommonData } from '../Lib/ViewFormType';
 import styles from "./Form.module.css";
 
 export default function GeneralForm({commonData, setCommonData}: {
-    commonData: ExtendedCommonPrefillData, 
-    setCommonData: React.Dispatch<React.SetStateAction<ExtendedCommonPrefillData>>
+    commonData: ViewCommonData, 
+    setCommonData: React.Dispatch<React.SetStateAction<ViewCommonData>>
 }) {
-    const {additional: additionalData, ...generalData} = commonData;
-    
-    function updateGeneralField<K extends keyof CommonPrefillData>(field: K, value: CommonPrefillData[K]) {
+    function updateCommonField<K extends keyof ViewCommonData>(field: K, value: ViewCommonData[K]) {
         setCommonData({
-            ...generalData,
+            ...commonData,
             [field]: value,
-            additional: additionalData
         })
     }
 
-    function removeGeneralField<K extends keyof CommonPrefillData>(field: K) {
-        const {[field]: _, ...rest} = generalData;
-        setCommonData({
-            ...rest,
-            additional: additionalData
-        });
-    }
-
-    function updateAdditionalField(key: string, value: string) {
-        setCommonData({
-            ...generalData,
-            additional: {
-                ...additionalData,
-                [key]: value
-            }
-        })
-    }
-
-    function removeAdditionalField(key: string) {
-        const {[key]: _, ...newAdditionalData} = additionalData;
-        setCommonData({
-            ...generalData,
-            additional: newAdditionalData
-        })
-    }
-
-    function FormInputField<K extends keyof Omit<CommonPrefillData,'dateOfBirth'| 'yearOfGrad' |'sex'>>(field: K, labelText: string) {
+    function FormInputField<K extends keyof Omit<ViewCommonData,'dateOfBirth'| 'yearOfGrad' |'sex'>>(field: K, labelText: string) {
         const handleChange = (e: ChangeEvent<HTMLInputElement>)=>{
             const val = e.target.value;
             console.log(field, val);
-            if (val === '') {
-                removeGeneralField(field);
-                return;
-            }
-            updateGeneralField(field, val);
+            updateCommonField(field, val);
         }
 
         return (<>
             <label htmlFor={field}>{labelText}</label>
-            <input type={"text"} id={field} name={field} value={generalData[field] || ''} onChange={handleChange}></input>
+            <input type={"text"} id={field} name={field} value={commonData[field]} onChange={handleChange}></input>
         </>);
     }
 
@@ -65,16 +31,16 @@ export default function GeneralForm({commonData, setCommonData}: {
         const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
             const val = e.target.value;
             console.log(val);
-            if (val === 'M' || val === 'F' || val === 'X') {
-                updateGeneralField('sex', val);
+            if (val === '' || val === 'M' || val === 'F' || val === 'X') {
+                updateCommonField('sex', val);
             } else {
-                removeGeneralField('sex');
+                updateCommonField('sex', '');
             }
         }
 
         return (<>
         <label htmlFor='sex'>Sex</label>
-        <select id="sex" name="sex" value={generalData.sex || ""} onChange={handleChange}>
+        <select id="sex" name="sex" value={commonData.sex || ""} onChange={handleChange}>
             <option value="" disabled={true} hidden={true}>Please Choose Your Sex</option>
             <option value="M">Male</option>
             <option value="F">Female</option>
@@ -84,24 +50,21 @@ export default function GeneralForm({commonData, setCommonData}: {
     }
 
     function FormDateOfBirthField() {
+        const [error, setError] = useState<string|null>(null);
         const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
             const val = e.target.value;
             console.log("dateOfBirth", val);
-            if (DateString.validate(val)) {
-                updateGeneralField('dateOfBirth', val);
-            } else if (val.trimStart() === '') {
-                removeGeneralField('dateOfBirth');
-            } else {
-                console.error("not a date");
+            updateCommonField('dateOfBirth', val);
+            if (!DateString.validate(val)) {
+                setError("not a valid data")
             }
         }
 
         return (<>
         <label htmlFor={'dateOfBirth'}>Date Of Birth</label>
-        <input type={"date"} id={'dateOfBirth'} name={'dateOfBirth'} value={
-            generalData.dateOfBirth === undefined ? '' : (DateString.validate(generalData.dateOfBirth)??'')
-        }
+        <input type={"date"} id={'dateOfBirth'} name={'dateOfBirth'} value={commonData.dateOfBirth}
         onChange={handleChange}></input>
+        {error != null && <div className={styles.WarningText}>{error}</div>}
         </>);
     }
 
@@ -122,49 +85,42 @@ export default function GeneralForm({commonData, setCommonData}: {
         <div className='Category'>Education</div>
         {FormInputField("university", "University")}
         {FormInputField("degree", "Degree")}
-        <FormYearOfGradField updateGeneralField={updateGeneralField} removeGeneralField={removeGeneralField} generalData={generalData}/>
+        <FormYearOfGradField setField={updateCommonField} yearOfGrad={commonData.yearOfGrad}/>
 
         <div className='Category'>Links</div>
         {FormInputField("github", "Github Link")}
         {FormInputField("linkedin", "LinkedIn Link")}
-
-        <div className='Category'>Additional Information</div>
-        <AdditionalForm data={additionalData} removeFields={removeAdditionalField} updateFields={updateAdditionalField}/>
     </div>
     );
 }
 
-function FormYearOfGradField({updateGeneralField, generalData, removeGeneralField}:{
-    updateGeneralField: <K extends keyof CommonPrefillData>
-    (field: K, value: CommonPrefillData[K])=>void,
-    removeGeneralField: <K extends keyof CommonPrefillData>(field: K)=>void,
-    generalData: CommonPrefillData
+function FormYearOfGradField({setField, yearOfGrad}:{
+    setField: <K extends keyof ViewCommonData>
+    (field: K, value: ViewCommonData[K])=>void,
+    yearOfGrad: string
 }) {
     const field = 'yearOfGrad';
-    const [invalid, setInvalid] = useState(false);
+    const [error, setError] = useState<string|null>(null);
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         const num = parseInt(val, 10);
         console.log("yearOfGrad", val, num)
+        setField(field, val);
         if (!isNaN(num)) {
-            updateGeneralField(field, num);
             if (num < 1900 || num > 2099) {
-                setInvalid(true);
+                setError("The number should be between 1900 and 2099!");
             } else {
-                setInvalid(false);
+                setError(null);
             }
-        } else if (val === '') {
-            removeGeneralField(field);
-        } else {
-            removeGeneralField(field);
-            setInvalid(true);
+        } else if (val !== '') {
+            setError("Invalid date!");
         }
     }
 
     return (<>
     <label htmlFor={field}> Year of Graduation</label>
-    <input type="number" min="1900" max="2099" step="1" value={generalData.yearOfGrad === undefined? '': generalData.yearOfGrad.toString()} placeholder={"Predicted Year of Graduation"} onChange={handleChange}></input>
-    {invalid && <div className={styles.WarningText}>The number should be between 1900 to 2099.</div>}
+    <input type="number" min="1900" max="2099" step="1" value={yearOfGrad === undefined? '': yearOfGrad.toString()} placeholder={"Predicted Year of Graduation"} onChange={handleChange}></input>
+    {error !== null && <div className={styles.WarningText}>{error}</div>}
     </>)
 }
 
