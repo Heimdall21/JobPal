@@ -1,101 +1,77 @@
 import React, { useState } from "react";
-import { AdditionalPrefillData } from "../Lib/StorageType";
+import { ViewAdditionalType } from "../Lib/ViewFormType";
+import styles from "./Form.module.css";
 
-export default function AdditionalForm({removeFields, updateFields, data}: {
-    data: AdditionalPrefillData,
-    removeFields: (key: string)=>void,
-    updateFields: (key: string, val: string)=>void
+export default function AdditionalForm({setAdditional, data}: {
+    data: ViewAdditionalType,
+    setAdditional: (additionalData: ViewAdditionalType)=>void
 }) {
-    const [entries, setEntries] = useState(Object.entries(data).map((val)=>{
-        return {
-            field: val[0],
-            value: val[1],
-            isEditing: false
-        };
-    }));
 
-    const addNewEntry = ()=> {
-        setEntries([...entries, {field:"", value:"", isEditing: true}]);
+    const nextId = Math.max(...data.map(val=>val.id),0);
+
+    const addNewRow = ()=> {
+        setAdditional([...data, {id: nextId, key:"", value:""}]);
     }
 
-    const setIsEditable = (index: number)=>{
-        return (isEditable:boolean)=>entries.map((v, i)=>
-            i===index?
-            {...v, isEditing:isEditable}:
-            v);
+    const updateRow = (targetId: number)=>{
+        return (newKey: string, newVal:string)=>
+        setAdditional(
+            data.map(v=>
+                v.id===targetId?
+                {key:newKey, value:newVal, id:targetId}:
+                v
+            )
+        );
     }
+
+    const removeRow = (targetId: number)=>{
+        return ()=>{
+            setAdditional(data.filter(v=> v.id !== targetId));
+        }
+    }
+
+    const duplicateKey = (targetId: number)=>{
+        return (key:string)=>data.every(v=>v.key !== key || v.id === targetId);
+    }
+
+    console.log("additional data: ", data);
 
     return (<>
-        <button type="button" onClick={addNewEntry}>Add Information</button>
-        {entries.map((elem, index)=>
-            elem.isEditing?
-            (<EditingRow key={index} field={elem.field} value={elem.value} removeFields={removeFields} updateFields={
-                (key, val)=>{
-                    updateFields(key, val);
-                    setIsEditable(index)(false);
-                }
-            } hasField={(k:string)=>data[k] !== undefined}/>):
-            (<Row key={index} field={elem.field} value={elem.value} setIsEditable={setIsEditable(index)} updateFields={updateFields}/>)
-        )}
+        <button type="button" onClick={addNewRow}>Add Information</button>
+        {data.map((elem)=><Row key={elem.id} _key={elem.key} value={elem.value} 
+            updateRow={updateRow(elem.id)} 
+            removeRow={removeRow(elem.id)}
+            hasDuplicatedKey={duplicateKey(elem.id)}
+        />)}
     </>);
 }
 
-function EditingRow({field, value, removeFields, updateFields, hasField}:{
-    field: string,
+function Row({_key, value, updateRow, removeRow, hasDuplicatedKey}:{
+    _key: string,
     value: string,
-    removeFields: (key: string)=>void,
-    updateFields: (key: string, val: string)=>void,
-    hasField: (key: string)=>boolean
+    updateRow: (key: string, val:string)=>void,
+    removeRow: ()=>void,
+    hasDuplicatedKey: (key: string) => boolean
 }) {
-    const [tempField, setTempField] = useState(field);
-    const [tempValue, setTempValue] = useState(value);
-    const [hasError, setError] = useState(false);
-
-    const handleKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newKey = e.target.value;
-        setTempField(newKey);
-    }
-    
+    const [error, setError] = useState<null|string>(null);
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newVal = e.target.value;
-        setTempValue(newVal);
+        updateRow(_key, newVal);
     }
-
-    const updateKeyValue = (e: React.MouseEvent<HTMLButtonElement>) => {
-        if (tempField === field) {
-            updateFields(field, tempValue);
-        } else {
-            if (hasField(tempField)){
-                setError(true);
-            } else {
-                removeFields(field);
-                updateFields(tempField, tempValue);
-            }
+    const handleKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newKey = e.target.value;
+        updateRow(_key, newKey);
+        if (hasDuplicatedKey(newKey)) {
+            setError("Duplicated key!");
+        } else if (newKey === '') {
+            setError("Empty key!");
         }
     }
 
     return (<>
-        <button type="button" onClick={()=>removeFields(field)}>Remove</button>
-        <button type="button" onClick={updateKeyValue}>Update</button>
-        <input type="text" value={tempField} placeholder={"key"} onChange={handleKeyChange}></input>
-        <input type="text" value={tempValue} placeholder={"value"} onChange={handleValueChange}></input>
-        {hasError && <div className="WarningText">The key has already been used!</div>}
-    </>);
-}
-
-function Row({field, value, setIsEditable, updateFields}:{
-    field: string,
-    value: string,
-    setIsEditable: (isEditable:boolean)=>void,
-    updateFields: (key: string, val:string)=>void
-}) {
-    const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newVal = e.target.value;
-        updateFields(field, newVal);
-    }
-    return (<>
-        <button type="button" onClick={()=>setIsEditable(true)}>Edit</button>
-        <label>{field}</label>
+        <button type="button" onClick={removeRow}></button>
+        <input type="text" value={value} placeholder={"key"} onChange={handleKeyChange}></input>
         <input type="text" value={value} placeholder={"value"} onChange={handleValueChange}></input>
+        {error !== null && <div className={styles.WarningText}>{error}</div>}
     </>);
 }

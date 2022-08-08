@@ -14,7 +14,7 @@ export interface ViewCommonData {
     linkedin: string
 }
 
-export type ViewAdditionalType = {id: number, key: string, value: string, isUpdating: boolean}[];
+export type ViewAdditionalType = {id: number, key: string, value: string}[];
 
 export interface ViewSpecificData {
     url: string,
