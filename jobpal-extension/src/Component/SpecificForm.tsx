@@ -1,8 +1,8 @@
-import { ExtendedSpecificPrefillData } from "../Lib/StorageType"
+import { ViewSpecificData } from "../Lib/ViewFormType"
 
 export default function SpecificForm({specificData, setSpecificData}: {
-    specificData: Map<string, ExtendedSpecificPrefillData>, 
-    setSpecificData: React.Dispatch<React.SetStateAction<Map<string, ExtendedSpecificPrefillData>>>
+    specificData: ViewSpecificData[], 
+    setSpecificData: React.Dispatch<React.SetStateAction<ViewSpecificData[]>>
 }) {
     return <></>
 }
