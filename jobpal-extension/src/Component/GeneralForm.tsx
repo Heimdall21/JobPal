@@ -26,20 +26,6 @@ export default function GeneralForm({commonData, setCommonData}: {
         });
     }
 
-    function addAdditionalField(key: string, value: string):boolean {
-        if (additionalData.hasOwnProperty(key)) {
-            return false;
-        }
-        setCommonData({
-            ...generalData,
-            additional: {
-                ...additionalData,
-                [key]: value
-            }
-        });
-        return true;
-    }
-
     function updateAdditionalField(key: string, value: string) {
         setCommonData({
             ...generalData,
@@ -143,7 +129,7 @@ export default function GeneralForm({commonData, setCommonData}: {
         {FormInputField("linkedin", "LinkedIn Link")}
 
         <div className='Category'>Additional Information</div>
-        <AdditionalForm data={additionalData} addFields={addAdditionalField} removeFields={removeAdditionalField} updateFields={updateAdditionalField}/>
+        <AdditionalForm data={additionalData} removeFields={removeAdditionalField} updateFields={updateAdditionalField}/>
     </div>
     );
 }
