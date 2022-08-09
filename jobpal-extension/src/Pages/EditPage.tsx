@@ -62,14 +62,16 @@ function Edit() {
     return (
     <div>
         <form onSubmit={handleSubmit} className={styles.FormContainer}>
-            <div>General Information</div>
+            <div className={styles.Section}>General Information</div>
             <div>
                 <GeneralForm commonData={commonData} setCommonData={setCommonData} />
                 <AdditionalForm data={additionalCommonData} setAdditional={setAdditionalCommonData}/>
             </div>
-            <div>Information For Specific Applications</div>
+            <div className={styles.Section}>Information For Specific Job Applications</div>
             <SpecificForm data={specificData} setData={setSpecificData}/>
-            <button type="submit">Save</button>
+            <div className={styles.SubmitButtonContainer}>
+                <button type="submit" className={styles.SubmitButton}>Save</button>
+            </div>
         </form>
         <ToastContainer autoClose={300} position={'bottom-right'}/>
     </div>

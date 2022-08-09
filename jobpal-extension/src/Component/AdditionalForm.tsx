@@ -34,15 +34,15 @@ export default function AdditionalForm({setAdditional, data}: {
         return (key:string)=>!data.filter(v=>v.id!==targetId).every(v=>v.key !== key);
     }
 
-    return (<>
-        <div className='Category'>Additional Information</div>
+    return (<div>
+        <div className={styles.Category}>Additional Information</div>
         <button type="button" onClick={addNewRow}>Add Information</button>
         {data.map((elem)=><Row key={elem.id} _key={elem.key} value={elem.value} 
             updateRow={updateRow(elem.id)} 
             removeRow={removeRow(elem.id)}
             hasDuplicatedKey={duplicateKey(elem.id)}
         />)}
-    </>);
+    </div>);
 }
 
 function Row({_key, value, updateRow, removeRow, hasDuplicatedKey}:{
@@ -69,10 +69,12 @@ function Row({_key, value, updateRow, removeRow, hasDuplicatedKey}:{
         }
     }
 
-    return (<>
-        <button type="button" onClick={removeRow}>Remove Row</button>
+    return (<div>
+        <div className={styles.RemoveButtonContainer}>
+            <button type="button" className={styles.RemoveButton} onClick={removeRow}>Remove Row</button>
+        </div>
         <input type="text" value={_key} placeholder={"key"} onChange={handleKeyChange}></input>
         <input type="text" value={value} placeholder={"value"} onChange={handleValueChange}></input>
         {error !== null && <div className={styles.WarningText}>{error}</div>}
-    </>);
+    </div>);
 }

@@ -69,8 +69,8 @@ export default function GeneralForm({commonData, setCommonData}: {
     }
 
     return (
-    <div className={styles.FormContainer}>
-        <div className='Category'>Personal Information</div>
+    <div>
+        <div className={styles.Category}>Personal Information</div>
         {FormInputField("givenName", "First Name")}
         {FormInputField("familyName", "Last Name")}
         {FormInputField("email", "Email")}
@@ -82,12 +82,12 @@ export default function GeneralForm({commonData, setCommonData}: {
         {FormInputField("address", "Address")}
         {FormInputField("postalCode", "Postal Code")}
 
-        <div className='Category'>Education</div>
+        <div className={styles.Category}>Education</div>
         {FormInputField("university", "University")}
         {FormInputField("degree", "Degree")}
         <FormYearOfGradField setField={updateCommonField} yearOfGrad={commonData.yearOfGrad}/>
 
-        <div className='Category'>Links</div>
+        <div className={styles.Category}>Links</div>
         {FormInputField("github", "Github Link")}
         {FormInputField("linkedin", "LinkedIn Link")}
     </div>

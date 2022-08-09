@@ -1,5 +1,6 @@
 import { ViewAdditionalType, ViewSpecificData } from "./ViewFormType"
 import AdditionalForm from "./AdditionalForm";
+import styles from "./Form.module.css";
 
 export default function SpecificForm({data, setData}: {
     data: ViewSpecificData[], 
@@ -24,10 +25,10 @@ export default function SpecificForm({data, setData}: {
         }
     }
 
-    return (<>
+    return (<div>
         <button type="button" onClick={addRow}>Add URL</button>
         {data.map(({id, url, additional, ...rest})=><FormRow key={id} _key={url} val={rest} additional={additional} setData={handleDataChange(id)} removeRow={removeRow(id)}/>)}
-    </>);
+    </div>);
 }
 
 function FormRow({_key, val, additional, setData, removeRow}:{
@@ -44,12 +45,14 @@ function FormRow({_key, val, additional, setData, removeRow}:{
         }
     }
 
-    return (<>
-        <button type="button" onClick={removeRow}>Remove URL</button>
+    return (<div>
+        <div className={styles.RemoveButtonContainer}>
+            <button className={styles.RemoveButton} type="button" onClick={removeRow}>Remove URL</button>
+        </div>
         <input type="text" value={_key} placeholder={"url"} onChange={handleValueChange('url')}></input>
         <input type="text" value={val.companyName} placeholder={"companyName"} onChange={handleValueChange('companyName')}></input>
         <input type="text" value={val.role} placeholder={"role"} onChange={handleValueChange('role')}></input>
         <input type="text" value={val.shortcut} placeholder={"shortcut"} onChange={handleValueChange('shortcut')}></input>
         <AdditionalForm data={additional} setAdditional={(newAdditional)=>setData('additional', newAdditional)}/>
-    </>);
+    </div>);
 }
