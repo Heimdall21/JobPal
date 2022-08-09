@@ -1,8 +1,12 @@
-import { getPrefillData, storePrefillData } from '../Lib/storageHandler';
 import '../App.css';
 import { useEffect, useState } from 'react';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { getPrefillData, storePrefillData } from '../Lib/storageHandler';
 import { AdditionalPrefillData, PrefillData, CommonPrefillData, ExtendedSpecificPrefillData } from '../Lib/StorageType';
-import { ViewCommonData, ViewAdditionalType, ViewSpecificData } from '../Lib/ViewFormType';
+
+import { ViewCommonData, ViewAdditionalType, ViewSpecificData } from '../Component/ViewFormType';
 import GeneralForm from '../Component/GeneralForm';
 import SpecificForm from '../Component/SpecificForm';
 import AdditionalForm from '../Component/AdditionalForm';
@@ -14,30 +18,41 @@ function Edit() {
     const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>([]);
     const [specificData, setSpecificData] = useState<ViewSpecificData[]>([]);
 
+    function setPrefillData(data: PrefillData) {
+        // set the initial view model
+        setCommonData(getViewCommonData(data));
+        setAdditionalCommonData(getViewAdditionalCommonData(data));
+        setSpecificData(getViewSpecificData(data));
+    }
+
     useEffect(()=>{
+        // get initial data
         getPrefillData((data)=>{
             setIsLoading(false);
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
+                toast.error(chrome.runtime.lastError.message);
                 return;
             } else if (data === undefined) {
                 return;
             }
-            setCommonData(getViewCommonData(data));
-            setAdditionalCommonData(getViewAdditionalCommonData(data));
-            setSpecificData(getViewSpecificData(data));
+            setPrefillData(data);
         })
     }, []);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
-        storePrefillData(toModel(commonData, additionalCommonData, specificData),
+        const newData = toModel(commonData, additionalCommonData, specificData);
+        storePrefillData(newData,
         ()=>{
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
+                toast.error(chrome.runtime.lastError.message);
                 return;
             }
-            console.log("store successfully!");
+            toast.success("store successfully!");
+            // refresh the form
+            setPrefillData(newData);
         });
     }
 
@@ -45,9 +60,10 @@ function Edit() {
         return <></>
     }
     return (
-        <form onSubmit={handleSubmit}>
+    <div>
+        <form onSubmit={handleSubmit} className={styles.FormContainer}>
             <div>General Information</div>
-            <div className={styles.FormContainer}>
+            <div>
                 <GeneralForm commonData={commonData} setCommonData={setCommonData} />
                 <AdditionalForm data={additionalCommonData} setAdditional={setAdditionalCommonData}/>
             </div>
@@ -55,6 +71,8 @@ function Edit() {
             <SpecificForm data={specificData} setData={setSpecificData}/>
             <button type="submit">Save</button>
         </form>
+        <ToastContainer autoClose={300} position={'bottom-right'}/>
+    </div>
     );
 }
 
@@ -76,6 +94,7 @@ function getDefaultViewCommonData(): ViewCommonData {
     }
 }
 
+// data to view model
 function getViewCommonData(data: PrefillData): ViewCommonData {
     const ViewCommonData = getDefaultViewCommonData();
     const {additional: _, yearOfGrad, ...common} = data.common;
@@ -91,6 +110,7 @@ function getViewAdditionalCommonData(data: PrefillData): ViewAdditionalType {
     return toViewAdditionalType(additional);
 }
 
+// data model to view model
 function toViewAdditionalType(additionalData: AdditionalPrefillData): ViewAdditionalType {
     return Object.entries(additionalData).map((val, i)=>{
         return {
@@ -114,6 +134,25 @@ function getViewSpecificData(data: PrefillData): ViewSpecificData[] {
             additional: toViewAdditionalType(additional)
         }
     });
+}
+
+// view model to data model
+function toModel(commonData: ViewCommonData, additionalData: ViewAdditionalType, viewSpecificData: ViewSpecificData[]): PrefillData {
+    const specificData: ([string, ExtendedSpecificPrefillData]|null)[] = viewSpecificData.map(toSpecificDataModel)
+    let specificDataModel: [string, ExtendedSpecificPrefillData][] = [];
+    for (let elem of specificData) {
+        if (elem !== null) {
+            specificDataModel.push(elem);
+        }
+    }
+
+    return {
+        common: {
+            ...toCommonDataModel(commonData),
+            additional: toAdditionalDataModel(additionalData)
+        },
+        specific: Object.fromEntries(specificDataModel)
+    }
 }
 
 function toCommonDataModel(commonData: ViewCommonData): CommonPrefillData {
@@ -158,24 +197,6 @@ function toSpecificDataModel(specificData: ViewSpecificData):[string, ExtendedSp
         additional: additionalData,
         ...filterEmptyString(rest)
     }];
-}
-
-function toModel(commonData: ViewCommonData, additionalData: ViewAdditionalType, viewSpecificData: ViewSpecificData[]): PrefillData {
-    const specificData: ([string, ExtendedSpecificPrefillData]|null)[] = viewSpecificData.map(toSpecificDataModel)
-    let specificDataModel: [string, ExtendedSpecificPrefillData][] = [];
-    for (let elem of specificData) {
-        if (elem !== null) {
-            specificDataModel.push(elem);
-        }
-    }
-
-    return {
-        common: {
-            ...toCommonDataModel(commonData),
-            additional: toAdditionalDataModel(additionalData)
-        },
-        specific: Object.fromEntries(specificDataModel)
-    }
 }
 
 export default Edit;
