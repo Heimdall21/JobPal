@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ViewAdditionalType } from "../Lib/ViewFormType";
+import { ViewAdditionalType } from "./ViewFormType";
 import styles from "./Form.module.css";
 
 export default function AdditionalForm({setAdditional, data}: {
@@ -7,7 +7,7 @@ export default function AdditionalForm({setAdditional, data}: {
     setAdditional: (additionalData: ViewAdditionalType)=>void
 }) {
 
-    const nextId = Math.max(...data.map(val=>val.id),0);
+    const nextId = Math.max(...data.map(val=>val.id),-1)+1;
 
     const addNewRow = ()=> {
         setAdditional([...data, {id: nextId, key:"", value:""}]);
@@ -31,10 +31,8 @@ export default function AdditionalForm({setAdditional, data}: {
     }
 
     const duplicateKey = (targetId: number)=>{
-        return (key:string)=>data.every(v=>v.key !== key || v.id === targetId);
+        return (key:string)=>!data.filter(v=>v.id!==targetId).every(v=>v.key !== key);
     }
-
-    console.log("additional data: ", data);
 
     return (<>
         <div className='Category'>Additional Information</div>
@@ -61,17 +59,19 @@ function Row({_key, value, updateRow, removeRow, hasDuplicatedKey}:{
     }
     const handleKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newKey = e.target.value;
-        updateRow(_key, newKey);
-        if (hasDuplicatedKey(newKey)) {
-            setError("Duplicated key!");
-        } else if (newKey === '') {
+        updateRow(newKey, value);
+        if (newKey === '') {
             setError("Empty key!");
+        } else if (hasDuplicatedKey(newKey)) {
+            setError("Duplicated key!");
+        } else {
+            setError(null);
         }
     }
 
     return (<>
-        <button type="button" onClick={removeRow}></button>
-        <input type="text" value={value} placeholder={"key"} onChange={handleKeyChange}></input>
+        <button type="button" onClick={removeRow}>Remove Row</button>
+        <input type="text" value={_key} placeholder={"key"} onChange={handleKeyChange}></input>
         <input type="text" value={value} placeholder={"value"} onChange={handleValueChange}></input>
         {error !== null && <div className={styles.WarningText}>{error}</div>}
     </>);
