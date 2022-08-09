@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react';
 import { DateString } from '../Lib/DateString';
-import { ViewCommonData } from '../Lib/ViewFormType';
+import { ViewCommonData } from './ViewFormType';
 import styles from "./Form.module.css";
 
 export default function GeneralForm({commonData, setCommonData}: {
