@@ -1,14 +1,14 @@
 import { CommonPrefillData } from "../Lib/StorageType";
 
 export const INPUT_MAP: InputMap = {
-    "first_name": ".*f.*name",
-    "last_name": ".*l.*name",
-    "preferred_name": ".*pref.*name",
-    "email": ".*email.*",
-    "phone": ".*phone.*",
-    "location": ".*loc.*"
+    givenName: ".*f.*name",
+    familyName: ".*l.*name",
+    additionalName: ".*pref.*name",
+    email: ".*email.*",
+    address: ".*loc.*"
+    phone: ".*phone.*",
 };
 
-interface InputMap {
-    [field: keyof CommonPrefillData]: string
+type InputMap = {
+    [Property in keyof CommonPrefillData]: string
 }
