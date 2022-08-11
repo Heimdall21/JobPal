@@ -1,4 +1,4 @@
-import INPUT_MAP from './mapping.json';
+import {INPUT_MAP} from './mapping';
 import {asyncGetPrefillData, getPrefillData} from '../Lib/storageHandler';
 import { PrefillData } from '../Lib/StorageType';
 
