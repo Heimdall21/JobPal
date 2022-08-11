@@ -12,14 +12,18 @@
     "@types/react-dom": "^18.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0",
+    "react-toastify": "^9.0.8",
     "typescript": "^4.7.4",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@types/chrome": "0.0.193",
     "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
+    "build-windows": "set \"INLINE_RUNTIME_CHUNK=false\" && react-scripts build",
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
