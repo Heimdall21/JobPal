@@ -8,6 +8,11 @@ export const getPrefillData = (getCallback: (data: PrefillData)=>void) => {
     });
 }
 
+export const asyncGetPrefillData = () => {
+    return new Promise((resolve: (data: PrefillData)=>void) =>
+        getPrefillData(resolve));
+}
+
 export const storePrefillData = (data: PrefillData, setCallback=()=>{}) => {
     return chrome.storage.sync.set({[profileQueryKey]: data}, setCallback);
 }
