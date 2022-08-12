@@ -16,7 +16,7 @@ testVariable.forEach(function(inputVariable, index){
 });
 
 // JobPal extension UI ===
-var isDisplayed = false;
+var isDisplayed = true;
 var uiDisplay = document.createElement('div');
 uiDisplay.className = '_uiDisplay';
 // uiDisplay.innerHTML = '<h1>JobPal</h1><p>prefill options</p><<ul>' + inputFieldHTML + '</ul>';
@@ -27,7 +27,7 @@ uiDisplay.innerHTML = `
     ${inputFieldHTML}
   </ul>
 `
-uiDisplay.style.display = 'none';
+uiDisplay.style.display = 'block';
 document.body.appendChild(uiDisplay);
 // JobPal extension UI ===
 
@@ -47,45 +47,31 @@ document.body.appendChild(couponButton);
 // coupon button ===
 
 
-
 // basic button ====
-var testButton = document.createElement('button');
+var testButton = document.createElement('mybutton');
 //testButton.className = '_button';
 testButton.innerHTML = `
-  <button type="button" class="testbutton">
+  <button class="button-3" style={{background: green}}>
     <span class="button__text">Click me</span>
   </button>
 `;
-testButton.style.cssText = `
-  height: 200px;
-  width: 200px;
-  border-radius=10px;
-  border: 1px solid;
-  background:white;
-  color:blue;
-  'z-index:9999999999;
-  display:flex;
-  justify-content:center; 
-  align-items:center';
-`
 uiDisplay = document.querySelector('._uiDisplay');
 uiDisplay.appendChild(testButton);
 // basic button ====
 
 
+// var createEvent = function(){
+//   document.querySelector('._coupon__button').addEventListener('click', function(event){
+//     console.log('jobpal button clicked!');
+//     if(isDisplayed === true) {
+//       document.querySelector('._uiDisplay').style.display = 'none';
+//       isDisplayed = false;
+//     } else {
+//       // display it again
+//       document.querySelector('._uiDisplay').style.display = 'block';
+//       isDisplayed = true;
+//     }
+//   })
+// }
 
-var createEvent = function(){
-  document.querySelector('._coupon__button').addEventListener('click', function(event){
-    console.log('jobpal button clicked!');
-    if(isDisplayed === true) {
-      document.querySelector('._uiDisplay').style.display = 'block';
-      isDisplayed = false;
-    } else {
-      // display it again
-      document.querySelector('._uiDisplay').style.display = 'block';
-      isDisplayed = true;
-    }
-  })
-}
-
-createEvent();
+// createEvent();
