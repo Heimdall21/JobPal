@@ -15,19 +15,24 @@ testVariable.forEach(function(inputVariable, index){
   inputFieldHTML += '<li>Input field name: ' + inputVariable.name+' - </li>'
 });
 
-// JobPal extension UI 
+// JobPal extension UI ===
 var isDisplayed = false;
 var uiDisplay = document.createElement('div');
 uiDisplay.className = '_uiDisplay';
-uiDisplay.innerHTML = '<h1>JobPal</h1><p>prefill options</p><<ul>' + inputFieldHTML + '</ul>';
-uiDisplay.style.cssText = 'height:700px;width:300px;border-radius:10px;'
-+'border:1px solid;background:white;color:blue;'
-+'cursor:pointer;position:fixed;top:90px;right:5px;'
-+'z-index:9999999999;display:flex;overflow:hidden;';
+// uiDisplay.innerHTML = '<h1>JobPal</h1><p>prefill options</p><<ul>' + inputFieldHTML + '</ul>';
+uiDisplay.innerHTML = `
+  <h1 class="_jobpal_heading">JobPal</h1>
+  <p>prefill options</p>
+  <ul>
+    ${inputFieldHTML}
+  </ul>
+`
 uiDisplay.style.display = 'none';
 document.body.appendChild(uiDisplay);
+// JobPal extension UI ===
 
-// coupon button
+
+// coupon button ===
 var couponButton = document.createElement('div');
 couponButton.className = '_coupon__button';
 couponButton.style.cssText = 'height:30px;width:30px:border-radius:100%;'
@@ -39,15 +44,17 @@ couponButton.style.cssText = 'height:30px;width:30px:border-radius:100%;'
 // couponButton.appendChild(img);
 couponButton.innerHTML = 'JP';
 document.body.appendChild(couponButton);
+// coupon button ===
 
 
 
 // basic button ====
 var testButton = document.createElement('button');
-testButton.className = '_testButton';
+//testButton.className = '_button';
 testButton.innerHTML = `
-  <h1>Hello, World<h1/>
-  <p>And all who inhabit it</p>
+  <button type="button" class="testbutton">
+    <span class="button__text">Click me</span>
+  </button>
 `;
 testButton.style.cssText = `
   height: 200px;
@@ -67,13 +74,11 @@ uiDisplay.appendChild(testButton);
 
 
 
-
-
 var createEvent = function(){
   document.querySelector('._coupon__button').addEventListener('click', function(event){
     console.log('jobpal button clicked!');
     if(isDisplayed === true) {
-      document.querySelector('._uiDisplay').style.display = 'none';
+      document.querySelector('._uiDisplay').style.display = 'block';
       isDisplayed = false;
     } else {
       // display it again

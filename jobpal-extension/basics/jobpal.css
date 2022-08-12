@@ -1,0 +1,70 @@
+._uiDisplay {
+  height:700px;
+  width:300px;
+  border-radius:10px;
+  border:1px solid;
+  background:#DCDCDC;
+  color:blue;
+  cursor:pointer;
+  position:fixed;
+  top:90px;
+  right:5px;
+  z-index:9999999999;
+  display:flex;
+  overflow:hidden;
+}
+
+._jobpal_heading {
+  color: #111;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size:20px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  line-height: 1; 
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* .testbutton {
+  display: inline-flex;
+  height: 50px;
+  padding: 0;
+  background: #009578;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  overflow: hidden;
+  font-family: Quicksand;
+  font-size: 16px;
+  font-weight: 500;
+} */
+
+
+/* CSS */
+/* .testbutton {
+  display: flex;
+  align-items: center;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 0.7em 1.4em 0.7em 1.1em;
+  color: white;
+  background: #ad5389;
+  background: linear-gradient(0deg, rgba(20,167,62,1) 0%, rgba(102,247,113,1) 100%);
+  border: none;
+  box-shadow: 0 0.7em 1.5em -0.5em #14a73e98;
+  letter-spacing: 0.05em;
+  border-radius: 20em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.testbutton:hover {
+  box-shadow: 0 0.5em 1.5em -0.5em #14a73e98;
+}
+
+.testbutton:active {
+  box-shadow: 0 0.3em 1em -0.5em #14a73e98;
+} */
