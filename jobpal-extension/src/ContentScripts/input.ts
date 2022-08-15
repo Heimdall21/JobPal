@@ -4,7 +4,8 @@ import { PrefillData } from '../Lib/StorageType';
 
 export function matchInputElements(data: {[field:string]:(string|number)}) {
   const inputElements = document.getElementsByTagName("input");
-  const matched:{[field:string]:string} = {};
+  const matched: Map<string, string> = new Map();
+  const notMatched: Map<string, string> = new Map(Object.entries(data).map(([k, v])=>[k,v.toString()]));
 
   for (let i = 0; i < inputElements.length; i++) {
     const inputElement = inputElements[i];
@@ -12,24 +13,21 @@ export function matchInputElements(data: {[field:string]:(string|number)}) {
 
     if (inputElement.name in data) {
       const field = inputElement.name;
-      matched[field] = data[field].toString();
+      matched.set(field, data[field].toString());
 
     } else {
 
-      for (const [field, matchStr] of Object.entries(INPUT_MAP)) {
+      for (const [field, matchStr] of Object.entries(notMatched)) {
         if (field in data && new RegExp(matchStr).test(inputElement.name)) {
-          matched[field] = data[field].toString();
+          matched.set(field, data[field].toString());
+          notMatched.delete(field);// remove the field from notMatched
           break; // we have found the field, break the loop
         }
       }
 
     }
   }
-
-  const notMatched = Object.keys(data)
-    .filter((k)=>!(k in matched))
-    .map(k=>data[k]);
-
+  console.log(matched, notMatched);
   return [matched, notMatched];
 }
 
