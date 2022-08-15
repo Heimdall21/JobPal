@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ViewAdditionalType } from "./ViewFormType";
+import { ViewAdditionalType, ViewCommonKeys } from "./ViewFormType";
 import styles from "./Form.module.css";
 
 export default function AdditionalForm({setAdditional, data}: {
@@ -62,7 +62,7 @@ function Row({_key, value, updateRow, removeRow, hasDuplicatedKey}:{
         updateRow(newKey, value);
         if (newKey === '') {
             setError("Empty key!");
-        } else if (hasDuplicatedKey(newKey)) {
+        } else if (newKey in ViewCommonKeys()|| hasDuplicatedKey(newKey)) {
             setError("Duplicated key!");
         } else {
             setError(null);

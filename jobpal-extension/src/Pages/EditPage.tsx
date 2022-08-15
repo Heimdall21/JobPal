@@ -14,7 +14,7 @@ import styles from '../Component/Form.module.css';
 
 function Edit() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [commonData, setCommonData] = useState<ViewCommonData>(getDefaultViewCommonData());
+    const [commonData, setCommonData] = useState<ViewCommonData>(new ViewCommonData());
     const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>([]);
     const [specificData, setSpecificData] = useState<ViewSpecificData[]>([]);
 
@@ -78,30 +78,13 @@ function Edit() {
     );
 }
 
-function getDefaultViewCommonData(): ViewCommonData {
-    return {
-        givenName: '',
-        additionalName: '',
-        familyName: '',
-        email: '',
-        sex: '',
-        dateOfBirth: '',
-        address: '',
-        postalCode: '',
-        university: '',
-        degree: '',
-        yearOfGrad: '',
-        github: '',
-        linkedin: ''
-    }
-}
 
 // data to view model
 function getViewCommonData(data: PrefillData): ViewCommonData {
-    const ViewCommonData = getDefaultViewCommonData();
+    const viewCommonData = new ViewCommonData();
     const {additional: _, yearOfGrad, ...common} = data.common;
     return {
-        ...ViewCommonData,
+        ...viewCommonData,
         ...common,
         yearOfGrad: yearOfGrad?.toString() || ''
     }
