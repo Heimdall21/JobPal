@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getPrefillData, storePrefillData } from '../Lib/storageHandler';
 import { AdditionalPrefillData, PrefillData, CommonPrefillData, ExtendedSpecificPrefillData } from '../Lib/StorageType';
 
-import { ViewCommonData, ViewAdditionalType, ViewSpecificData } from '../Component/ViewFormType';
+import { ViewCommonData, ViewAdditionalType, ViewSpecificData, ViewCommonKeys } from '../Component/ViewFormType';
 import GeneralForm from '../Component/GeneralForm';
 import SpecificForm from '../Component/SpecificForm';
 import AdditionalForm from '../Component/AdditionalForm';
@@ -130,11 +130,14 @@ function toModel(commonData: ViewCommonData, additionalData: ViewAdditionalType,
             specificDataModel.push(elem);
         }
     }
+    const additionalDataModel = Object.fromEntries(
+        Object.entries(toAdditionalDataModel(additionalData))
+            .filter(([key, _])=>!(key in ViewCommonKeys())));
 
     return {
         common: {
             ...toCommonDataModel(commonData),
-            additional: toAdditionalDataModel(additionalData)
+            additional: additionalDataModel
         },
         specific: Object.fromEntries(specificDataModel)
     }
@@ -165,7 +168,8 @@ function filterEmptyString(obj: any): any {
 function toAdditionalDataModel(additionalData: ViewAdditionalType): AdditionalPrefillData {
     let ret: AdditionalPrefillData = {};
     additionalData.forEach(({key, value}) => {
-        if (key !== '' && value !== '') {
+        if (key !== '' && value !== '' && 
+            !(key in ret)) { // if the key already exists don't overwrite it
             ret[key] = value;
         }
     });
