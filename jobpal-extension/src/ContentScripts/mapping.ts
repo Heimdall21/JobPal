@@ -5,7 +5,7 @@ export const INPUT_MAP: InputMap = {
     familyName: ".*l.*name",
     additionalName: ".*pref.*name",
     email: ".*email.*",
-    address: ".*loc.*"
+    address: ".*loc.*",
     phone: ".*phone.*",
 };
 

@@ -73,6 +73,7 @@ export default function GeneralForm({commonData, setCommonData}: {
         <div className={styles.Category}>Personal Information</div>
         {FormInputField("givenName", "First Name")}
         {FormInputField("familyName", "Last Name")}
+        {FormInputField("phone", "Phone Number")}
         {FormInputField("email", "Email")}
 
         {FormSexField()}

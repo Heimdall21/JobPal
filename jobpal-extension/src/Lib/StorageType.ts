@@ -22,6 +22,7 @@ export interface CommonPrefillData {
     additionalName?: string,
     familyName?: string,
     email?: string,
+    phone?: string,
     sex?: 'M'| 'F' | 'X',
     dateOfBirth?: string,
     address?: string,

@@ -1,5 +1,5 @@
 import {INPUT_MAP} from './mapping';
-import {asyncGetPrefillData, getPrefillData} from '../Lib/storageHandler';
+import {asyncGetPrefillData} from '../Lib/storageHandler';
 import { PrefillData } from '../Lib/StorageType';
 
 export function matchInputElements(data: {[field:string]:(string|number)}) {
