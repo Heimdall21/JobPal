@@ -19,6 +19,7 @@ export function matchInputElements(data: {[field:string]:(string|number)}) {
       for (const [field, matchStr] of Object.entries(INPUT_MAP)) {
         if (field in data && new RegExp(matchStr).test(inputElement.name)) {
           matched[field] = data[field].toString();
+          break; // we have found the field, break the loop
         }
       }
 
