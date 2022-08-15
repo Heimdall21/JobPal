@@ -17,9 +17,12 @@ export function matchInputElements(data: {[field:string]:(string|number)}) {
 
     } else {
 
-      for (const [field, matchStr] of Object.entries(notMatched)) {
-        if (field in data && new RegExp(matchStr).test(inputElement.name)) {
-          matched.set(field, data[field].toString());
+      for (const [field, matchStr] of Object.entries(INPUT_MAP)) {
+        if (field in notMatched && new RegExp(matchStr).test(inputElement.name)) {
+          const value = notMatched.get(field);
+          if (value !== undefined) {
+            matched.set(field, value.toString());
+          }
           notMatched.delete(field);// remove the field from notMatched
           break; // we have found the field, break the loop
         }
