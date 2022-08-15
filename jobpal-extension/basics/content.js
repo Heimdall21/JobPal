@@ -2,17 +2,18 @@ console.log('contents script running!!!');
 
 // dummy variable
 var testVariable = [
-  { name: 'inputField1'},
-  { name: 'inputField2'},
-  { name: 'inputField3'},
-  { name: 'inputField4'},
-  { name: 'inputField5'}
+  { inputFieldDescription: 'Title', value: ''},
+  { inputFieldDescription: 'First name', value: ''},
+  { inputFieldDescription: 'Last name', value: ''},
+  { inputFieldDescription: 'Country', value: ''},
+  { inputFieldDescription: 'Mobile', value: ''},
+  { inputFieldDescription: 'Email address', value: ''}
 ]
 
 // input variables
 var inputFieldHTML = '';
 testVariable.forEach(function(inputVariable, index){
-  inputFieldHTML += '<li>Input field name: ' + inputVariable.name+' - </li>'
+  inputFieldHTML += '<li>' + inputVariable.inputFieldDescription+' - </li>'
 });
 
 // JobPal extension UI ===
@@ -21,11 +22,15 @@ var uiDisplay = document.createElement('div');
 uiDisplay.className = '_uiDisplay';
 // uiDisplay.innerHTML = '<h1>JobPal</h1><p>prefill options</p><<ul>' + inputFieldHTML + '</ul>';
 uiDisplay.innerHTML = `
-  <h1 class="_jobpal_heading">JobPal</h1>
-  <p>prefill options</p>
-  <ul>
-    ${inputFieldHTML}
-  </ul>
+  <div>
+    <h1 class="_jobpal_heading">JobPal</h1>
+  </div>
+  <div class="_section_body">
+    <p class="_section_title">Personal details</p>
+    <ul>
+      ${inputFieldHTML}
+    </ul>
+  </div>
 `
 uiDisplay.style.display = 'block';
 document.body.appendChild(uiDisplay);
@@ -47,17 +52,27 @@ document.body.appendChild(couponButton);
 // coupon button ===
 
 
-// basic button ====
+// prefill all button ====
 var testButton = document.createElement('mybutton');
 //testButton.className = '_button';
 testButton.innerHTML = `
-  <button class="button-3" style={{background: green}}>
-    <span class="button__text">Click me</span>
-  </button>
+  <div>
+    <button class="button-3" style={{background: green}}>
+      <span class="button__text">Prefill all</span>
+    </button>
+  </div>
 `;
 uiDisplay = document.querySelector('._uiDisplay');
 uiDisplay.appendChild(testButton);
-// basic button ====
+// prefill all button ====
+
+
+// prefill section button ===
+
+
+
+
+// prefill section button ====
 
 
 // var createEvent = function(){
@@ -75,3 +90,7 @@ uiDisplay.appendChild(testButton);
 // }
 
 // createEvent();
+
+
+// ordering of elements
+uiDisplay.insertBefore(testButton, uiDisplay.children[1]);
