@@ -19,5 +19,9 @@
             "all_frames": true,
             "js": ["./static/input.js"]
         }
-    ]
+    ],
+   "permissions": [
+        "activeTab",
+        "storage"
+   ]
 }
