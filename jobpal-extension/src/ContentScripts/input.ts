@@ -62,10 +62,11 @@ export function transformPrefillData(prefillData: PrefillData, url: Location): {
 
 export async function getMatchedData() {
   const prefillData = await asyncGetPrefillData();
-  const data = transformPrefillData(prefillData, window.location);
+  const data = transformPrefillData(prefillData, window.location); // NOTE: may not need if we do not have specific url
   return matchInputElements(data);
 }
 
+// check if the input element matches
 function isInputElementMatch(inputElem: HTMLInputElement, matchStr: RegExp) {
   if (matchStr.test(inputElem.name)) {
     return true;
