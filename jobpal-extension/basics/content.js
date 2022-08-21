@@ -23,9 +23,9 @@ uiDisplay.className = '_uiDisplay';
 // uiDisplay.innerHTML = '<h1>JobPal</h1><p>prefill options</p><<ul>' + inputFieldHTML + '</ul>';
 uiDisplay.innerHTML = `
   <div>
-    <h1 class="_jobpal_heading">JobPal</h1>
+    <h1 class="_jobpal_heading bottom_margin">JobPal</h1>
   </div>
-  <div class="_section_body">
+  <div class="_section_body bottom_margin">
     <p class="_section_title">Personal details</p>
     <ul>
       ${inputFieldHTML}
@@ -53,14 +53,12 @@ document.body.appendChild(couponButton);
 
 
 // prefill all button ====
-var testButton = document.createElement('mybutton');
+var testButton = document.createElement('div');
 //testButton.className = '_button';
 testButton.innerHTML = `
-  <div>
-    <button class="button-3" style={{background: green}}>
-      <span class="button__text">Prefill all</span>
-    </button>
-  </div>
+  <button class="button-3 bottom_margin" style={{background: green}}>
+    <span class="button__text">Prefill all</span>
+  </button>
 `;
 uiDisplay = document.querySelector('._uiDisplay');
 uiDisplay.appendChild(testButton);

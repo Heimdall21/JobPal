@@ -14,7 +14,6 @@
   overflow:hidden;
   padding-left: 10px;
   padding-right: 10px;
-  margin: 30px 0;
 }
 ._uiDisplay ul{
   list-style-type: none;
@@ -40,8 +39,8 @@
   margin-top: 20px;
 }
 ._section_body {
-
-  border: 1px solid  #2ea44f;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 ._section_title {
@@ -51,6 +50,10 @@
   margin-bottom: 20px;
 }
 
+
+.bottom_margin {
+  margin-bottom: 10px;
+}
 
 
 /* .testbutton {
