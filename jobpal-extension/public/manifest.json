@@ -1,6 +1,6 @@
 {
   "short_name": "JobPal",
-  "name": "JobPal Extension",
+  "name": "JobPal Extension FormMapping branch",
   "version": "1.0",
    "manifest_version": 3,
    "action": {
@@ -8,8 +8,12 @@
        "default_title": "Open the popup"
    },
    "icons": {
-       "16": "logo192.png",
-       "48": "logo192.png",
-       "128": "logo192.png"
-   }
+       "16": "jobpal.png",
+       "48": "jobpal.png",
+       "128": "jobpal.png"
+   },
+   "permissions": [
+        "activeTab",
+        "storage"
+   ]
 }
