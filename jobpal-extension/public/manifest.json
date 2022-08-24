@@ -12,15 +12,6 @@
        "48": "logo192.png",
        "128": "logo192.png"
    },
-   "content_scripts": [
-       {
-            "matches": ["<all_urls>"],
-            "run_at": "document_idle",
-            "all_frames": true,
-            "js": ["./static/input.js"]
-        }
-    ],
-    
    "permissions": [
         "activeTab",
         "storage"
