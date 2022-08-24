@@ -1,45 +1,35 @@
-import { useEffect, useState } from "react"
+import {PrefillData} from "./StorageType"
 
-export const useChromeLocalStorage = (key: string, initVal: any, {initGetCallback=()=>{}, setValCallback=()=>{}} = {}) => {
-    const [tempVal, setTempVal] = useState(initVal);
+const profileQueryKey = 'profile';
 
-    const [actualVal, setActualVal] = useState(initVal);
+export const getPrefillData = (getCallback: (data: PrefillData)=>void) => {
+    return chrome.storage.sync.get(profileQueryKey, pair=>{
+        getCallback(pair[profileQueryKey]);
+    });
+}
 
-    useEffect(() => {
-        chrome.storage.local.get(key, val => {
-            let newVal = val[key]
-            if (newVal === undefined) {
-                return;
+export const asyncGetPrefillData = () => {
+    return new Promise((resolve: (data: PrefillData)=>void) =>
+        getPrefillData(resolve));
+}
+
+export const storePrefillData = (data: PrefillData, setCallback=()=>{}) => {
+    return chrome.storage.sync.set({[profileQueryKey]: data}, setCallback);
+}
+
+export const onUpdatePrefillData = (callback: ((data:PrefillData)=>void))=>{
+    return ()=>{
+        const onUpdate = (
+            changes:{ [key: string]: chrome.storage.StorageChange }, 
+            areaName: string
+        ) => {
+            if (areaName === 'sync' && profileQueryKey in changes) {
+                const {newValue} = changes[profileQueryKey];
+                callback(newValue!);
             }
-            initGetCallback();
-            setActualVal(newVal);
-            setTempVal(newVal);
-        });
-    }, [initGetCallback, key]);
-
-    useEffect(()=>{
-        chrome.storage.onChanged.addListener((changes, areaName) => {
-            if (areaName === 'local' && key in changes) {
-                const {newValue} = changes[key];
-                setActualVal(newValue);
-                setValCallback();
-                // console.log(`update ${key}: ${JSON.stringify(newValue)}`);
-            }
-
-        });
-    }, [key, setValCallback]);
-
-    const storeVal = () => {
-        chrome.storage.local.set({[key]: tempVal});
+        };
+        chrome.storage.onChanged.addListener(onUpdate);
+        return ()=>chrome.storage.onChanged.removeListener(onUpdate);
     }
-
-    return [tempVal, setTempVal, actualVal, storeVal];
-}
-
-export const setAsyncChromeLocal = (key: string, val: any) => {
-    return chrome.storage.local.set({[key]: val})
-}
-
-export const getAsyncChromeLocal = (key: string) => {
-    return chrome.storage.local.get(key)
+    // usecase: useEffect(onUpdatePrefillData, []);
 }

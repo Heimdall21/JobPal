@@ -44,3 +44,20 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+## Further note - How to use extension
+
+1. Extension is not added to chrome
+
+- Go to chrome://extensions
+- Load unpackaged
+- Select the build folder of the extension you want to load
+- Run 'npm run build'
+- You can now use the extension
+
+2. Extension is added to chrome
+
+- Make changes to the extension
+- Run 'npm run build'
+- Changes should now be applied on the browser
