@@ -73,11 +73,10 @@ module.exports = {
         }),
         new CopyWebpackPlugin({
             patterns: [
-                { from: 'public/manifest.json', to: '[name].[ext]' },
+                { from: 'public/manifest.json', to: '[name][ext]' },
                 // { from: 'src/background.js', to: '[name].[ext]' },
                 // { from: 'src/inject_script.js', to: '[name].[ext]' },
-                { from: 'src/ContentScripts/input.ts', to: '[name].[ext]'},
-                { from: 'public/*.png', to: '[name].[ext]' }
+                { from: 'public/*.png', to: '[name][ext]' }
             ]
         }),
         new CleanWebpackPlugin()
