@@ -33,14 +33,22 @@ export function matchInputElements(data: {[field:string]:(string|number)}, formF
       // loop through the INPUT_MAP to find if the input element can be filled 
       // by the data from the local storage
       for (const [field, matchStrs] of Object.entries(INPUT_MAP)) {
-        if (field in notMatched && isInputElementMatch(inputElement, label, matchStrs)) {
-          const value = notMatched.get(field);
-          if (value !== undefined) {
-            matched.set(field, {
-              data: value.toString(),
-              fillLocation: inputElement
-            });
+        let value = notMatched.get(field);
+
+        if (field === 'fullname') {
+          // handle the fullname field speically
+          const last_name = notMatched.get('familyName');
+          const first_name = notMatched.get('givenName');
+          if (last_name && first_name) {
+            value = first_name + last_name;
           }
+        }
+
+        if (value !== undefined && isInputElementMatch(inputElement, label, matchStrs)) {
+          matched.set(field, {
+            data: value,
+            fillLocation: inputElement
+          });
           notMatched.delete(field);// remove the field from notMatched
           break; // we have found the field, break the loop
         }
