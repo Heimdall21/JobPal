@@ -1,0 +1,126 @@
+._uiDisplay {
+  height:700px;
+  width:300px;
+  border-radius:10px;
+  border:1px solid;
+  background:#ffffff;
+  color:black;
+  cursor:pointer;
+  position:fixed;
+  top:90px;
+  right:5px;
+  z-index:9999999999;
+  display:flex;
+  overflow:hidden;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+._uiDisplay ul{
+  list-style-type: none;
+  margin: 0;
+  padding:0;
+}
+._uiDisplay ul li{
+  border-radius:3px;
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.25);
+  margin-bottom: 5px;
+  /* background: #00ff62; */
+}
+._jobpal_heading {
+  color: #111;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size:20px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  line-height: 1; 
+  text-align: center;
+  margin-top: 20px;
+}
+._section_body {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+._section_title {
+  font-size: 20px;
+  font-family: sans-serif;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+
+.bottom_margin {
+  margin-bottom: 10px;
+}
+
+
+/* .testbutton {
+  display: inline-flex;
+  height: 50px;
+  padding: 0;
+  background: #009578;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  overflow: hidden;
+  font-family: Quicksand;
+  font-size: 16px;
+  font-weight: 500;
+} */
+
+
+/* CSS */
+/* CSS */
+.button-3 {
+  appearance: none;
+  background-color: #2ea44f;
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.button-3:focus:not(:focus-visible):not(.focus-visible) {
+  box-shadow: none;
+  outline: none;
+}
+
+.button-3:hover {
+  background-color: #2c974b;
+}
+
+/* .button-3:focus {
+  box-shadow: rgba(46, 164, 79, .4) 0 0 0 3px;
+  outline: none;
+} */
+
+.button-3:disabled {
+  background-color: #94d3a2;
+  border-color: rgba(27, 31, 35, .1);
+  color: rgba(255, 255, 255, .8);
+  cursor: default;
+}
+
+.button-3:active {
+  background-color: #298e46;
+  box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+}
+
