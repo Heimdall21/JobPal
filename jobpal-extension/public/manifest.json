@@ -1,6 +1,6 @@
 {
   "short_name": "JobPal",
-  "name": "JobPal Extension",
+  "name": "JobPal Extension FormMapping branch",
   "version": "1.0",
    "manifest_version": 3,
    "action": {
