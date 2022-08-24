@@ -76,17 +76,17 @@ export function transformPrefillData(prefillData: PrefillData, url: Location): {
 
 
 // check if the input/select element matches the regex strings
-function isInputElementMatch(inputElem: HTMLInputElement|HTMLSelectElement, label: string, matchStrs: {label: string[], input: string[]}) {
+function isInputElementMatch(inputElem: HTMLInputElement|HTMLSelectElement, label: string, matchStrs: {label: RegExp[], input: RegExp[]}) {
   // check if the name of the input element
-  for (const matchStr in matchStrs.input) {
-    if (new RegExp(matchStr).test(inputElem.name)) {
+  for (const matchStr of matchStrs.input) {
+    if (matchStr.test(inputElem.name)) {
       return true;
     }
   }
 
   // check the labels of the input element
-  for (const matchStr in matchStrs.label) {
-    if (new RegExp(matchStr).test(label)) {
+  for (const matchStr of matchStrs.label) {
+    if (matchStr.test(label)) {
       return true;
     }
   }
@@ -105,7 +105,7 @@ function getLabelInputPair(): [string, HTMLInputElement|HTMLSelectElement][] {
 
       const potentialInputElement: (HTMLElement | null | undefined) = document.getElementById(inputDescriptionElements[desInd].htmlFor) || document.getElementsByName(inputDescriptionElements[desInd].htmlFor)[0];
       if (potentialInputElement instanceof HTMLInputElement || potentialInputElement instanceof HTMLSelectElement ) {
-        inputElement = potentialInputElement as (HTMLInputElement|HTMLSelectElement);
+        inputElement = potentialInputElement;
       }
 
       if (!inputElement) {
