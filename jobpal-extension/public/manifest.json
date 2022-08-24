@@ -20,6 +20,7 @@
             "js": ["./static/input.js"]
         }
     ],
+    
    "permissions": [
         "activeTab",
         "storage"
