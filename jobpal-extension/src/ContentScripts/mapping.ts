@@ -38,7 +38,7 @@ export const INPUT_MAP: InputMap = {
         input: []
     },
     yearOfGrad: {
-        label: [],
+        label: [/year.*grad/i, /grad.*year/i],
         input: []
     },
     dateOfBirth: {
