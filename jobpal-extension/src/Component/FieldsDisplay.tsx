@@ -9,6 +9,7 @@ function FieldsDisplay({ fields, data }:{fields: [string, HTMLInputElement|HTMLS
     } else {
         const [matched, notMatched] = matchInputElements(transformPrefillData(data, window.location), fields);
         return (<div>
+            {fields.map((val, index)=><LabelDisplay key={index} text={val[0]}/>)}
             <MatchedFields matched={matched}/>
             <NotMatchedFields notMatched={notMatched}/>
         </div>);
@@ -16,7 +17,7 @@ function FieldsDisplay({ fields, data }:{fields: [string, HTMLInputElement|HTMLS
 }
 
 function LabelDisplay({text}:{text:string}) {
-    return <span>{text}</span>;
+    return <div>{text}</div>;
 }
 
 function MatchedFields({matched}:{matched: Map<string, FillData>}) {

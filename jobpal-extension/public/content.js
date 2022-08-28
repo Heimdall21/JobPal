@@ -10,10 +10,15 @@ const app = document.createElement('div');
 app.id = 'react-root'
 if (body) {
   body.appendChild(app)
+  console.log("insert app container")
 }
+
 const container = document.getElementById('react-root');
 const root = ReactDOM.createRoot(container);
-root.render(<App />);
+root.render(
+<React.StrictMode>
+  <App />
+</React.StrictMode>);
 
 
 // const root = ReactDOM.createRoot(container);

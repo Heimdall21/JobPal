@@ -26,7 +26,20 @@ function MainDisplay() {
   }, []);
 
   useEffect(()=>{
-    getPrefillData((newData)=>setData(newData))
+    
+    getPrefillData((newData)=> {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+        return;
+      } else if (newData === undefined) {
+          setData({
+            common: {additional: {}},
+            specific: {}
+          });
+          return;
+      }
+      setData(newData)
+    })
   }, []);
 
   return (
