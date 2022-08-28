@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import PrefillAllButton from "./Buttons/PrefillAllButton";
+import PrefillSection from "./PrefillSection";
 
 // ReactDOM.render(
 //   <div>
@@ -20,6 +21,15 @@ function MainDisplay() {
         onClick={() => console.log("You clicked the button!")}
         radius="50%"
         width="200px"
+      />
+      <PrefillSection 
+        title="Personal Details"
+        border="solid"
+        color="black"
+        children="Test child"
+        height="150px"
+        width="200px"
+        radius="20px"
       />
     </div>
   );
