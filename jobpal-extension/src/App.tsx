@@ -24,7 +24,7 @@ function App() {
           Learn React!!
         </a>
       </header>
-      <MainDisplay />
+      {/* <MainDisplay /> */}
     </div>
   );
 }
