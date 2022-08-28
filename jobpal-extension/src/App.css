@@ -2,6 +2,19 @@
   text-align: center;
   height:700px;
   width:300px;
+  border-radius:10px;
+  border:1px solid;
+  background:#ffffff;
+  color:black;
+  cursor:pointer;
+  position:fixed;
+  top:90px;
+  right:5px;
+  z-index:9999999999;
+  display:flex;
+  overflow:hidden;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .App-logo {
