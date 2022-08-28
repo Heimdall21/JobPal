@@ -10,6 +10,7 @@ function App() {
 
   return (
     <div className="App">
+<<<<<<< HEAD
     {/*   <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -25,6 +26,9 @@ function App() {
         </a>
       </header> */}
     <MainDisplay />
+=======
+      <MainDisplay />
+>>>>>>> main
     </div>
   );
 }

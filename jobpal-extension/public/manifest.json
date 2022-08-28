@@ -1,12 +1,9 @@
 {
   "short_name": "JobPal",
-  "name": "JobPal Extension FormMapping branch",
+  "name": "JobPal Extension",
   "version": "1.0",
    "manifest_version": 3,
-   "action": {
-       "default_popup": "index.html",
-       "default_title": "Open the popup"
-   },
+   "action": {},
    "icons": {
        "16": "jobpal.png",
        "48": "jobpal.png",
@@ -14,14 +11,10 @@
    },
    "permissions": [
         "activeTab",
-        "storage"
+        "storage",
+        "scripting"
    ],
-   "content_scripts": [
-      {
-        "matches": [
-          "<all_urls>"
-        ],
-        "js": ["content.bundle.js"]
-      }
-   ]
+   "background": {
+        "service_worker": "background.bundle.js"
+  }
 }
