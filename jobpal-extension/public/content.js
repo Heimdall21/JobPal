@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom/client';
 // const root = ReactDOM.createRoot(
 //   document.getElementById('root')
 // );
-
 const body = document.querySelector('body');
 const app = document.createElement('div');
 app.id = 'react-root'
