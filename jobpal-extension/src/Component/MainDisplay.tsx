@@ -12,7 +12,7 @@ import PrefillAllButton from "./Buttons/PrefillAllButton";
 function MainDisplay() {
   return (
     <div>
-      <h1>Hello, Welcome to React and TypeScript!</h1>
+      <h1>JobPal</h1>
       <PrefillAllButton 
         border="none"
         color="black"

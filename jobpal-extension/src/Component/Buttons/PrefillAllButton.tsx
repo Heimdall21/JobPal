@@ -21,6 +21,7 @@ const PrefillAllButton: React.FC<Props> = ({
 }) => {
   return (
     <button
+      className="button-3 bottom_margin"
       onClick={onClick}
     >
       Prefill Button!
