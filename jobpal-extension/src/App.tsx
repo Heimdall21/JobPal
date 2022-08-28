@@ -1,5 +1,6 @@
 import './App.css';
 import logo from './logo.svg';
+import MainDisplay from './Component/MainDisplay';
 
 import Home from './Pages/HomePage';
 import Edit from './Pages/EditPage';
@@ -20,9 +21,10 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React!
+          Learn React!!
         </a>
       </header>
+      {/* <MainDisplay /> */}
     </div>
   );
 }
