@@ -12,8 +12,13 @@ function fillSelected(selected:FillData[]) {
     selected.forEach((fillData)=>fillOne(fillData));
 }
 
+function copyTextToClipBoard(text:string): Promise<void> {
+    return navigator.clipboard.writeText(text);
+}
+
 export {
     fillOne,
     fillAll,
-    fillSelected
+    fillSelected,
+    copyTextToClipBoard
 };
