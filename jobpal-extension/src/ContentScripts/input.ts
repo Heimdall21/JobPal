@@ -210,8 +210,8 @@ function isVisibleInput(element: Element|null): boolean {
     // check display and visibility to ensure it is a visible element
     // TODO:
     computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden' && 
-    // !!( element.offsetWidth || element.offsetHeight || element.getClientRects().length ) &&
-    element.offsetParent !== null
+    !!( element.offsetWidth || element.offsetHeight || element.getClientRects().length )
+    && element.offsetParent !== null
   );
 }
 
