@@ -1,7 +1,8 @@
-import * as React from "react";
+import React, { useState } from 'react';
 import * as ReactDOM from "react-dom";
-import PrefillAllButton from "./Buttons/PrefillAllButton";
-import PrefillSection from "./PrefillSection";
+import PrefillAllButton from "../Buttons/PrefillAllButton";
+import PrefillSection from "../PrefillSection";
+import styles from './MainDisplay.module.css';
 
 // ReactDOM.render(
 //   <div>
@@ -11,20 +12,23 @@ import PrefillSection from "./PrefillSection";
 // );
 
 function MainDisplay() {
+  // should have a list of sections 
+  const [sections, setSections] = useState([]);
+
   return (
     <div>
-      <h1>JobPal</h1>
+      <h1 className={styles._jobpal_heading}>JobPal</h1>
       <PrefillAllButton 
         border="none"
         color="black"
         height="200px"
-        onClick={() => console.log("You clicked the button!")}
+        onClick={() => console.log("You clicked the button!!")}
         radius="50%"
         width="200px"
       />
       <PrefillSection 
         title="Personal Details"
-        border="solid"
+        border="solid 1px"
         color="black"
         children="Test child"
         height="150px"

@@ -25,8 +25,8 @@ const PrefillSection: React.FC<Props> = ({
 }) => {
 
   return (
-    <div className="PrefillSection">
-      <h1>{title}</h1>
+    <div className="_section_body bottom_margin" >
+      <h1 className="_section_title">{title}</h1>
     </div>
   );
 }

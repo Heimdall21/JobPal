@@ -1,6 +1,6 @@
 import './App.css';
 import logo from './logo.svg';
-import MainDisplay from './Component/MainDisplay';
+import MainDisplay from './Component/MainDisplay/MainDisplay';
 
 import Home from './Pages/HomePage';
 import Edit from './Pages/EditPage';
