@@ -2,6 +2,7 @@ import React from "react";
 // import './App.css';
 // import logo from './logo.svg';
 // import MainDisplay from './Component/MainDisplay';
+import styles from "./PrefillSection.module.css";
 
 
 interface Props {
@@ -25,8 +26,10 @@ const PrefillSection: React.FC<Props> = ({
 }) => {
 
   return (
-    <div className="_section_body bottom_margin" >
-      <h1 className="_section_title">{title}</h1>
+    // <div className={`${styles._section_body} ${styles.bottom_margin}`} >
+    <div className='_section_body .bottom_margin' >
+      <h1 className='_section_title'>{title}</h1>
+
     </div>
   );
 }

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as ReactDOM from "react-dom";
 import PrefillAllButton from "../Buttons/PrefillAllButton";
-import PrefillSection from "../PrefillSection";
+import PrefillSection from "../PrefillSection/PrefillSection";
 import styles from './MainDisplay.module.css';
 
 // ReactDOM.render(
@@ -12,12 +12,18 @@ import styles from './MainDisplay.module.css';
 // );
 
 function MainDisplay() {
-  // should have a list of sections 
+  // should have a list of sections -> this needs to be fetched from the localStorage
   const [sections, setSections] = useState([]);
+
+
+  useEffect(() => {
+    // load sections from localStorage
+    
+  })
 
   return (
     <div>
-      <h1 className={styles._jobpal_heading}>JobPal</h1>
+      <h1 className={`${styles._jobpal_heading} ${styles.bottom_margin}`}>JobPal</h1>
       <PrefillAllButton 
         border="none"
         color="black"
