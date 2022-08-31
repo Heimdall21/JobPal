@@ -15,6 +15,7 @@ function fillSelected(selected:FillData[]) {
     selected.forEach((fillData)=>fillOne(fillData));
 }
 
+// return a promise for error handling/ log when the operation succeeds
 function copyTextToClipBoard(text:string): Promise<void> {
     return navigator.clipboard.writeText(text);
 }
