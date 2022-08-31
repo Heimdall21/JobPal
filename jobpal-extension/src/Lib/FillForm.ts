@@ -1,7 +1,10 @@
 import { FillData } from "../ContentScripts/input";
 
 function fillOne({data, fillLocation}:FillData) {
+    fillLocation.focus();
     fillLocation.value = data;
+    fillLocation.dispatchEvent(new Event('change'));
+    fillLocation.blur();
 }
 
 function fillAll(matched:Map<string, FillData>) {
