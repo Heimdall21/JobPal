@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 // import './App.css';
 // import logo from './logo.svg';
 // import MainDisplay from './Component/MainDisplay';
@@ -16,9 +16,8 @@ import styles from "./PrefillSection.module.css";
 
 interface Props {
   section_title: string;
-  section_fields?: any,
+  section_fields?: any;
 }
-
 
 const PrefillSection: React.FC<Props> = ({
   section_title, 
@@ -27,11 +26,11 @@ const PrefillSection: React.FC<Props> = ({
 
   return (
     // <div className={`${styles._section_body} ${styles.bottom_margin}`} >
-    <div className={styles._section_body} >
-      <h1 className='_section_title'>{section_title}</h1>
-      <h2 className="_section_field">{section_fields.title}</h2>
-      <h2 className="_section_field">{section_fields.firstName}</h2>
-      <h2 className="_section_field">{section_fields.lastName}</h2>
+    <div className={`${styles._section_body} _section_body`} >
+      <h1 className={`${styles._section_title} _section_title`}>{section_title}</h1>
+      <h2 className={`${styles._section_field} _section_field`}>{section_fields.title}</h2>
+      <h2 className={`${styles._section_field} _section_field`}>{section_fields.firstName}</h2>
+      <h2 className={`${styles._section_field} _section_field`}>{section_fields.lastName}</h2>
     </div>
   );
 }
