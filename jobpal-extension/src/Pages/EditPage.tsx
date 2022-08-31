@@ -1,9 +1,8 @@
 import '../App.css';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { getPrefillData, storePrefillData } from '../Lib/storageHandler';
 import { AdditionalPrefillData, PrefillData, CommonPrefillData, ExtendedSpecificPrefillData } from '../Lib/StorageType';
 
 import { ViewCommonData, ViewAdditionalType, ViewSpecificData, ViewCommonKeys } from '../Component/ViewFormType';
@@ -11,52 +10,28 @@ import GeneralForm from '../Component/GeneralForm';
 import SpecificForm from '../Component/SpecificForm';
 import AdditionalForm from '../Component/AdditionalForm';
 import styles from '../Component/Form.module.css';
+import { storePrefillData } from '../Lib/storageHandler';
 
-function Edit() {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [commonData, setCommonData] = useState<ViewCommonData>(new ViewCommonData());
-    const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>([]);
-    const [specificData, setSpecificData] = useState<ViewSpecificData[]>([]);
+function Edit({storageData, updateStorageData}: {storageData: null|PrefillData, updateStorageData: (newData: PrefillData)=>void}) {
 
-    function setPrefillData(data: PrefillData) {
-        // set the initial view model
-        setCommonData(getViewCommonData(data));
-        setAdditionalCommonData(getViewAdditionalCommonData(data));
-        setSpecificData(getViewSpecificData(data));
-    }
+    const [commonData, setCommonData] = useState<ViewCommonData>(storageData === null?new ViewCommonData():getViewCommonData(storageData));
+    const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>(storageData === null?[]:getViewAdditionalCommonData(storageData));
+    const [specificData, setSpecificData] = useState<ViewSpecificData[]>(storageData === null? []: getViewSpecificData(storageData));
 
+    // update state when storageData is updated
     useEffect(()=>{
-        // get initial data
-        getPrefillData((data)=>{
-            setIsLoading(false);
-            if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError);
-                toast.error(chrome.runtime.lastError.message);
-                return;
-            } else if (data === undefined) {
-                return;
-            }
-            setPrefillData(data);
-        })
-    }, []);
+        setCommonData(getViewCommonData(storageData));
+        setAdditionalCommonData(getViewAdditionalCommonData(storageData));
+        setSpecificData(getViewSpecificData(storageData));
+    }, [storageData]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
         const newData = toModel(commonData, additionalCommonData, specificData);
-        storePrefillData(newData,
-        ()=>{
-            if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError);
-                toast.error(chrome.runtime.lastError.message);
-                return;
-            }
-            toast.success("store successfully!");
-            // refresh the form
-            setPrefillData(newData);
-        });
+        updateStorageData(newData);
     }
 
-    if (isLoading) {
+    if (storageData === null) {
         return <></>
     }
     return (
@@ -186,6 +161,20 @@ function toSpecificDataModel(specificData: ViewSpecificData):[string, ExtendedSp
         additional: additionalData,
         ...filterEmptyString(rest)
     }];
+}
+
+export function updateStorage(data: PrefillData, setData: React.Dispatch<React.SetStateAction<PrefillData>>) {
+    storePrefillData(data,
+    ()=>{
+        if (chrome.runtime.lastError) {
+            console.error(chrome.runtime.lastError);
+            toast.error(chrome.runtime.lastError.message);
+            return;
+        }
+        toast.success("store successfully!");
+        // refresh the form
+        setData(data);
+    });
 }
 
 export default Edit;
