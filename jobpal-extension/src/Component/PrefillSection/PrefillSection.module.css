@@ -1,6 +1,10 @@
 ._section_body {
   margin-top: 30px;
   margin-bottom: 30px;
+  width: 200px;
+  height: 500px;
+  background-color: blue;
+  overflow:auto;
 }
 
 ._section_title {

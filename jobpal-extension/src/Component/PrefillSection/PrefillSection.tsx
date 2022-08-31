@@ -27,7 +27,7 @@ const PrefillSection: React.FC<Props> = ({
 
   return (
     // <div className={`${styles._section_body} ${styles.bottom_margin}`} >
-    <div className='_section_body .bottom_margin' >
+    <div className={styles._section_body} >
       <h1 className='_section_title'>{section_title}</h1>
       <h2 className="_section_field">{section_fields.title}</h2>
       <h2 className="_section_field">{section_fields.firstName}</h2>
