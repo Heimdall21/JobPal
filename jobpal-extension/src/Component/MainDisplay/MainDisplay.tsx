@@ -11,6 +11,7 @@ import PrefillSection from "../PrefillSection/PrefillSection";
 import { toToastItem } from "react-toastify/dist/utils";
 import { fillAll } from "../../Lib/FillForm";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const DummyData = [
   {
@@ -72,48 +73,30 @@ const DummyData = [
   // }
 ]
 
-function MainDisplay() {
-  // const [formFields, setFormFields] = useState<null|[string, HTMLInputElement|HTMLSelectElement][]>(null);
-  // const [data, setData] = useState<PrefillData|null>(null);
-  const [data, setDate] = useState(DummyData);
-  const renderSectionsList = data.map((
-    section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
-  )
+function MainDisplay({data}: { data: PrefillData }) {
+  const [formFields, setFormFields] = useState<null|[string, HTMLInputElement|HTMLSelectElement][]>(null);
+  // const [data, setDate] = useState(DummyData);
+  // const renderSectionsList = data.map((
+  //   section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
+  // )
+  let navigate = useNavigate();
   
-  // useEffect(()=>{
-  //   setTimeout(()=>{
-  //     const inputFields = getLabelInputPair();
-  //     setFormFields(inputFields);
-  //   })
-  // }, []);
-
-  // useEffect(()=>{
-    
-  //   getPrefillData((newData)=> {
-  //     if (chrome.runtime.lastError) {
-  //       console.error(chrome.runtime.lastError);
-  //       return;
-  //     } else if (newData === undefined) {
-  //         setData({
-  //           common: {additional: {}},
-  //           specific: {}
-  //         });
-  //         return;
-  //     }
-  //     setData(newData)
-  //   })
-  // }, []);
-
+  useEffect(()=>{
+    setTimeout(()=>{
+      const inputFields = getLabelInputPair();
+      setFormFields(inputFields);
+    })
+  }, []);
 
   return (
     <div>
-      <h1>Hello, Welcome to React and TypeScript!</h1>
-      <h1>JobPal</h1>
+      {/* <h1>Hello, Welcome to React and TypeScript!</h1> */}
+      {/* <h1>JobPal</h1> */}
       <EditButton
         border="none"
         color="black"
         height="200px"
-        onClick={() => console.log("You clicked the button!")}
+        onClick={() => navigate('/edit')}
         radius="50%"
         width="200px"
       />
@@ -141,8 +124,8 @@ function MainDisplay() {
         width="200px"
         radius="20px"
       /> */}
-{/* {formFields === null?<></>: <FieldsDisplay fields={formFields} data={data}/>} */}
-      {renderSectionsList}
+{formFields === null?<></>: <FieldsDisplay fields={formFields} data={data}/>}
+      {/* {renderSectionsList} */}
     </div>
   );
 }

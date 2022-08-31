@@ -1,32 +1,63 @@
 import './App.css';
 import logo from './logo.svg';
 import MainDisplay from './Component/MainDisplay/MainDisplay';
+import { Routes, Route, Navigate, MemoryRouter } from "react-router-dom";
 
-import Home from './Pages/HomePage';
+import { PrefillData } from './Lib/StorageType';
 import Edit from './Pages/EditPage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getPrefillData, storePrefillData } from './Lib/storageHandler';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
+  const [data, setData] = useState<PrefillData|null>(null);
+
+  useEffect(()=>{
+    getPrefillData((newData)=> {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+        return;
+      } else if (newData === undefined) {
+          setData({
+            common: {additional: {}},
+            specific: {}
+          });
+          return;
+      }
+      setData(newData)
+    })
+  }, []);
 
   return (
     <div className="App">
-    {/*   <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React!!
-        </a>
-      </header> */}
-    <MainDisplay />
+      <MemoryRouter>
+        <Routes>
+          <Route path='/'>
+            <Route index element={<MainDisplay data={data}/>}/>
+            <Route path="edit" element={<Edit storageData={data} updateStorageData={updateStorageDecorator(setData)}/>}/>
+          </Route>
+        </Routes>
+      </MemoryRouter>
+      <ToastContainer autoClose={300} position={'bottom-right'}/>
     </div>
   );
 }
+
+function updateStorageDecorator(setData: React.Dispatch<React.SetStateAction<PrefillData>>) {
+  return (data:PrefillData)=>storePrefillData(data,
+  ()=>{
+      if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError);
+          toast.error(chrome.runtime.lastError.message);
+          return;
+      }
+      toast.success("store successfully!");
+      // refresh the form
+      setData(data);
+  });
+}
+
 
 export default App;

@@ -1,7 +1,5 @@
 import '../App.css';
 import React, { useEffect, useState } from 'react';
-import {toast, ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 import { AdditionalPrefillData, PrefillData, CommonPrefillData, ExtendedSpecificPrefillData } from '../Lib/StorageType';
 
@@ -10,9 +8,10 @@ import GeneralForm from '../Component/GeneralForm';
 import SpecificForm from '../Component/SpecificForm';
 import AdditionalForm from '../Component/AdditionalForm';
 import styles from '../Component/Form.module.css';
-import { storePrefillData } from '../Lib/storageHandler';
+import { useNavigate } from 'react-router-dom';
 
 function Edit({storageData, updateStorageData}: {storageData: null|PrefillData, updateStorageData: (newData: PrefillData)=>void}) {
+    let navigate = useNavigate();
 
     const [commonData, setCommonData] = useState<ViewCommonData>(storageData === null?new ViewCommonData():getViewCommonData(storageData));
     const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>(storageData === null?[]:getViewAdditionalCommonData(storageData));
@@ -36,6 +35,7 @@ function Edit({storageData, updateStorageData}: {storageData: null|PrefillData, 
     }
     return (
     <div>
+        <div onClick={()=>navigate('/')}> <>&larr;</> </div>
         <form onSubmit={handleSubmit} className={styles.FormContainer}>
             <div className={styles.Section}>General Information</div>
             <div>
@@ -48,7 +48,6 @@ function Edit({storageData, updateStorageData}: {storageData: null|PrefillData, 
                 <button type="submit" className={styles.SubmitButton}>Save</button>
             </div>
         </form>
-        <ToastContainer autoClose={300} position={'bottom-right'}/>
     </div>
     );
 }
@@ -161,20 +160,6 @@ function toSpecificDataModel(specificData: ViewSpecificData):[string, ExtendedSp
         additional: additionalData,
         ...filterEmptyString(rest)
     }];
-}
-
-export function updateStorageDecorator(setData: React.Dispatch<React.SetStateAction<PrefillData>>) {
-    return (data:PrefillData)=>storePrefillData(data,
-    ()=>{
-        if (chrome.runtime.lastError) {
-            console.error(chrome.runtime.lastError);
-            toast.error(chrome.runtime.lastError.message);
-            return;
-        }
-        toast.success("store successfully!");
-        // refresh the form
-        setData(data);
-    });
 }
 
 export default Edit;
