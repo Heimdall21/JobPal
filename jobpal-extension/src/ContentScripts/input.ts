@@ -28,11 +28,12 @@ export function matchInputElements(data: Map<string, string>, formFields: [strin
   
   // iterate through all input elements to find the element that matches the string
   for (const [label, inputElement] of formFields) {
-    console.log(label, inputElement);
-
     const field = getMatchedField(data, label, inputElement);
     if (field) {
-      addMatched(field, label, data.get(field), inputElement);
+      const val = data.get(field);
+      if (val !== undefined) {
+        addMatched(field, label, val, inputElement);
+      }
 
     } else {
       // loop through the INPUT_MAP to find if the input element can be filled 
@@ -87,7 +88,6 @@ export function matchInputElements(data: Map<string, string>, formFields: [strin
     }
   }
 
-  console.log(matched, notMatched);
   return [matched, notMatched];
 }
 
@@ -173,13 +173,10 @@ export function getLabelInputPair(): [string, HTMLInputElement|HTMLSelectElement
   for (let desInd = 0; desInd < inputDescriptionElements.length; desInd++) {
       let inputElement: HTMLInputElement | HTMLSelectElement | null = null;
 
-      const potentialInputElement: (HTMLElement | null | undefined) = document.getElementById(inputDescriptionElements[desInd].htmlFor) || document.getElementsByName(inputDescriptionElements[desInd].htmlFor)[0];
-      if (potentialInputElement instanceof HTMLInputElement || potentialInputElement instanceof HTMLSelectElement ) {
-        inputElement = potentialInputElement;
-      }
+       inputElement = checkVisibleInput(document.getElementById(inputDescriptionElements[desInd].htmlFor)) || filterHidden(document.getElementsByName(inputDescriptionElements[desInd].htmlFor));
 
       if (!inputElement) {
-        const temp = inputDescriptionElements[desInd].querySelector("select, input:not([type='hidden'])") as (HTMLInputElement | HTMLSelectElement | null);
+        const temp = checkVisibleInput(inputDescriptionElements[desInd].querySelector("select, input:not([type='hidden'])"));
         if (temp !== null) {
           inputElement = temp;
         }
@@ -191,6 +188,38 @@ export function getLabelInputPair(): [string, HTMLInputElement|HTMLSelectElement
   }
   return inputs;
 }
+
+function filterHidden(elements: NodeListOf<HTMLElement>): HTMLInputElement | HTMLSelectElement | null {
+  for (let i = 0; i < elements.length; i++) {
+    const elem = elements[i];
+    if (isVisibleInput(elem)) {
+      return elem as HTMLInputElement | HTMLSelectElement;
+    }
+  }
+  return null;
+}
+
+// TODO: correct the logic for visibility
+function isVisibleInput(element: Element|null): boolean {
+  if (element === null) return false;
+  const computedStyle = window.getComputedStyle(element);
+
+  return (
+    // check the element is either an input or a select
+    (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) &&
+    // check display and visibility to ensure it is a visible element
+    // TODO:
+    computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden'
+  );
+}
+
+function checkVisibleInput(element: Element|null): HTMLInputElement | HTMLSelectElement | null {
+  if (isVisibleInput(element)) {
+    return element as HTMLInputElement | HTMLSelectElement;
+  } else {
+    return null;
+  }
+} 
 
 export interface FillData {
   data: string,
