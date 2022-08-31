@@ -4,7 +4,7 @@ import { PrefillData } from "../Lib/StorageType";
 function FieldsDisplay({ fields, data }:{fields: [string, HTMLInputElement|HTMLSelectElement][], data: (PrefillData|null)}) {
     if (data === null) {
         return <div>
-        {fields.map((val, index)=><LabelDisplay key={index} text={val[0]}/>)}
+        {fields.map((val, index)=><LabelDisplay key={index} text={val[0].trim().slice(0, 15)}/>)}
         </div>
     } else {
         const [matched, notMatched] = matchInputElements(transformPrefillData(data, window.location), fields);
