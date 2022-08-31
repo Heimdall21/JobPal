@@ -7,4 +7,6 @@
   line-height: 1; 
   text-align: center;
   margin-top: 20px;
+  width: 280px;
+  overflow: auto;
 }

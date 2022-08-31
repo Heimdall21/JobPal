@@ -9,6 +9,7 @@ import PrefillAllButton from "../Buttons/PrefillAllButton";
 import EditButton from "../Buttons/EditButton";
 import PrefillSection from "../PrefillSection/PrefillSection";
 import { toToastItem } from "react-toastify/dist/utils";
+import styles from "./MainDisplay.module.css";
 
 const DummyData = [
   {
@@ -104,8 +105,7 @@ function MainDisplay() {
 
   return (
     <div>
-      <h1>Hello, Welcome to React and TypeScript!</h1>
-      <h1>JobPal</h1>
+      <h1 className={`mainDisplayHeading ${styles._jobpal_heading}`}>JobPal</h1>
       <EditButton
         border="none"
         color="black"
