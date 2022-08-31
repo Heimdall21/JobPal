@@ -6,6 +6,7 @@ import { getPrefillData } from "../../Lib/storageHandler";
 import { PrefillData } from "../../Lib/StorageType";
 import FieldsDisplay from "../FieldsDisplay";
 import PrefillAllButton from "../Buttons/PrefillAllButton";
+import EditButton from "../Buttons/EditButton";
 import PrefillSection from "../PrefillSection/PrefillSection";
 import { toToastItem } from "react-toastify/dist/utils";
 
@@ -105,6 +106,14 @@ function MainDisplay() {
     <div>
       <h1>Hello, Welcome to React and TypeScript!</h1>
       <h1>JobPal</h1>
+      <EditButton
+        border="none"
+        color="black"
+        height="200px"
+        onClick={() => console.log("You clicked the button!")}
+        radius="50%"
+        width="200px"
+      />
       <PrefillAllButton 
         border="none"
         color="black"
