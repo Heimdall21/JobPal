@@ -163,8 +163,8 @@ function toSpecificDataModel(specificData: ViewSpecificData):[string, ExtendedSp
     }];
 }
 
-export function updateStorage(data: PrefillData, setData: React.Dispatch<React.SetStateAction<PrefillData>>) {
-    storePrefillData(data,
+export function updateStorageDecorator(setData: React.Dispatch<React.SetStateAction<PrefillData>>) {
+    return (data:PrefillData)=>storePrefillData(data,
     ()=>{
         if (chrome.runtime.lastError) {
             console.error(chrome.runtime.lastError);
