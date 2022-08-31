@@ -3,8 +3,10 @@
   margin-bottom: 30px;
   width: auto;
   height: auto;
-  background-color: grey;
+  background-color: white;
   overflow:auto;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
 ._section_title {
