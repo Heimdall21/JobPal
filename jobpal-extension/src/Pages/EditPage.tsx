@@ -19,9 +19,11 @@ function Edit({storageData, updateStorageData}: {storageData: null|PrefillData, 
 
     // update state when storageData is updated
     useEffect(()=>{
-        setCommonData(getViewCommonData(storageData));
-        setAdditionalCommonData(getViewAdditionalCommonData(storageData));
-        setSpecificData(getViewSpecificData(storageData));
+        if (storageData !== null) {
+            setCommonData(getViewCommonData(storageData));
+            setAdditionalCommonData(getViewAdditionalCommonData(storageData));
+            setSpecificData(getViewSpecificData(storageData));
+        }
     }, [storageData]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement> ) => {

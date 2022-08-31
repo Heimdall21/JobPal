@@ -45,7 +45,7 @@ function App() {
   );
 }
 
-function updateStorageDecorator(setData: React.Dispatch<React.SetStateAction<PrefillData>>) {
+function updateStorageDecorator(setData: React.Dispatch<React.SetStateAction<PrefillData|null>>) {
   return (data:PrefillData)=>storePrefillData(data,
   ()=>{
       if (chrome.runtime.lastError) {
