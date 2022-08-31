@@ -12,8 +12,8 @@ module.exports = {
     },
     entry: {
         index: path.resolve(__dirname, "./src/index.tsx"),
-        input: path.resolve(__dirname, "./src/ContentScripts/input.ts"),
         content: path.resolve(__dirname, "./public/content.js"),
+        input: path.resolve(__dirname, "./src/ContentScripts/input.ts"),
         background: path.resolve(__dirname, "./public/background.js")
         // options: path.resolve(__dirname, "./src/index-options.js"),
         // foreground: path.resolve(__dirname, "./src/index-foreground.js")
