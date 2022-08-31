@@ -14,9 +14,9 @@ export async function getMatchedData() {
 // data: data form the storage
 // formFields: an array of pairs of label and inputelements
 // return an array of matched and notmatchedmap
-export function matchInputElements(data: {[field:string]:(string|number)}, formFields: [string, HTMLInputElement|HTMLSelectElement][]): [Map<string, FillData>, Map<string, string>] {
+export function matchInputElements(data: Map<string, string>, formFields: [string, HTMLInputElement|HTMLSelectElement][]): [Map<string, FillData>, Map<string, string>] {
   const matched: Map<string, FillData> = new Map();
-  const notMatched: Map<string, string> = new Map(Object.entries(data).map(([k, v])=>[k,v.toString()])); // transform data from local storage to a map
+  const notMatched: Map<string, string> = new Map(data); // copy constructor
   
   // iterate through all input elements to find the element that matches the string
   for (const [label, inputElement] of formFields) {
@@ -25,7 +25,7 @@ export function matchInputElements(data: {[field:string]:(string|number)}, formF
     if (inputElement.name in data) {
       const field = inputElement.name;
       matched.set(field, {
-        data: data[field].toString(),
+        data: data.get(field),
         fillLocation: inputElement
       });
 
@@ -62,24 +62,26 @@ export function matchInputElements(data: {[field:string]:(string|number)}, formF
 }
 
 // transform the data from local storage to the data to a map
-export function transformPrefillData(prefillData: PrefillData, url: Location): {[field:string]:(string|number)} {
+export function transformPrefillData(prefillData: PrefillData, url: Location): Map<string, string> {
   const {additional: commonAdditional, ...common} = prefillData.common; 
   const host = url.host;
+  let ret = null;
 
   if (prefillData.specific[host] !== undefined) {
     // TODO: NOTE: remove spcific additional?
     const {additional: specificAdditional} = prefillData.specific[host];
-    return {
+    ret = {
       ...common,
       ...commonAdditional,
       ...specificAdditional
     };
   }
 
-  return {
+  ret = {
     ...common,
     ...commonAdditional
   };
+  return new Map(Object.entries(ret).map(([k, v])=>[k,v.toString()]))
 }
 
 
@@ -104,7 +106,7 @@ function isInputElementMatch(inputElem: HTMLInputElement|HTMLSelectElement, labe
 
 // get all the lables and its corresponding input/select element if there a
 // return an array of pairs of label and input elements
-function getLabelInputPair(): [string, HTMLInputElement|HTMLSelectElement][] {
+export function getLabelInputPair(): [string, HTMLInputElement|HTMLSelectElement][] {
   let inputDescriptionElements = document.getElementsByTagName("label");
   let inputs: [string, HTMLInputElement|HTMLSelectElement][] = [];
 
@@ -134,5 +136,3 @@ export interface FillData {
   data: string,
   fillLocation: HTMLInputElement|HTMLSelectElement
 }
-
-getMatchedData();
