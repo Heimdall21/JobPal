@@ -73,21 +73,14 @@ const DummyData = [
   // }
 ]
 
-function MainDisplay({data}: { data: PrefillData }) {
-  const [formFields, setFormFields] = useState<null|[string, HTMLInputElement|HTMLSelectElement][]>(null);
+function MainDisplay({data}: { data: PrefillData|null }) {
+  const formFields = getLabelInputPair();
   // const [data, setDate] = useState(DummyData);
   // const renderSectionsList = data.map((
   //   section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
   // )
   let navigate = useNavigate();
   
-  useEffect(()=>{
-    setTimeout(()=>{
-      const inputFields = getLabelInputPair();
-      setFormFields(inputFields);
-    })
-  }, []);
-
   return (
     <div>
       {/* <h1>Hello, Welcome to React and TypeScript!</h1> */}
