@@ -75,6 +75,7 @@ const DummyData = [
 ]
 
 function MainDisplay({data}: { data: PrefillData }) {
+  debugger;
   const [formFields, setFormFields] = useState<null|[string, HTMLInputElement|HTMLSelectElement][]>(null);
   // const [data, setDate] = useState(DummyData);
   // const renderSectionsList = data.map((
@@ -88,6 +89,7 @@ function MainDisplay({data}: { data: PrefillData }) {
       const inputFields = getLabelInputPair();
       setFormFields(inputFields);
     })
+    console.log("formFields: ", formFields);
   }, []);
 
   return (
@@ -106,13 +108,23 @@ function MainDisplay({data}: { data: PrefillData }) {
         color="black"
         height="200px"
         onClick={() => {
+          debugger;
+          console.log("test123");
+          console.log('testing');
+          console.log("data: ", data);
+          console.log("formFields: ", formFields);
           if (data !== null && formFields !== null) {
-            debugger;
+            console.log("inside if condion A");
+            console.log("data: ", data);
+            console.log("formFields: ", formFields);
             // NOTE: may use useMemo to share matched and notmatched with FieldsDisplay
             const [matched, _] = matchInputElements(transformPrefillData(data, window.location), formFields)
+            console.log("matched3: ", matched);
             fillAll(matched);
             toast.success('prefill all matched elements');
-          }
+            console.log("prefilled all values");
+          } 
+          
         }}
         radius="50%"
         width="200px"

@@ -15,6 +15,7 @@ export async function getMatchedData() {
 // formFields: an array of pairs of label and inputelements
 // return an array of matched and notmatchedmap
 export function matchInputElements(data: Map<string, string>, formFields: [string, HTMLInputElement|HTMLSelectElement][]): [Map<string, FillData>, Map<string, string>] {
+  console.log("inside matchInputElements");
   const matched: Map<string, FillData> = new Map();
   const notMatched: Map<string, string> = new Map(data); // copy constructor
 
@@ -28,9 +29,11 @@ export function matchInputElements(data: Map<string, string>, formFields: [strin
   
   // iterate through all input elements to find the element that matches the string
   for (const [label, inputElement] of formFields) {
-    console.log(label, inputElement);
+    console.log("humbug1: ", label, inputElement);
+
 
     const field = getMatchedField(data, label, inputElement);
+    console.log("humbug2: ", field);
     if (field) {
       addMatched(field, label, data.get(field), inputElement);
 
@@ -115,6 +118,8 @@ export function transformPrefillData(prefillData: PrefillData, url: Location): M
 }
 
 function getMatchedField(data: Map<string, string>, label: string, inputElement: HTMLInputElement|HTMLSelectElement) {
+  console.log('inside getMatchedField');
+  console.log("data: ", data, "input: ", label, "inputelement: ", inputElement);
   if (label in data) {
     return label;
   }

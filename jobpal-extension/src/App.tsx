@@ -24,7 +24,7 @@ function App() {
             common: {additional: {}},
             specific: {}
           });
-          return;
+          return; 
       }
       setData(newData)
     })
