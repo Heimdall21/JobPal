@@ -70,36 +70,36 @@ const DummyData = [
 ]
 
 function MainDisplay() {
-  const [formFields, setFormFields] = useState<null|[string, HTMLInputElement|HTMLSelectElement][]>(null);
-  const [data, setData] = useState<PrefillData|null>(null);
-  // const [data, setDate] = useState(DummyData);
-  // const renderSectionsList = data.map((
-  //   section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
-  // )
+  // const [formFields, setFormFields] = useState<null|[string, HTMLInputElement|HTMLSelectElement][]>(null);
+  // const [data, setData] = useState<PrefillData|null>(null);
+  const [data, setDate] = useState(DummyData);
+  const renderSectionsList = data.map((
+    section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
+  )
   
-  useEffect(()=>{
-    setTimeout(()=>{
-      const inputFields = getLabelInputPair();
-      setFormFields(inputFields);
-    })
-  }, []);
+  // useEffect(()=>{
+  //   setTimeout(()=>{
+  //     const inputFields = getLabelInputPair();
+  //     setFormFields(inputFields);
+  //   })
+  // }, []);
 
-  useEffect(()=>{
+  // useEffect(()=>{
     
-    getPrefillData((newData)=> {
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError);
-        return;
-      } else if (newData === undefined) {
-          setData({
-            common: {additional: {}},
-            specific: {}
-          });
-          return;
-      }
-      setData(newData)
-    })
-  }, []);
+  //   getPrefillData((newData)=> {
+  //     if (chrome.runtime.lastError) {
+  //       console.error(chrome.runtime.lastError);
+  //       return;
+  //     } else if (newData === undefined) {
+  //         setData({
+  //           common: {additional: {}},
+  //           specific: {}
+  //         });
+  //         return;
+  //     }
+  //     setData(newData)
+  //   })
+  // }, []);
 
   return (
     <div>
@@ -122,8 +122,8 @@ function MainDisplay() {
         width="200px"
         radius="20px"
       /> */}
-{formFields === null?<></>: <FieldsDisplay fields={formFields} data={data}/>}
-      {/* {renderSectionsList} */}
+{/* {formFields === null?<></>: <FieldsDisplay fields={formFields} data={data}/>} */}
+      {renderSectionsList}
     </div>
   );
 }
