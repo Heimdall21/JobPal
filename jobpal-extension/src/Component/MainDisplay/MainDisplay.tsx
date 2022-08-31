@@ -1,13 +1,15 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
-import { getLabelInputPair } from "../../ContentScripts/input";
+import { getLabelInputPair, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
 import { getPrefillData } from "../../Lib/storageHandler";
 import { PrefillData } from "../../Lib/StorageType";
 import FieldsDisplay from "../FieldsDisplay";
 import PrefillAllButton from "../Buttons/PrefillAllButton";
 import PrefillSection from "../PrefillSection/PrefillSection";
 import { toToastItem } from "react-toastify/dist/utils";
+import { fillAll } from "../../Lib/FillForm";
+import { toast } from "react-toastify";
 
 const DummyData = [
   {
@@ -101,6 +103,7 @@ function MainDisplay() {
     })
   }, []);
 
+
   return (
     <div>
       <h1>Hello, Welcome to React and TypeScript!</h1>
@@ -109,7 +112,14 @@ function MainDisplay() {
         border="none"
         color="black"
         height="200px"
-        onClick={() => console.log("You clicked the button!")}
+        onClick={() => {
+          if (data !== null && formFields !== null) {
+            // NOTE: may use useMemo to share matched and notmatched with FieldsDisplay
+            const [matched, _] = matchInputElements(transformPrefillData(data, window.location), formFields)
+            fillAll(matched);
+            toast.success('prefill all matched elements');
+          }
+        }}
         radius="50%"
         width="200px"
       />
