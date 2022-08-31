@@ -1,9 +1,6 @@
 import '../App.css';
-import { useEffect, useState } from 'react';
-import {toast, ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useEffect, useState } from 'react';
 
-import { getPrefillData, storePrefillData } from '../Lib/storageHandler';
 import { AdditionalPrefillData, PrefillData, CommonPrefillData, ExtendedSpecificPrefillData } from '../Lib/StorageType';
 
 import { ViewCommonData, ViewAdditionalType, ViewSpecificData, ViewCommonKeys } from '../Component/ViewFormType';
@@ -11,56 +8,34 @@ import GeneralForm from '../Component/GeneralForm';
 import SpecificForm from '../Component/SpecificForm';
 import AdditionalForm from '../Component/AdditionalForm';
 import styles from '../Component/Form.module.css';
+import { useNavigate } from 'react-router-dom';
 
-function Edit() {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [commonData, setCommonData] = useState<ViewCommonData>(new ViewCommonData());
-    const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>([]);
-    const [specificData, setSpecificData] = useState<ViewSpecificData[]>([]);
+function Edit({storageData, updateStorageData}: {storageData: null|PrefillData, updateStorageData: (newData: PrefillData)=>void}) {
+    let navigate = useNavigate();
 
-    function setPrefillData(data: PrefillData) {
-        // set the initial view model
-        setCommonData(getViewCommonData(data));
-        setAdditionalCommonData(getViewAdditionalCommonData(data));
-        setSpecificData(getViewSpecificData(data));
-    }
+    const [commonData, setCommonData] = useState<ViewCommonData>(storageData === null?new ViewCommonData():getViewCommonData(storageData));
+    const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>(storageData === null?[]:getViewAdditionalCommonData(storageData));
+    const [specificData, setSpecificData] = useState<ViewSpecificData[]>(storageData === null? []: getViewSpecificData(storageData));
 
+    // update state when storageData is updated
     useEffect(()=>{
-        // get initial data
-        getPrefillData((data)=>{
-            setIsLoading(false);
-            if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError);
-                toast.error(chrome.runtime.lastError.message);
-                return;
-            } else if (data === undefined) {
-                return;
-            }
-            setPrefillData(data);
-        })
-    }, []);
+        setCommonData(getViewCommonData(storageData));
+        setAdditionalCommonData(getViewAdditionalCommonData(storageData));
+        setSpecificData(getViewSpecificData(storageData));
+    }, [storageData]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
         const newData = toModel(commonData, additionalCommonData, specificData);
-        storePrefillData(newData,
-        ()=>{
-            if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError);
-                toast.error(chrome.runtime.lastError.message);
-                return;
-            }
-            toast.success("store successfully!");
-            // refresh the form
-            setPrefillData(newData);
-        });
+        updateStorageData(newData);
     }
 
-    if (isLoading) {
+    if (storageData === null) {
         return <></>
     }
     return (
     <div>
+        <div onClick={()=>navigate('/')}> <>&larr;</> </div>
         <form onSubmit={handleSubmit} className={styles.FormContainer}>
             <div className={styles.Section}>General Information</div>
             <div>
@@ -73,7 +48,6 @@ function Edit() {
                 <button type="submit" className={styles.SubmitButton}>Save</button>
             </div>
         </form>
-        <ToastContainer autoClose={300} position={'bottom-right'}/>
     </div>
     );
 }

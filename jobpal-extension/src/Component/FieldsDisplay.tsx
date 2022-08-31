@@ -24,7 +24,7 @@ function MatchedFields({matched}:{matched: Map<string, FillData>}) {
     return (
     <>
     <div>Matched: </div>
-    {Array.from(matched.entries()).map(([k, v], index)=><div key={index}>{`${k}: ${v}`}</div>)}
+    {Array.from(matched.entries()).map(([k, v], index)=><div key={index}>{`${k}: ${v.data}`}</div>)}
     </>);
 }
 

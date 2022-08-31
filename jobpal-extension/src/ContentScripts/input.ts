@@ -17,17 +17,22 @@ export async function getMatchedData() {
 export function matchInputElements(data: Map<string, string>, formFields: [string, HTMLInputElement|HTMLSelectElement][]): [Map<string, FillData>, Map<string, string>] {
   const matched: Map<string, FillData> = new Map();
   const notMatched: Map<string, string> = new Map(data); // copy constructor
+
+  const addMatched = (key:string, label:string, value:string, location:HTMLInputElement|HTMLSelectElement)=>{
+    matched.set(label, {
+      data: value,
+      fillLocation: location
+    });
+    notMatched.delete(key);
+  }
   
   // iterate through all input elements to find the element that matches the string
   for (const [label, inputElement] of formFields) {
     console.log(label, inputElement);
 
-    if (inputElement.name in data) {
-      const field = inputElement.name;
-      matched.set(field, {
-        data: data.get(field),
-        fillLocation: inputElement
-      });
+    const field = getMatchedField(data, label, inputElement);
+    if (field) {
+      addMatched(field, label, data.get(field), inputElement);
 
     } else {
       // loop through the INPUT_MAP to find if the input element can be filled 
@@ -45,11 +50,36 @@ export function matchInputElements(data: Map<string, string>, formFields: [strin
         }
 
         if (value !== undefined && isInputElementMatch(inputElement, label, matchStrs)) {
-          matched.set(field, {
-            data: value,
-            fillLocation: inputElement
-          });
-          notMatched.delete(field);// remove the field from notMatched
+
+          if (inputElement instanceof HTMLInputElement) {
+            // normal input element
+            addMatched(field, label, value, inputElement);
+
+          } else {
+
+            // handle Select element specially as the value may not be in the options
+            let found = false;
+            for (let i=0; i < inputElement.options.length; i++) {
+              if (inputElement.options[i].value === value) {
+                found = true;
+                break;
+              }
+            }
+
+            if (found) {
+              addMatched(field, label, value, inputElement);
+            } else {
+              // we may be able to resolve the issue if the field is sex
+              if (field === 'sex') {
+                const optionValue = tryMatchSexOption(value as 'M'|'F'|'X', inputElement);
+                if (optionValue !== null) {
+                  addMatched(field, label, optionValue, inputElement);
+                }
+              }
+              notMatched.delete(field);
+            }
+          }
+
           break; // we have found the field, break the loop
         }
       }
@@ -84,6 +114,21 @@ export function transformPrefillData(prefillData: PrefillData, url: Location): M
   return new Map(Object.entries(ret).map(([k, v])=>[k,v.toString()]))
 }
 
+function getMatchedField(data: Map<string, string>, label: string, inputElement: HTMLInputElement|HTMLSelectElement) {
+  if (label in data) {
+    return label;
+  }
+
+  if (inputElement.name in data) {
+    return inputElement.name;
+  }
+
+  if (inputElement.innerText in data) {
+    return inputElement.innerText;
+  }
+
+  return null;
+}
 
 // check if the input/select element matches the regex strings
 function isInputElementMatch(inputElem: HTMLInputElement|HTMLSelectElement, label: string, matchStrs: {label: RegExp[], input: RegExp[]}) {
@@ -103,13 +148,28 @@ function isInputElementMatch(inputElem: HTMLInputElement|HTMLSelectElement, labe
   return false;
 }
 
+function tryMatchSexOption(value: 'M'|'F'|'X', inputElement: HTMLSelectElement): string|null {
+  const sexRegex = {
+    'M': [/^\s*m\s*$/i, /^\s*male\s*$/i],
+    'F': [/^\s*f\s*$/i, /^\s*female\s*$/i],
+    'X': [/^\s*other\s*/i, /\s*decline\s*to\s*self\s*identify/i]
+  }
+  const matchStrs = sexRegex[value];
+  for (let i = 0; i < inputElement.options.length; i++) {
+    if (matchStrs.some((val)=>val.test(inputElement.options[i].innerText))) {
+      return inputElement.options[i].value;
+    }
+  }
+  return null;
+}
+
 
 // get all the lables and its corresponding input/select element if there a
 // return an array of pairs of label and input elements
 export function getLabelInputPair(): [string, HTMLInputElement|HTMLSelectElement][] {
+  debugger;
   let inputDescriptionElements = document.getElementsByTagName("label");
   let inputs: [string, HTMLInputElement|HTMLSelectElement][] = [];
-
   for (let desInd = 0; desInd < inputDescriptionElements.length; desInd++) {
       let inputElement: HTMLInputElement | HTMLSelectElement | null = null;
 
