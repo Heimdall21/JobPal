@@ -167,22 +167,26 @@ function tryMatchSexOption(value: 'M'|'F'|'X', inputElement: HTMLSelectElement):
 // get all the lables and its corresponding input/select element if there a
 // return an array of pairs of label and input elements
 export function getLabelInputPair(): [string, HTMLInputElement|HTMLSelectElement][] {
-  let inputDescriptionElements = document.getElementsByTagName("label");
   let inputs: [string, HTMLInputElement|HTMLSelectElement][] = [];
+  const docs = getAllIframeDocuments(document);
+  console.log(docs);
+  for (const doc of docs) {
+    let inputDescriptionElements = doc.getElementsByTagName("label");
+    for (let desInd = 0; desInd < inputDescriptionElements.length; desInd++) {
+        let inputElement: HTMLInputElement | HTMLSelectElement | null = null;
+  
+        inputElement = 
+          // get the element refered by the for attribute of the label element
+          checkVisibleInput(doc.getElementById(inputDescriptionElements[desInd].htmlFor)) || 
+          filterHidden(doc.getElementsByName(inputDescriptionElements[desInd].htmlFor)) ||
+          // get a select or input element that is child of the label element
+          filterHidden(inputDescriptionElements[desInd].querySelectorAll("select, input:not([type='hidden'])"));
+        
+        if (inputElement) {
+          inputs.push([inputDescriptionElements[desInd].innerText, inputElement])
+        }
+    }
 
-  for (let desInd = 0; desInd < inputDescriptionElements.length; desInd++) {
-      let inputElement: HTMLInputElement | HTMLSelectElement | null = null;
-
-      inputElement = 
-        // get the element refered by the for attribute of the label element
-        checkVisibleInput(document.getElementById(inputDescriptionElements[desInd].htmlFor)) || 
-        filterHidden(document.getElementsByName(inputDescriptionElements[desInd].htmlFor)) ||
-        // get a select or input element that is child of the label element
-        filterHidden(inputDescriptionElements[desInd].querySelectorAll("select, input:not([type='hidden'])"));
-
-      if (inputElement) {
-        inputs.push([inputDescriptionElements[desInd].innerText, inputElement])
-      }
   }
   return inputs;
 }
@@ -199,16 +203,21 @@ function filterHidden(elements: NodeListOf<HTMLElement>): HTMLInputElement | HTM
 
 function isVisibleInput(element: Element|null): boolean {
   if (element === null) return false;
-  const computedStyle = window.getComputedStyle(element);
-
-  return (
-    // check the element is either an input or a select
-    (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) &&
-    // check display and visibility to ensure it is a visible element
-    computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden' && 
-    !!( element.offsetWidth || element.offsetHeight || element.getClientRects().length )
-    && element.offsetParent !== null
-  );
+  const eleWindow = element.ownerDocument.defaultView;
+  if (eleWindow !== null) {
+    const computedStyle = eleWindow.getComputedStyle(element);
+    console.log(element);
+    return (
+      // check the element is either an input or a select
+      (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) &&
+      // check display and visibility to ensure it is a visible element
+      computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden' &&
+      !!( element.offsetWidth || element.offsetHeight || element.getClientRects().length ) &&
+      element.offsetParent !== null
+    );
+  } else {
+    return false;
+  }
 }
 
 function checkVisibleInput(element: Element|null): HTMLInputElement | HTMLSelectElement | null {
@@ -219,6 +228,17 @@ function checkVisibleInput(element: Element|null): HTMLInputElement | HTMLSelect
   }
 } 
 
+function getAllIframeDocuments(doc: Document): Document[] {
+  const iframes = doc.getElementsByTagName("iframe");
+  let docs: Document[] = [doc];
+  for (let i = 0; i < iframes.length; i++) {
+    const innerDoc = iframes[i].contentDocument;
+    if (innerDoc !== null) {
+      docs = docs.concat(getAllIframeDocuments(innerDoc))
+    }
+  }
+  return docs;
+}
 export interface FillData {
   data: string,
   fillLocation: HTMLInputElement|HTMLSelectElement
