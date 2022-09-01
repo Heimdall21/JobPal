@@ -189,7 +189,6 @@ export function getLabelInputPairs(doc: Document): [string, HTMLInputElement|HTM
 
 export function getAllLabelInputPairs() {
   // TODO: 
-  const docs = getAllIframeDocuments(document);
   return [];
 }
 
@@ -205,21 +204,15 @@ function filterHidden(elements: NodeListOf<HTMLElement>): HTMLInputElement | HTM
 
 function isVisibleInput(element: Element|null): element is HTMLInputElement|HTMLSelectElement {
   if (element === null) return false;
-  const eleWindow = element.ownerDocument.defaultView;
-  if (eleWindow !== null) {
-    const computedStyle = eleWindow.getComputedStyle(element);
-    console.log(element);
-    return (
-      // check the element is either an input or a select
-      (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) &&
-      // check display and visibility to ensure it is a visible element
-      computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden' &&
-      !!( element.offsetWidth || element.offsetHeight || element.getClientRects().length ) &&
-      element.offsetParent !== null
-    );
-  } else {
-    return false;
-  }
+  const computedStyle = window.getComputedStyle(element);
+  return (
+    // check the element is either an input or a select
+    (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) &&
+    // check display and visibility to ensure it is a visible element
+    computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden' &&
+    !!( element.offsetWidth || element.offsetHeight || element.getClientRects().length ) &&
+    element.offsetParent !== null
+  );
 }
 
 function checkVisibleInput(element: Element|null): HTMLInputElement | HTMLSelectElement | null {
@@ -230,17 +223,6 @@ function checkVisibleInput(element: Element|null): HTMLInputElement | HTMLSelect
   }
 } 
 
-function getAllIframeDocuments(doc: Document): Document[] {
-  const iframes = doc.getElementsByTagName("iframe");
-  let docs: Document[] = [doc];
-  for (let i = 0; i < iframes.length; i++) {
-    const innerDoc = iframes[i].contentDocument;
-    if (innerDoc !== null) {
-      docs = docs.concat(getAllIframeDocuments(innerDoc))
-    }
-  }
-  return docs;
-}
 export interface FillData {
   data: string,
   fillLocation: HTMLInputElement|HTMLSelectElement

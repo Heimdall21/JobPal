@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
-import { getAllLabelInputPairs, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
+import { getAllLabelInputPairs, getLabelInputPairs, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
 import { getPrefillData } from "../../Lib/storageHandler";
 import { PrefillData } from "../../Lib/StorageType";
 import FieldsDisplay from "../FieldsDisplay";
@@ -82,7 +82,8 @@ function MainDisplay({data}: { data: PrefillData|null }) {
   const [formFields, setFormFields] = useState<null|[string, HTMLInputElement|HTMLSelectElement][]>(null);
   useEffect(()=>{
     setTimeout(()=>{
-      const inputFields = getAllLabelInputPairs();
+      // const inputFields = getAllLabelInputPairs();
+      const inputFields = getLabelInputPairs(document);
       setFormFields(inputFields);
     })
   }, []);
