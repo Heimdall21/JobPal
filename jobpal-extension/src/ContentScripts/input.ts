@@ -6,7 +6,7 @@ import { PrefillData } from '../Lib/StorageType';
 export async function getMatchedData() {
   const prefillData = await asyncGetPrefillData();
   const data = transformPrefillData(prefillData, window.location); // NOTE: may not need if we do not have specific url
-  const formFields = getLabelInputPair();
+  const formFields = getAllLabelInputPairs();
   return matchInputElements(data, formFields);
 }
 
@@ -166,29 +166,31 @@ function tryMatchSexOption(value: 'M'|'F'|'X', inputElement: HTMLSelectElement):
 
 // get all the lables and its corresponding input/select element if there a
 // return an array of pairs of label and input elements
-export function getLabelInputPair(): [string, HTMLInputElement|HTMLSelectElement][] {
+export function getLabelInputPairs(doc: Document): [string, HTMLInputElement|HTMLSelectElement][] {
   let inputs: [string, HTMLInputElement|HTMLSelectElement][] = [];
-  const docs = getAllIframeDocuments(document);
-  console.log(docs);
-  for (const doc of docs) {
-    let inputDescriptionElements = doc.getElementsByTagName("label");
-    for (let desInd = 0; desInd < inputDescriptionElements.length; desInd++) {
-        let inputElement: HTMLInputElement | HTMLSelectElement | null = null;
-  
-        inputElement = 
-          // get the element refered by the for attribute of the label element
-          checkVisibleInput(doc.getElementById(inputDescriptionElements[desInd].htmlFor)) || 
-          filterHidden(doc.getElementsByName(inputDescriptionElements[desInd].htmlFor)) ||
-          // get a select or input element that is child of the label element
-          filterHidden(inputDescriptionElements[desInd].querySelectorAll("select, input:not([type='hidden'])"));
-        
-        if (inputElement) {
-          inputs.push([inputDescriptionElements[desInd].innerText, inputElement])
-        }
-    }
 
+  let inputDescriptionElements = doc.getElementsByTagName("label");
+  for (let desInd = 0; desInd < inputDescriptionElements.length; desInd++) {
+      let inputElement: HTMLInputElement | HTMLSelectElement | null = null;
+
+      inputElement = 
+        // get the element refered by the for attribute of the label element
+        checkVisibleInput(doc.getElementById(inputDescriptionElements[desInd].htmlFor)) || 
+        filterHidden(doc.getElementsByName(inputDescriptionElements[desInd].htmlFor)) ||
+        // get a select or input element that is child of the label element
+        filterHidden(inputDescriptionElements[desInd].querySelectorAll("select, input:not([type='hidden'])"));
+      
+      if (inputElement) {
+        inputs.push([inputDescriptionElements[desInd].innerText, inputElement])
+      }
   }
   return inputs;
+}
+
+export function getAllLabelInputPairs() {
+  // TODO: 
+  const docs = getAllIframeDocuments(document);
+  return [];
 }
 
 function filterHidden(elements: NodeListOf<HTMLElement>): HTMLInputElement | HTMLSelectElement | null {
