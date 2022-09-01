@@ -1,15 +1,20 @@
 import { FillData, matchInputElements, transformPrefillData } from "../ContentScripts/input";
 import { PrefillData } from "../Lib/StorageType";
 
-function FieldsDisplay({ fields, data }:{fields: [string, HTMLInputElement|HTMLSelectElement][], data: (PrefillData|null)}) {
+function FieldsDisplay({ fields, data,matched, notMatched }:{
+    fields: [string, HTMLInputElement|HTMLSelectElement][],
+    data: (PrefillData|null)
+    matched: Map<string, FillData>,
+    notMatched: Map<string, string>
+}) {
+    const labels = fields.map((val, index)=><LabelDisplay key={index} text={val[0].trim().slice(0, 15)}/>);
     if (data === null) {
         return <div>
-        {fields.map((val, index)=><LabelDisplay key={index} text={val[0].trim().slice(0, 15)}/>)}
+            {labels}
         </div>
     } else {
-        const [matched, notMatched] = matchInputElements(transformPrefillData(data, window.location), fields);
         return (<div>
-            {fields.map((val, index)=><LabelDisplay key={index} text={val[0]}/>)}
+            {labels}
             <MatchedFields matched={matched}/>
             <NotMatchedFields notMatched={notMatched}/>
         </div>);

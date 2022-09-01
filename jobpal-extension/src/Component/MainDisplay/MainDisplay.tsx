@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import * as ReactDOM from "react-dom";
 import { getAllLabelInputPairs, getLabelInputPairs, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
 import { getPrefillData } from "../../Lib/storageHandler";
@@ -87,7 +87,13 @@ function MainDisplay({data}: { data: PrefillData|null }) {
       setFormFields(inputFields);
     })
   }, []);
-  
+
+  const [matched, notmatched] = useMemo(
+    ()=> data === null || formFields === null?
+      [new Map(), new Map()]:
+      matchInputElements(transformPrefillData(data, window.location), formFields),
+    [data, formFields]);
+
   return (
     <div>
       {/* <h1>Hello, Welcome to React and TypeScript!</h1> */}
@@ -106,8 +112,6 @@ function MainDisplay({data}: { data: PrefillData|null }) {
         height="200px"
         onClick={() => {
           if (data !== null && formFields !== null) {
-            // NOTE: may use useMemo to share matched and notmatched with FieldsDisplay
-            const [matched, _] = matchInputElements(transformPrefillData(data, window.location), formFields)
             fillAll(matched);
             toast.success('prefill all matched elements');
           }
@@ -124,7 +128,7 @@ function MainDisplay({data}: { data: PrefillData|null }) {
         width="200px"
         radius="20px"
       /> */}
-{formFields === null?<></>: <FieldsDisplay fields={formFields} data={data}/>}
+{formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>}
       {/* {renderSectionsList} */}
     </div>
   );
