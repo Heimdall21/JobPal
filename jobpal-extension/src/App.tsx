@@ -1,7 +1,7 @@
 import './App.css';
 import logo from './logo.svg';
 import MainDisplay from './Component/MainDisplay/MainDisplay';
-import { Routes, Route, Navigate, MemoryRouter } from "react-router-dom";
+import { Routes, Route, MemoryRouter } from "react-router-dom";
 
 import { PrefillData } from './Lib/StorageType';
 import Edit from './Pages/EditPage';
