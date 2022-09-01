@@ -36,7 +36,11 @@ function App() {
         <Routes>
           <Route path='/'>
             <Route index element={<MainDisplay data={data}/>}/>
-            <Route path="edit" element={<Edit storageData={data} updateStorageData={updateStorageDecorator(setData)}/>}/>
+            <Route path="edit" element={
+              data === null?
+              <></>:
+              <Edit storageData={data} updateStorageData={updateStorageDecorator(setData)}/>
+            }/>
           </Route>
         </Routes>
       </MemoryRouter>
