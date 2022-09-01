@@ -173,14 +173,12 @@ export function getLabelInputPair(): [string, HTMLInputElement|HTMLSelectElement
   for (let desInd = 0; desInd < inputDescriptionElements.length; desInd++) {
       let inputElement: HTMLInputElement | HTMLSelectElement | null = null;
 
-       inputElement = checkVisibleInput(document.getElementById(inputDescriptionElements[desInd].htmlFor)) || filterHidden(document.getElementsByName(inputDescriptionElements[desInd].htmlFor));
-
-      if (!inputElement) {
-        const temp = checkVisibleInput(inputDescriptionElements[desInd].querySelector("select, input:not([type='hidden'])"));
-        if (temp !== null) {
-          inputElement = temp;
-        }
-      }
+      inputElement = 
+        // get the element refered by the for attribute of the label element
+        checkVisibleInput(document.getElementById(inputDescriptionElements[desInd].htmlFor)) || 
+        filterHidden(document.getElementsByName(inputDescriptionElements[desInd].htmlFor)) ||
+        // get a select or input element that is child of the label element
+        filterHidden(inputDescriptionElements[desInd].querySelectorAll("select, input:not([type='hidden'])"));
 
       if (inputElement) {
         inputs.push([inputDescriptionElements[desInd].innerText, inputElement])
@@ -199,7 +197,6 @@ function filterHidden(elements: NodeListOf<HTMLElement>): HTMLInputElement | HTM
   return null;
 }
 
-// TODO: correct the logic for visibility
 function isVisibleInput(element: Element|null): boolean {
   if (element === null) return false;
   const computedStyle = window.getComputedStyle(element);
@@ -208,7 +205,6 @@ function isVisibleInput(element: Element|null): boolean {
     // check the element is either an input or a select
     (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) &&
     // check display and visibility to ensure it is a visible element
-    // TODO:
     computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden' && 
     !!( element.offsetWidth || element.offsetHeight || element.getClientRects().length )
     && element.offsetParent !== null
