@@ -195,13 +195,13 @@ function filterHidden(elements: NodeListOf<HTMLElement>): HTMLInputElement | HTM
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
     if (isVisibleInput(elem)) {
-      return elem as HTMLInputElement | HTMLSelectElement;
+      return elem;
     }
   }
   return null;
 }
 
-function isVisibleInput(element: Element|null): boolean {
+function isVisibleInput(element: Element|null): element is HTMLInputElement|HTMLSelectElement {
   if (element === null) return false;
   const eleWindow = element.ownerDocument.defaultView;
   if (eleWindow !== null) {
@@ -222,7 +222,7 @@ function isVisibleInput(element: Element|null): boolean {
 
 function checkVisibleInput(element: Element|null): HTMLInputElement | HTMLSelectElement | null {
   if (isVisibleInput(element)) {
-    return element as HTMLInputElement | HTMLSelectElement;
+    return element;
   } else {
     return null;
   }
