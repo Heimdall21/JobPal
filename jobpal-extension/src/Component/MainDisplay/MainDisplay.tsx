@@ -1,7 +1,7 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import * as ReactDOM from "react-dom";
-import { getLabelInputPair, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
+import { Fields, FillAllRequest, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
 import { getPrefillData } from "../../Lib/storageHandler";
 import { PrefillData } from "../../Lib/StorageType";
 import FieldsDisplay from "../FieldsDisplay";
@@ -13,6 +13,7 @@ import styles from "./MainDisplay.module.css";
 import { fillAll } from "../../Lib/FillForm";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { LabelInputMessage } from "../../ContentScripts/listener";
 
 const DummyData = [
   {
@@ -74,23 +75,18 @@ const DummyData = [
   // }
 ]
 
-function MainDisplay({data}: { data: PrefillData }) {
-  debugger;
-  const [formFields, setFormFields] = useState<null|[string, HTMLInputElement|HTMLSelectElement][]>(null);
+function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: Fields|null }) {
   // const [data, setDate] = useState(DummyData);
   // const renderSectionsList = data.map((
   //   section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
   // )
   let navigate = useNavigate();
-  
-  useEffect(()=>{
-    debugger;
-    setTimeout(()=>{
-      const inputFields = getLabelInputPair();
-      setFormFields(inputFields);
-    })
-    console.log("formFields: ", formFields);
-  }, []);
+
+  const [matched, notmatched] = useMemo(
+    ()=> data === null || formFields === null?
+      [[], new Map()]:
+      matchInputElements(transformPrefillData(data, window.location), formFields),
+    [data, formFields]);
 
   return (
     <div>
@@ -114,13 +110,11 @@ function MainDisplay({data}: { data: PrefillData }) {
           console.log("data: ", data);
           console.log("formFields: ", formFields);
           if (data !== null && formFields !== null) {
-            console.log("inside if condion A");
-            console.log("data: ", data);
-            console.log("formFields: ", formFields);
-            // NOTE: may use useMemo to share matched and notmatched with FieldsDisplay
-            const [matched, _] = matchInputElements(transformPrefillData(data, window.location), formFields)
-            console.log("matched3: ", matched);
-            fillAll(matched);
+            const val = arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};});
+            chrome.runtime.sendMessage<FillAllRequest>({
+              type: "FillAll",
+              value: Array.from(val.entries())
+            })
             toast.success('prefill all matched elements');
             console.log("prefilled all values");
           } 
@@ -138,10 +132,24 @@ function MainDisplay({data}: { data: PrefillData }) {
         width="200px"
         radius="20px"
       /> */}
-{formFields === null?<></>: <FieldsDisplay fields={formFields} data={data}/>}
+{formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>}
       {/* {renderSectionsList} */}
     </div>
   );
+}
+
+function arrayToMap<T, K extends keyof T, U>(arr: T[], property: K, selector: ((value: T)=>U)): Map<T[K], U[]> {
+  let ret: Map<T[K], U[]> = new Map();
+  for (const elem of arr) {
+    const key = elem[property];
+    const valArray = ret.get(key);
+    if (valArray !== undefined) {
+      valArray.push(selector(elem));
+    } else {
+      ret.set(key, [selector(elem)]);
+    }
+  }
+  return ret;
 }
 
 export default MainDisplay;

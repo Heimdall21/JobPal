@@ -11,10 +11,9 @@ module.exports = {
         historyApiFallback: true
     },
     entry: {
-        index: path.resolve(__dirname, "./src/index.tsx"),
-        content: path.resolve(__dirname, "./public/content.js"),
-        input: path.resolve(__dirname, "./src/ContentScripts/input.ts"),
-        background: path.resolve(__dirname, "./public/background.js")
+        content: path.resolve(__dirname, "./public/content.tsx"),
+        background: path.resolve(__dirname, "./public/background.ts"),
+        listener: path.resolve(__dirname, "./src/ContentScripts/listener.ts")
         // options: path.resolve(__dirname, "./src/index-options.js"),
         // foreground: path.resolve(__dirname, "./src/index-foreground.js")
     },

@@ -1,5 +1,5 @@
 import '../App.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { AdditionalPrefillData, PrefillData, CommonPrefillData, ExtendedSpecificPrefillData } from '../Lib/StorageType';
 
@@ -10,21 +10,12 @@ import AdditionalForm from '../Component/AdditionalForm';
 import styles from '../Component/Form.module.css';
 import { useNavigate } from 'react-router-dom';
 
-function Edit({storageData, updateStorageData}: {storageData: null|PrefillData, updateStorageData: (newData: PrefillData)=>void}) {
+function Edit({storageData, updateStorageData}: {storageData: PrefillData, updateStorageData: (newData: PrefillData)=>void}) {
     let navigate = useNavigate();
 
-    const [commonData, setCommonData] = useState<ViewCommonData>(storageData === null?new ViewCommonData():getViewCommonData(storageData));
-    const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>(storageData === null?[]:getViewAdditionalCommonData(storageData));
-    const [specificData, setSpecificData] = useState<ViewSpecificData[]>(storageData === null? []: getViewSpecificData(storageData));
-
-    // update state when storageData is updated
-    useEffect(()=>{
-        if (storageData !== null) {
-            setCommonData(getViewCommonData(storageData));
-            setAdditionalCommonData(getViewAdditionalCommonData(storageData));
-            setSpecificData(getViewSpecificData(storageData));
-        }
-    }, [storageData]);
+    const [commonData, setCommonData] = useState<ViewCommonData>(getViewCommonData(storageData));
+    const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>(getViewAdditionalCommonData(storageData));
+    const [specificData, setSpecificData] = useState<ViewSpecificData[]>(getViewSpecificData(storageData));
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
@@ -32,9 +23,6 @@ function Edit({storageData, updateStorageData}: {storageData: null|PrefillData, 
         updateStorageData(newData);
     }
 
-    if (storageData === null) {
-        return <></>
-    }
     return (
     <div>
         <div onClick={()=>navigate('/')}> <>&larr;</> </div>
