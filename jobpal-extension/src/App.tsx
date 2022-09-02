@@ -9,10 +9,32 @@ import { useEffect, useState } from 'react';
 import { getPrefillData, storePrefillData } from './Lib/storageHandler';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FrameId, StartRequest } from './ContentScripts/input';
+import { MainResponse } from '../public/background';
+import { LabelInputMessage } from './ContentScripts/listener';
 
 
 function App() {
   const [data, setData] = useState<PrefillData|null>(null);
+  const [formFields, setFormFields] = useState<Map<FrameId, LabelInputMessage[]>|null>(null);
+
+  useEffect(()=>{
+    chrome.runtime.onMessage.addListener((message: MainResponse)=> {
+      if (message.type === 'LabelInputResponse') {
+        setFormFields((fields) => fields === null?
+          new Map().set(message.frame, message.data): 
+          new Map(fields.set(message.frame, message.data))
+        );
+      }
+    });
+  }, []);
+
+  useEffect(()=>{
+    chrome.runtime.sendMessage<StartRequest>({
+      type: "Start"
+    });
+  }, []);
+
 
   useEffect(()=>{
     getPrefillData((newData)=> {
@@ -35,7 +57,7 @@ function App() {
       <MemoryRouter>
         <Routes>
           <Route path='/'>
-            <Route index element={<MainDisplay data={data}/>}/>
+            <Route index element={<MainDisplay data={data} formFields={formFields}/>}/>
             <Route path="edit" element={
               data === null?
               <></>:
