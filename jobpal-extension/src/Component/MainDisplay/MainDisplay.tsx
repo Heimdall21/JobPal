@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState, useMemo } from "react";
 import * as ReactDOM from "react-dom";
-import { Fields, FrameId, getAllLabelInputPairs, getLabelInputPairs, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
+import { Fields, FillAllRequest, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
 import { getPrefillData } from "../../Lib/storageHandler";
 import { PrefillData } from "../../Lib/StorageType";
 import FieldsDisplay from "../FieldsDisplay";
@@ -83,7 +83,7 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
 
   const [matched, notmatched] = useMemo(
     ()=> data === null || formFields === null?
-      [new Map(), new Map()]:
+      [[], new Map()]:
       matchInputElements(transformPrefillData(data, window.location), formFields),
     [data, formFields]);
 
@@ -105,8 +105,10 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
         height="200px"
         onClick={() => {
           if (data !== null && formFields !== null) {
-            // TODO: send fillAll request to background
-            fillAll(matched);
+            chrome.runtime.sendMessage<FillAllRequest>({
+              type: "FillAll",
+              value: arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};})
+            })
             toast.success('prefill all matched elements');
           }
         }}
@@ -126,6 +128,20 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
       {/* {renderSectionsList} */}
     </div>
   );
+}
+
+function arrayToMap<T, K extends keyof T, U>(arr: T[], property: K, selector: ((value: T)=>U)): Map<T[K], U[]> {
+  let ret: Map<T[K], U[]> = new Map();
+  for (const elem of arr) {
+    const key = elem[property];
+    const valArray = ret.get(key);
+    if (valArray !== undefined) {
+      valArray.push(selector(elem));
+    } else {
+      ret.set(key, [selector(elem)]);
+    }
+  }
+  return ret;
 }
 
 export default MainDisplay;
