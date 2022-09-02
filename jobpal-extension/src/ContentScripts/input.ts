@@ -166,8 +166,14 @@ function tryMatchSexOption(value: 'M'|'F'|'X', inputElement: HTMLSelectElement):
 
 // get all the lables and its corresponding input/select element if there a
 // return an array of pairs of label and input elements
-export function getLabelInputPairs(doc: Document): [string, HTMLInputElement|HTMLSelectElement][] {
-  let inputs: [string, HTMLInputElement|HTMLSelectElement][] = [];
+export function getLabelInputPairs(doc: Document): {
+  label: HTMLLabelElement,
+  input: HTMLInputElement|HTMLSelectElement
+}[] {
+  let inputs: {
+    label: HTMLLabelElement, 
+    input: HTMLInputElement|HTMLSelectElement
+  }[] = [];
 
   let inputDescriptionElements = doc.getElementsByTagName("label");
   for (let desInd = 0; desInd < inputDescriptionElements.length; desInd++) {
@@ -181,7 +187,10 @@ export function getLabelInputPairs(doc: Document): [string, HTMLInputElement|HTM
         filterHidden(inputDescriptionElements[desInd].querySelectorAll("select, input:not([type='hidden'])"));
       
       if (inputElement) {
-        inputs.push([inputDescriptionElements[desInd].innerText, inputElement])
+        inputs.push({
+          label: inputDescriptionElements[desInd], 
+          input: inputElement
+        })
       }
   }
   return inputs;
