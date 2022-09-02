@@ -243,4 +243,4 @@ export interface FillAllRequest {
   value: Map<FrameId, [{index: IndexType, data: any}]>
 }
 
-export type Fields = Map<FrameId, LabelInputMessage>
+export type Fields = Map<FrameId, LabelInputMessage[]>
