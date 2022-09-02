@@ -9,9 +9,8 @@ import { useEffect, useState } from 'react';
 import { getPrefillData, storePrefillData } from './Lib/storageHandler';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Fields, FrameId, StartRequest } from './ContentScripts/input';
+import { Fields, StartRequest } from './ContentScripts/input';
 import { MainResponse } from '../public/background';
-import { LabelInputMessage } from './ContentScripts/listener';
 
 
 function App() {
