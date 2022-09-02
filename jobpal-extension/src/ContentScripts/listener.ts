@@ -1,3 +1,4 @@
+import { fillOne } from "../Lib/FillForm";
 import { getLabelInputPairs } from "./input";
 
 let labelInputPairs: {
@@ -6,15 +7,19 @@ let labelInputPairs: {
 }[]|null = null;
 
 chrome.runtime.onMessage.addListener((message)=> {
-    if (message.type === 'start') {
+    if (message.type === "StartListener") {
         if (labelInputPairs === null) {
             labelInputPairs = getLabelInputPairs(document);
         }
-        chrome.runtime.sendMessage(toLabelInputMessages(labelInputPairs));
-    } else if (message.type === 'fillAll') {
-
-    } else if (message.type === 'fillOne') {
-
+        chrome.runtime.sendMessage({
+            type: "LabelInputMessage",
+            value: toLabelInputMessages(labelInputPairs)
+        });
+    } else if (message.type === "FillListener") {
+        if (labelInputPairs === null) return;
+        for (const {index, data} of message.value) {
+            fillOne({data: data, fillLocation: labelInputPairs[index].input});
+        }
     }
 });
 
