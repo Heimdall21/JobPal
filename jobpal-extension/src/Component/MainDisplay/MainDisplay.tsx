@@ -106,7 +106,6 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
         onClick={() => {
           if (data !== null && formFields !== null) {
             const val = arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};});
-            console.log('FillAll', val);
             chrome.runtime.sendMessage<FillAllRequest>({
               type: "FillAll",
               value: Array.from(val.entries())

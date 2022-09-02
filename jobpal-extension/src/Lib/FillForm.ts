@@ -1,7 +1,6 @@
 import { FillData } from "../ContentScripts/input";
 
 function fillOne({data, fillLocation}:FillData) {
-    console.log(fillLocation);
     fillLocation.focus();
     fillLocation.value = data;
     fillLocation.dispatchEvent(new Event('change'));

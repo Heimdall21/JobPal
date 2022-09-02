@@ -30,7 +30,6 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
     }
   } else if (message.type === 'FillAll') {
     // send fill messages to all listeners
-    console.log(message);
     message.value.forEach(([frameId, val])=>{
       chrome.tabs.sendMessage<FillListenerMessage>(tabId, {
         type: 'FillListener',

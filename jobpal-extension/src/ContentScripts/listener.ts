@@ -17,7 +17,6 @@ chrome.runtime.onMessage.addListener((message: ListenerResponse)=> {
             value: toLabelInputMessages(labelInputPairs)
         });
     } else if (message.type === "FillListener") {
-        console.log(message);
         if (labelInputPairs === null) return;
         for (const {index, data} of message.value) {
             fillOne({data: data, fillLocation: labelInputPairs[index].input});
