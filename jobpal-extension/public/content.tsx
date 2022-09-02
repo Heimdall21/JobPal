@@ -12,6 +12,9 @@ import ReactDOM from 'react-dom/client';
 // // if (iframe !== null) {
 // //   console.log("labels in iframe:", iframe.contenWindow.document.getElementsByTagName("label"));
 // // }
+chrome.runtime.onMessage.addListener((message)=>{
+  console.log(message);
+})
 
 const body = document.querySelector('body');
 const app = document.createElement('div');
@@ -22,11 +25,13 @@ if (body) {
 }
 
 const container = document.getElementById('react-root');
-const root = ReactDOM.createRoot(container);
-root.render(
-<React.StrictMode>
-  <App />
-</React.StrictMode>);
+if (container !== null) {
+  const root = ReactDOM.createRoot(container);
+  root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>);
+}
 
 
 // const root = ReactDOM.createRoot(container);
