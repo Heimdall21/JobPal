@@ -1,5 +1,5 @@
 import { LabelInputMessage, LabelInputRequest } from "../src/ContentScripts/listener";
-import { FillAllRequest, StartRequest } from "./content";
+import { FillAllRequest, StartRequest } from "../src/ContentScripts/input";
 
 chrome.action.onClicked.addListener((tab) => {
   const targetTabId = tab.id;
@@ -8,31 +8,43 @@ chrome.action.onClicked.addListener((tab) => {
       target: { tabId: targetTabId },
       files: ['content.bundle.js']
     });
-    chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
-      if (message.type === 'Start') {
-        chrome.tabs.sendMessage<StartListenerMessage>(targetTabId, {
-          type: 'StartListener'
-        });
-      } else if (message.type === 'LabelInputMessage') {
-        const frameId = sender.frameId;
-        if (frameId === undefined) {
-          console.error('frameId is undefined!');
-        } else {
-          chrome.tabs.sendMessage<LabelInputResponse>(targetTabId, {
-            type: 'LabelInputResponse',
-            data: message.value,
-            frame: frameId,
-          }, {frameId: 0});
-        }
-      } else if (message.type === 'FillAll') {
-        // send fill messages to all listeners
-        message.value.forEach((val, frameId)=>{
-          chrome.tabs.sendMessage<FillListenerMessage>(targetTabId, {
-            type: 'FillListener',
-            value: val
-          }, {frameId: frameId});
-        });
-      }
+  }
+});
+
+chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
+  const tab = sender.tab;
+  if (tab === undefined) {
+    console.error("tab is undefined");
+    return;
+  }
+  const tabId = tab.id;
+  if (tabId === undefined) {
+    console.error("tabId is undefined");
+    return;
+  }
+
+  if (message.type === 'Start') {
+    chrome.tabs.sendMessage<StartListenerMessage>(tabId, {
+      type: 'StartListener'
+    });
+  } else if (message.type === 'LabelInputMessage') {
+    const frameId = sender.frameId;
+    if (frameId === undefined) {
+      console.error('frameId is undefined!');
+    } else {
+      chrome.tabs.sendMessage<LabelInputResponse>(tabId, {
+        type: 'LabelInputResponse',
+        data: message.value,
+        frame: frameId,
+      }, {frameId: 0});
+    }
+  } else if (message.type === 'FillAll') {
+    // send fill messages to all listeners
+    message.value.forEach((val, frameId)=>{
+      chrome.tabs.sendMessage<FillListenerMessage>(tabId, {
+        type: 'FillListener',
+        value: val
+      }, {frameId: frameId});
     });
   }
 });
