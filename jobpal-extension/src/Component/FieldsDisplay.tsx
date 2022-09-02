@@ -8,7 +8,7 @@ function FieldsDisplay({ fields, data,matched, notMatched }:{
     matched: MatchData[],
     notMatched: Map<string, string>
 }) {
-    const labelsArrs = Array.from(fields).map(([_, labelsArr])=>labelsArr);
+    const labelsArrs = Array.from(fields.values());
     const labels: LabelInputMessage[] = ([] as LabelInputMessage[]).concat(...labelsArrs);
     const labelDisplays = labels.map((val, index)=><LabelDisplay key={index} text={val.labelText.trim().slice(0, 15)}/>);
     if (data === null) {
