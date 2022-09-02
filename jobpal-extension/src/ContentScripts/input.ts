@@ -1,20 +1,14 @@
 import {INPUT_MAP} from './mapping';
-import {asyncGetPrefillData} from '../Lib/storageHandler';
 import { PrefillData } from '../Lib/StorageType';
+import { LabelInputMessage } from './listener';
 
-// the "main" function to get all the matched data by getting the elements in the page
-export async function getMatchedData() {
-  const prefillData = await asyncGetPrefillData();
-  const data = transformPrefillData(prefillData, window.location); // NOTE: may not need if we do not have specific url
-  const formFields = getAllLabelInputPairs();
-  return matchInputElements(data, formFields);
-}
 
+// TODO: change the implementation as the type of formFields and matched needs to be changed
 // try to match the elements in the page to the data in the storage
 // data: data form the storage
 // formFields: an array of pairs of label and inputelements
 // return an array of matched and notmatchedmap
-export function matchInputElements(data: Map<string, string>, formFields: [string, HTMLInputElement|HTMLSelectElement][]): [Map<string, FillData>, Map<string, string>] {
+export function matchInputElements(data: Map<string, string>, formFields: Fields): [MatchData[], Map<string, string>] {
   const matched: Map<string, FillData> = new Map();
   const notMatched: Map<string, string> = new Map(data); // copy constructor
 
@@ -196,11 +190,6 @@ export function getLabelInputPairs(doc: Document): {
   return inputs;
 }
 
-export function getAllLabelInputPairs() {
-  // TODO: 
-  return [];
-}
-
 function filterHidden(elements: NodeListOf<HTMLElement>): HTMLInputElement | HTMLSelectElement | null {
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
@@ -230,19 +219,28 @@ function checkVisibleInput(element: Element|null): HTMLInputElement | HTMLSelect
   } else {
     return null;
   }
-} 
+}
 
 export interface FillData {
   data: string,
   fillLocation: HTMLInputElement|HTMLSelectElement
 }
 
+export interface MatchData {
+  labelText: string,
+  data: any,
+  frame: FrameId,
+  index: IndexType
+}
+
 export interface StartRequest {
   type: 'Start',
 }
-type FrameId = number;
-type IndexType = number;
+export type FrameId = number;
+export type IndexType = number;
 export interface FillAllRequest {
   type: 'FillAll',
   value: Map<FrameId, [{index: IndexType, data: any}]>
 }
+
+export type Fields = Map<FrameId, LabelInputMessage>

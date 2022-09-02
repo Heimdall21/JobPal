@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState, useMemo } from "react";
 import * as ReactDOM from "react-dom";
-import { getAllLabelInputPairs, getLabelInputPairs, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
+import { Fields, FrameId, getAllLabelInputPairs, getLabelInputPairs, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
 import { getPrefillData } from "../../Lib/storageHandler";
 import { PrefillData } from "../../Lib/StorageType";
 import FieldsDisplay from "../FieldsDisplay";
@@ -12,6 +12,7 @@ import { toToastItem } from "react-toastify/dist/utils";
 import { fillAll } from "../../Lib/FillForm";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { LabelInputMessage } from "../../ContentScripts/listener";
 
 const DummyData = [
   {
@@ -73,20 +74,12 @@ const DummyData = [
   // }
 ]
 
-function MainDisplay({data}: { data: PrefillData|null }) {
+function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: Fields|null }) {
   // const [data, setDate] = useState(DummyData);
   // const renderSectionsList = data.map((
   //   section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
   // )
   let navigate = useNavigate();
-  const [formFields, setFormFields] = useState<null|[string, HTMLInputElement|HTMLSelectElement][]>(null);
-  useEffect(()=>{
-    setTimeout(()=>{
-      const inputFields = getAllLabelInputPairs();
-      // const inputFields = getLabelInputPairs(document);
-      setFormFields(inputFields);
-    })
-  }, []);
 
   const [matched, notmatched] = useMemo(
     ()=> data === null || formFields === null?
@@ -112,6 +105,7 @@ function MainDisplay({data}: { data: PrefillData|null }) {
         height="200px"
         onClick={() => {
           if (data !== null && formFields !== null) {
+            // TODO: send fillAll request to background
             fillAll(matched);
             toast.success('prefill all matched elements');
           }

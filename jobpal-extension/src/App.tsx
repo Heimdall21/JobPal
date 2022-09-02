@@ -9,14 +9,14 @@ import { useEffect, useState } from 'react';
 import { getPrefillData, storePrefillData } from './Lib/storageHandler';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FrameId, StartRequest } from './ContentScripts/input';
+import { Fields, FrameId, StartRequest } from './ContentScripts/input';
 import { MainResponse } from '../public/background';
 import { LabelInputMessage } from './ContentScripts/listener';
 
 
 function App() {
   const [data, setData] = useState<PrefillData|null>(null);
-  const [formFields, setFormFields] = useState<Map<FrameId, LabelInputMessage[]>|null>(null);
+  const [formFields, setFormFields] = useState<Fields|null>(null);
 
   useEffect(()=>{
     chrome.runtime.onMessage.addListener((message: MainResponse)=> {

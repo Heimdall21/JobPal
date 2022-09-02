@@ -1,10 +1,11 @@
-import { FillData, matchInputElements, transformPrefillData } from "../ContentScripts/input";
+import { Fields, FillData, FrameId, MatchData } from "../ContentScripts/input";
+import { LabelInputMessage } from "../ContentScripts/listener";
 import { PrefillData } from "../Lib/StorageType";
 
 function FieldsDisplay({ fields, data,matched, notMatched }:{
-    fields: [string, HTMLInputElement|HTMLSelectElement][],
+    fields: Fields,
     data: (PrefillData|null)
-    matched: Map<string, FillData>,
+    matched: MatchData,
     notMatched: Map<string, string>
 }) {
     const labels = fields.map((val, index)=><LabelDisplay key={index} text={val[0].trim().slice(0, 15)}/>);
@@ -25,7 +26,7 @@ function LabelDisplay({text}:{text:string}) {
     return <div>{text}</div>;
 }
 
-function MatchedFields({matched}:{matched: Map<string, FillData>}) {
+function MatchedFields({matched}:{matched: MatchData>}) {
     return (
     <>
     <div>Matched: </div>
