@@ -25,7 +25,13 @@ chrome.action.onClicked.addListener((tab) => {
           }, {frameId: 0});
         }
       } else if (message.type === 'FillAll') {
-        // TODO: send fill messages to all listenerss
+        // send fill messages to all listeners
+        message.value.forEach((val, frameId)=>{
+          chrome.tabs.sendMessage<FillListenerMessage>(targetTabId, {
+            type: 'FillListener',
+            value: val
+          }, {frameId: frameId});
+        });
       }
     });
   }
@@ -47,8 +53,6 @@ interface FillListenerMessage {
   value: { index: number, data: any }[]
 }
 
-export type ListenerResponse = StartListenerMessage | FillListenerMessage;
-
 interface MainResponseTypeTag {
   LabelInputResponse: 'LabelInputResponse'
 }
@@ -58,5 +62,7 @@ interface LabelInputResponse {
   frame: number,
   type: MainResponseTypeTag['LabelInputResponse']
 }
+
+export type ListenerResponse = StartListenerMessage | FillListenerMessage;
 
 export type MainResponse = LabelInputResponse;
