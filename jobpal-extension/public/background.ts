@@ -5,11 +5,20 @@ chrome.action.onClicked.addListener((tab) => {
       target: { tabId: targetTabId },
       files: ['content.bundle.js']
     });
-    chrome.runtime.onMessage.addListener((message)=>{
-      chrome.tabs.sendMessage(targetTabId, message);
-    });
-    chrome.tabs.sendMessage(targetTabId, {
-      type: "start"
+    chrome.runtime.onMessage.addListener((message, sender)=>{
+      if (message.type === 'Start') {
+        chrome.tabs.sendMessage(targetTabId, {
+          type: 'StartListener'
+        });
+      } else if (message.type === 'LabelInputMessage') {
+        chrome.tabs.sendMessage(targetTabId, {
+          type: 'LabelInputResponse',
+          data: message.value,
+          frame: sender.frameId,
+        }, {frameId: 0});
+      } else if (message.type === 'fillAll') {
+        // TODO: send fill messages to all listenerss
+      }
     });
   }
 });
