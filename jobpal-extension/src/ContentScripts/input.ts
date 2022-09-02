@@ -1,86 +1,79 @@
 import {INPUT_MAP} from './mapping';
 import { PrefillData } from '../Lib/StorageType';
-import { LabelInputMessage } from './listener';
+import { LabelInputMessage, LabelInputRequest, Option } from './listener';
 
 
-// TODO: change the implementation as the type of formFields and matched needs to be changed
 // try to match the elements in the page to the data in the storage
 // data: data form the storage
-// formFields: an array of pairs of label and inputelements
-// return an array of matched and notmatchedmap
+// formFields: data in labels and input/select elements
+// return an array of matched data and a map of not matched data
 export function matchInputElements(data: Map<string, string>, formFields: Fields): [MatchData[], Map<string, string>] {
-  const matched: Map<string, FillData> = new Map();
+  const matched: MatchData[] = [];
   const notMatched: Map<string, string> = new Map(data); // copy constructor
 
-  const addMatched = (key:string, label:string, value:string, location:HTMLInputElement|HTMLSelectElement)=>{
-    matched.set(label, {
+  const addMatched = (key: string, value: string, frame: FrameId, labelInput: LabelInputMessage, index: IndexType)=>{
+    matched.push({
+      labelText: labelInput.labelText,
       data: value,
-      fillLocation: location
+      frame: frame,
+      index: index
     });
     notMatched.delete(key);
   }
   
   // iterate through all input elements to find the element that matches the string
-  for (const [label, inputElement] of formFields) {
-    const field = getMatchedField(data, label, inputElement);
-    if (field) {
-      const val = data.get(field);
-      if (val !== undefined) {
-        addMatched(field, label, val, inputElement);
-      }
-
-    } else {
-      // loop through the INPUT_MAP to find if the input element can be filled 
-      // by the data from the local storage
-      for (const [field, matchStrs] of Object.entries(INPUT_MAP)) {
-        let value = notMatched.get(field);
-
-        if (field === 'fullname') {
-          // handle the fullname field speically
-          const last_name = notMatched.get('familyName');
-          const first_name = notMatched.get('givenName');
-          if (last_name && first_name) {
-            value = first_name + last_name;
-          }
+  formFields.forEach((labelInputArr, frameId)=>{
+    labelInputArr.forEach((labelInput, index) => {
+      const field = getMatchedField(data, labelInput);
+      if (field) {
+        const val = data.get(field);
+        if (val !== undefined) {
+          addMatched(field, val, frameId, labelInput, index);
         }
+      } else {
 
-        if (value !== undefined && isInputElementMatch(inputElement, label, matchStrs)) {
-
-          if (inputElement instanceof HTMLInputElement) {
-            // normal input element
-            addMatched(field, label, value, inputElement);
-
-          } else {
-
-            // handle Select element specially as the value may not be in the options
-            let found = false;
-            for (let i=0; i < inputElement.options.length; i++) {
-              if (inputElement.options[i].value === value) {
-                found = true;
-                break;
-              }
+        // loop through the INPUT_MAP to find if the input element can be filled 
+        // by the data from the local storage
+        for (const [field, matchStrs] of Object.entries(INPUT_MAP)) {
+          let value = data.get(field);
+      
+          if (value === undefined && field === 'fullname') {
+            // handle the fullname field speically
+            const last_name = data.get('familyName');
+            const first_name = data.get('givenName');
+            if (last_name && first_name) {
+              value = first_name + last_name;
             }
-
-            if (found) {
-              addMatched(field, label, value, inputElement);
+          }
+          
+          if (value !== undefined && isInputElementMatch(labelInput, matchStrs)) {
+            if (labelInput.type === 'input') {
+              // normal input element
+              addMatched(field, value, frameId, labelInput, index);
             } else {
-              // we may be able to resolve the issue if the field is sex
-              if (field === 'sex') {
-                const optionValue = tryMatchSexOption(value as 'M'|'F'|'X', inputElement);
-                if (optionValue !== null) {
-                  addMatched(field, label, optionValue, inputElement);
+
+              // handle Select element specially as the value may not be in the options
+              const found = labelInput.options.find(option => option.value === value);
+              if (found !== undefined) {
+                addMatched(field, value, frameId, labelInput, index);
+              } else {
+                // we may be able to resolve the issue if the field is sex
+                if (field === 'sex') {
+                  const optionValue = tryMatchSexOption(value as 'M'|'F'|'X', labelInput.options);
+                  if (optionValue !== null) {
+                    addMatched(field, optionValue, frameId, labelInput, index);
+                  }
                 }
               }
-              notMatched.delete(field);
+
             }
+            break; // we have found the field, break the loop
           }
-
-          break; // we have found the field, break the loop
         }
-      }
 
-    }
-  }
+      }
+    });
+  });
 
   return [matched, notMatched];
 }
@@ -108,51 +101,55 @@ export function transformPrefillData(prefillData: PrefillData, url: Location): M
   return new Map(Object.entries(ret).map(([k, v])=>[k,v.toString()]))
 }
 
-function getMatchedField(data: Map<string, string>, label: string, inputElement: HTMLInputElement|HTMLSelectElement) {
-  if (label in data) {
-    return label;
+function getMatchedField(data: Map<string, string>, labelInput: LabelInputMessage) {
+  if (labelInput.labelText in data) {
+    return labelInput.labelText;
   }
 
-  if (inputElement.name in data) {
-    return inputElement.name;
+  if (labelInput.inputName in data) {
+    return labelInput.inputName;
   }
 
-  if (inputElement.innerText in data) {
-    return inputElement.innerText;
+  if (labelInput.inputText in data) {
+    return labelInput.inputText;
+  }
+
+  if (labelInput.inputId !== null && labelInput.inputId in data) {
+    return labelInput.inputId;
   }
 
   return null;
 }
 
 // check if the input/select element matches the regex strings
-function isInputElementMatch(inputElem: HTMLInputElement|HTMLSelectElement, label: string, matchStrs: {label: RegExp[], input: RegExp[]}) {
+function isInputElementMatch(labelInput: LabelInputMessage, matchStrs: {label: RegExp[], input: RegExp[]}) {
   // check if the name of the input element
   for (const matchStr of matchStrs.input) {
-    if (matchStr.test(inputElem.name)) {
+    if (matchStr.test(labelInput.inputText) || 
+    matchStr.test(labelInput.inputName)) {
       return true;
     }
   }
 
   // check the labels of the input element
   for (const matchStr of matchStrs.label) {
-    if (matchStr.test(label)) {
+    if (matchStr.test(labelInput.labelText)) {
       return true;
     }
   }
   return false;
 }
 
-function tryMatchSexOption(value: 'M'|'F'|'X', inputElement: HTMLSelectElement): string|null {
+function tryMatchSexOption(value: 'M'|'F'|'X', options: Option[]): string|null {
   const sexRegex = {
     'M': [/^\s*m\s*$/i, /^\s*male\s*$/i],
     'F': [/^\s*f\s*$/i, /^\s*female\s*$/i],
     'X': [/^\s*other\s*/i, /\s*decline\s*to\s*self\s*identify/i]
   }
   const matchStrs = sexRegex[value];
-  for (let i = 0; i < inputElement.options.length; i++) {
-    if (matchStrs.some((val)=>val.test(inputElement.options[i].innerText))) {
-      return inputElement.options[i].value;
-    }
+  const matched = options.find(option=>matchStrs.some(val=>val.test(option.text)||val.test(option.value)));
+  if (matched !== undefined) {
+    return matched.value;
   }
   return null;
 }
@@ -240,7 +237,7 @@ export type FrameId = number;
 export type IndexType = number;
 export interface FillAllRequest {
   type: 'FillAll',
-  value: Map<FrameId, [{index: IndexType, data: any}]>
+  value: Map<FrameId, {index: IndexType, data: any}[]>
 }
 
 export type Fields = Map<FrameId, LabelInputMessage[]>
