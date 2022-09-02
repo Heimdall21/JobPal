@@ -1,16 +1,6 @@
 import { LabelInputMessage, LabelInputRequest } from "../src/ContentScripts/listener";
 import { FillAllRequest, StartRequest } from "../src/ContentScripts/input";
 
-chrome.action.onClicked.addListener((tab) => {
-  const targetTabId = tab.id;
-  if (targetTabId !== undefined) {
-    chrome.scripting.executeScript({
-      target: { tabId: targetTabId },
-      files: ['content.bundle.js']
-    });
-  }
-});
-
 chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
   const tab = sender.tab;
   if (tab === undefined) {
@@ -40,7 +30,8 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
     }
   } else if (message.type === 'FillAll') {
     // send fill messages to all listeners
-    message.value.forEach((val, frameId)=>{
+    console.log(message);
+    message.value.forEach(([frameId, val])=>{
       chrome.tabs.sendMessage<FillListenerMessage>(tabId, {
         type: 'FillListener',
         value: val
@@ -48,6 +39,17 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
     });
   }
 });
+
+chrome.action.onClicked.addListener((tab) => {
+  const targetTabId = tab.id;
+  if (targetTabId !== undefined) {
+    chrome.scripting.executeScript({
+      target: { tabId: targetTabId },
+      files: ['content.bundle.js']
+    });
+  }
+});
+
 
 type MainRequest = StartRequest | LabelInputRequest | FillAllRequest;
 

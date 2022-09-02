@@ -105,9 +105,11 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
         height="200px"
         onClick={() => {
           if (data !== null && formFields !== null) {
+            const val = arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};});
+            console.log('FillAll', val);
             chrome.runtime.sendMessage<FillAllRequest>({
               type: "FillAll",
-              value: arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};})
+              value: Array.from(val.entries())
             })
             toast.success('prefill all matched elements');
           }

@@ -1,6 +1,6 @@
 import {INPUT_MAP} from './mapping';
 import { PrefillData } from '../Lib/StorageType';
-import { LabelInputMessage, LabelInputRequest, Option } from './listener';
+import { LabelInputMessage, Option } from './listener';
 
 
 // try to match the elements in the page to the data in the storage
@@ -237,7 +237,7 @@ export type FrameId = number;
 export type IndexType = number;
 export interface FillAllRequest {
   type: 'FillAll',
-  value: Map<FrameId, {index: IndexType, data: any}[]>
+  value: [FrameId, {index: IndexType, data: any}[]][]
 }
 
 export type Fields = Map<FrameId, LabelInputMessage[]>
