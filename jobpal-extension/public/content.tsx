@@ -1,6 +1,7 @@
 import React from 'react';
 import App from '../src/App';
 import ReactDOM from 'react-dom/client';
+import { MainResponse } from './background';
 
 // const root = ReactDOM.createRoot(
 //   document.getElementById('root')
@@ -12,7 +13,7 @@ import ReactDOM from 'react-dom/client';
 // // if (iframe !== null) {
 // //   console.log("labels in iframe:", iframe.contenWindow.document.getElementsByTagName("label"));
 // // }
-chrome.runtime.onMessage.addListener((message)=>{
+chrome.runtime.onMessage.addListener((message: MainResponse)=>{
   console.log(message);
 })
 
@@ -44,3 +45,13 @@ if (container !== null) {
 // );
 
 console.log('content.js ready to go!');
+
+export interface StartRequest {
+  type: 'Start',
+}
+type FrameId = number;
+type IndexType = number;
+export interface FillAllRequest {
+  type: 'FillAll',
+  value: Map<FrameId, [{index: IndexType, data: any}]>
+}

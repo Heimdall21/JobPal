@@ -82,8 +82,8 @@ function MainDisplay({data}: { data: PrefillData|null }) {
   const [formFields, setFormFields] = useState<null|[string, HTMLInputElement|HTMLSelectElement][]>(null);
   useEffect(()=>{
     setTimeout(()=>{
-      // const inputFields = getAllLabelInputPairs();
-      const inputFields = getLabelInputPairs(document);
+      const inputFields = getAllLabelInputPairs();
+      // const inputFields = getLabelInputPairs(document);
       setFormFields(inputFields);
     })
   }, []);

@@ -1,3 +1,4 @@
+import { ListenerResponse } from "../../public/background";
 import { fillOne } from "../Lib/FillForm";
 import { getLabelInputPairs } from "./input";
 
@@ -6,12 +7,12 @@ let labelInputPairs: {
     input: HTMLInputElement|HTMLSelectElement,
 }[]|null = null;
 
-chrome.runtime.onMessage.addListener((message)=> {
+chrome.runtime.onMessage.addListener((message: ListenerResponse)=> {
     if (message.type === "StartListener") {
         if (labelInputPairs === null) {
             labelInputPairs = getLabelInputPairs(document);
         }
-        chrome.runtime.sendMessage({
+        chrome.runtime.sendMessage<LabelInputRequest>({
             type: "LabelInputMessage",
             value: toLabelInputMessages(labelInputPairs)
         });
@@ -64,6 +65,7 @@ interface InputTypeTag {
 };
 
 interface InputType {
+    labelText: string
     inputName: string,
     inputId: null|string,
     inputText: string,
@@ -78,10 +80,13 @@ export interface Option {
     value: string
 }
 
-export type LabelInputMessage = (InputType & {
+export type LabelInputMessage = InputType & {
     type: InputTypeTag["input"]
 } | SelectType & {
     type: InputTypeTag["select"]
-}) & {
-    labelText: string
+}
+
+export interface LabelInputRequest {
+    type: 'LabelInputMessage',
+    value: LabelInputMessage[]
 }

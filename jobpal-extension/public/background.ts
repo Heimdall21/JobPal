@@ -1,3 +1,6 @@
+import { LabelInputMessage, LabelInputRequest } from "../src/ContentScripts/listener";
+import { FillAllRequest, StartRequest } from "./content";
+
 chrome.action.onClicked.addListener((tab) => {
   const targetTabId = tab.id;
   if (targetTabId !== undefined) {
@@ -5,20 +8,55 @@ chrome.action.onClicked.addListener((tab) => {
       target: { tabId: targetTabId },
       files: ['content.bundle.js']
     });
-    chrome.runtime.onMessage.addListener((message, sender)=>{
+    chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
       if (message.type === 'Start') {
-        chrome.tabs.sendMessage(targetTabId, {
+        chrome.tabs.sendMessage<StartListenerMessage>(targetTabId, {
           type: 'StartListener'
         });
       } else if (message.type === 'LabelInputMessage') {
-        chrome.tabs.sendMessage(targetTabId, {
-          type: 'LabelInputResponse',
-          data: message.value,
-          frame: sender.frameId,
-        }, {frameId: 0});
-      } else if (message.type === 'fillAll') {
+        const frameId = sender.frameId;
+        if (frameId === undefined) {
+          console.error('frameId is undefined!');
+        } else {
+          chrome.tabs.sendMessage<LabelInputResponse>(targetTabId, {
+            type: 'LabelInputResponse',
+            data: message.value,
+            frame: frameId,
+          }, {frameId: 0});
+        }
+      } else if (message.type === 'FillAll') {
         // TODO: send fill messages to all listenerss
       }
     });
   }
 });
+
+type MainRequest = StartRequest | LabelInputRequest | FillAllRequest;
+
+interface ListenerResponseTypeTag {
+  StartListener: 'StartListener',
+  FilListener: 'FillListener'
+}
+
+interface StartListenerMessage {
+  type: ListenerResponseTypeTag['StartListener']
+}
+
+interface FillListenerMessage {
+  type: ListenerResponseTypeTag['FilListener'],
+  value: { index: number, data: any }[]
+}
+
+export type ListenerResponse = StartListenerMessage | FillListenerMessage;
+
+interface MainResponseTypeTag {
+  LabelInputResponse: 'LabelInputResponse'
+}
+
+interface LabelInputResponse {
+  data: LabelInputMessage[],
+  frame: number,
+  type: MainResponseTypeTag['LabelInputResponse']
+}
+
+export type MainResponse = LabelInputResponse;
