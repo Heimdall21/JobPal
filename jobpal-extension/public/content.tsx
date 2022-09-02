@@ -1,7 +1,6 @@
 import React from 'react';
 import App from '../src/App';
 import ReactDOM from 'react-dom/client';
-import { MainResponse } from './background';
 
 // const root = ReactDOM.createRoot(
 //   document.getElementById('root')
