@@ -236,3 +236,13 @@ export interface FillData {
   data: string,
   fillLocation: HTMLInputElement|HTMLSelectElement
 }
+
+export interface StartRequest {
+  type: 'Start',
+}
+type FrameId = number;
+type IndexType = number;
+export interface FillAllRequest {
+  type: 'FillAll',
+  value: Map<FrameId, [{index: IndexType, data: any}]>
+}

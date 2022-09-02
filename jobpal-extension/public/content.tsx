@@ -13,10 +13,6 @@ import { MainResponse } from './background';
 // // if (iframe !== null) {
 // //   console.log("labels in iframe:", iframe.contenWindow.document.getElementsByTagName("label"));
 // // }
-chrome.runtime.onMessage.addListener((message: MainResponse)=>{
-  console.log(message);
-})
-
 const body = document.querySelector('body');
 const app = document.createElement('div');
 app.id = 'react-root'
@@ -45,13 +41,3 @@ if (container !== null) {
 // );
 
 console.log('content.js ready to go!');
-
-export interface StartRequest {
-  type: 'Start',
-}
-type FrameId = number;
-type IndexType = number;
-export interface FillAllRequest {
-  type: 'FillAll',
-  value: Map<FrameId, [{index: IndexType, data: any}]>
-}
