@@ -208,6 +208,7 @@ function filterHidden(elements: NodeListOf<HTMLElement>): HTMLInputElement | HTM
 
 // TODO: correct the logic for visibility
 function isVisibleInput(element: Element|null): boolean {
+  console.log('inside isVisibleInput');
   if (element === null) return false;
   const computedStyle = window.getComputedStyle(element);
 
@@ -217,7 +218,7 @@ function isVisibleInput(element: Element|null): boolean {
     // check display and visibility to ensure it is a visible element
     // TODO:
     computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden' && 
-    !!( element.offsetWidth || element.offsetHeight || element.getClientRects().length ) &&
+    // !!( element.offsetWidth || element.offsetHeight || element.getClientRects().length ) &&
     element.offsetParent !== null
   );
 }
