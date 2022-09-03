@@ -41,14 +41,98 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
 
 chrome.action.onClicked.addListener((tab) => {
   const targetTabId = tab.id;
+  console.log("onClicked", targetTabId);
   if (targetTabId !== undefined) {
-    chrome.scripting.executeScript({
-      target: { tabId: targetTabId },
-      files: ['content.bundle.js']
-    });
+    addStartedTabIdIfAbsent(targetTabId)
+    .then(()=>
+      injectContentJS(targetTabId))
+    .catch((error)=>console.error("onClicker: ", error));
   }
 });
 
+chrome.tabs.onRemoved.addListener((tabId)=>{
+  removeStartedTabId(tabId)
+  .catch(error=>console.error("onRemoved: ", error));
+});
+
+chrome.tabs.onReplaced.addListener((addedTabId, removedTabId)=>{
+  removeStartedTabId(removedTabId)
+  .then(()=>
+  // add the new tab id after removing the old one
+  addStartedTabIdIfAbsent(addedTabId)
+    .then(()=>
+      injectContentJS(addedTabId)) // inject script after adding the new tab id
+    .catch(error=>console.error("onReplaced: add: ", error))
+  .catch(error=>console.error("onReplaced: remove: ", error)));
+});
+
+chrome.tabs.onUpdated.addListener((tabId: number)=>{
+  hasStartedTabId(tabId)
+  .then((hasStarted)=>{
+    if (hasStarted) {
+      injectContentJS(tabId);
+    }
+  });
+});
+
+function injectContentJS(tabId: number) {
+  return chrome.scripting.executeScript({
+    target: {tabId: tabId },
+    files: ['content.bundle.js']
+  });
+}
+
+function setStartedTabIds(tabIds: TabId[]): Promise<TabId[]> {
+  return new Promise((resolve, reject)=>
+  chrome.storage.session.set({startedTabIds: tabIds}, ()=>{
+    if (chrome.runtime.lastError) {
+      reject(chrome.runtime.lastError.message);
+    } else {
+      resolve(tabIds);
+    }
+  }));
+}
+
+function getStartedTabIds(): Promise<TabId[]> {
+  return new Promise((resolve, reject)=>
+  chrome.storage.session.get("startedTabId", (items)=>{
+    if (chrome.runtime.lastError) {
+      reject(chrome.runtime.lastError.message);
+    } else {
+      const startedTabIds = items.startedTabId;
+      if (startedTabIds === undefined) {
+        resolve([]);
+      } else {
+        resolve(startedTabIds);
+      }
+    }
+  }));
+}
+
+async function hasStartedTabId(tabId: TabId) {
+  const tabIds = await getStartedTabIds();
+  if (tabIds.includes(tabId)) {
+    return true;
+  }
+  return false;
+}
+
+async function addStartedTabIdIfAbsent(tabId: TabId) {
+  const tabIds = await getStartedTabIds();
+  if (!(tabIds.includes(tabId))) {
+    tabIds.push(tabId);
+    return setStartedTabIds(tabIds);
+  } else {
+    return;
+  }
+}
+
+async function removeStartedTabId(tabId: TabId) {
+  const tabIds = await getStartedTabIds();
+  return await setStartedTabIds(tabIds.filter((val) => val === tabId));
+}
+
+type TabId = number;
 
 type MainRequest = StartRequest | LabelInputRequest | FillAllRequest;
 
