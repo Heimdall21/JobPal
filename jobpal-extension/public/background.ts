@@ -151,17 +151,13 @@ type TabId = number;
 
 type MainRequest = StartRequest | LabelInputRequest | FillAllRequest | ReadyMessage;
 
-interface ListenerResponseTypeTag {
-  StartListener: 'StartListener',
-  FilListener: 'FillListener'
-}
 
 interface StartListenerMessage {
-  type: ListenerResponseTypeTag['StartListener']
+  type: 'StartListener'
 }
 
 interface FillListenerMessage {
-  type: ListenerResponseTypeTag['FilListener'],
+  type: 'FillListener',
   value: { index: number, data: any }[]
 }
 
