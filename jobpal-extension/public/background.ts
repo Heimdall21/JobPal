@@ -43,10 +43,16 @@ chrome.action.onClicked.addListener((tab) => {
   const targetTabId = tab.id;
   console.log("onClicked", targetTabId);
   if (targetTabId !== undefined) {
-    addStartedTabIdIfAbsent(targetTabId)
-    .then(()=>
-      injectContentJS(targetTabId))
-    .catch((error)=>console.error("onClicker: ", error));
+    getStartedTabIds()
+    .then(startedTabs=>{
+      if (!startedTabs.includes(targetTabId)) {
+        startedTabs.push(targetTabId);
+        setStartedTabIds(startedTabs)
+        .then(()=>injectContentJS(targetTabId))
+        .catch(error=>console.error("onClicked: setStartedTabIds: ", error));
+      }
+    })
+    .catch(error=>console.error("onClicked: getStartedTabIds: ", error));
   }
 });
 
