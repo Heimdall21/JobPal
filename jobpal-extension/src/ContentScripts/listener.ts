@@ -5,19 +5,26 @@ import { getLabelInputPairs } from "./input";
 let labelInputPairs: {
     label: HTMLLabelElement,
     input: HTMLInputElement|HTMLSelectElement,
-}[]|null = null;
+}[]= [];
+
+let version: number = -1;
+
+chrome.runtime.sendMessage<ReadyMessage>({type: 'Ready'});
 
 chrome.runtime.onMessage.addListener((message: ListenerResponse)=> {
     if (message.type === "StartListener") {
-        if (labelInputPairs === null) {
+        if (version === -1) {
+            version += 1;
             labelInputPairs = getLabelInputPairs(document);
         }
         chrome.runtime.sendMessage<LabelInputRequest>({
             type: "LabelInputMessage",
-            value: toLabelInputMessages(labelInputPairs)
+            value: toLabelInputMessages(labelInputPairs),
+            version
         });
     } else if (message.type === "FillListener") {
-        if (labelInputPairs === null) return;
+        if (version === -1) return;
+        if (version !== message.version) return;
         for (const {index, data} of message.value) {
             fillOne({data: data, fillLocation: labelInputPairs[index].input});
         }
@@ -88,5 +95,10 @@ export type LabelInputMessage = InputType & {
 
 export interface LabelInputRequest {
     type: 'LabelInputMessage',
-    value: LabelInputMessage[]
+    value: LabelInputMessage[],
+    version: number
+}
+
+export interface ReadyMessage {
+    type: 'Ready'
 }
