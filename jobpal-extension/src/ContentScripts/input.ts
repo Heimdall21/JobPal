@@ -7,28 +7,36 @@ import { LabelInputMessage, Option } from './listener';
 // data: data form the storage
 // formFields: data in labels and input/select elements
 // return an array of matched data and a map of not matched data
-export function matchInputElements(data: Map<string, string>, formFields: Fields): [MatchData[], Map<string, string>] {
-  const matched: MatchData[] = [];
+export function matchInputElements(data: Map<string, string>, formFields: Fields): [MatchData, Map<string, string>] {
+  const matched: MatchData = new Map();
   const notMatched: Map<string, string> = new Map(data); // copy constructor
 
-  const addMatched = (key: string, value: string, frame: FrameId, labelInput: LabelInputMessage, index: IndexType)=>{
-    matched.push({
-      labelText: labelInput.labelText,
-      data: value,
-      frame: frame,
-      index: index
-    });
+  const addMatched = (key: string, value: string, frame: FrameId, version: VersionNum, labelInput: LabelInputMessage, index: IndexType)=>{
+    const val = matched.get(frame);
+    if (val === undefined) {
+      matched.set(frame, [version, [{
+        labelText: labelInput.labelText,
+        data: value,
+        index: index
+      }]])
+    } else {
+      val[1].push({
+        labelText: labelInput.labelText,
+        data: value,
+        index: index
+      })
+    }
     notMatched.delete(key);
   }
   
   // iterate through all input elements to find the element that matches the string
-  formFields.forEach((labelInputArr, frameId)=>{
+  formFields.forEach(([version, labelInputArr], frameId)=>{
     labelInputArr.forEach((labelInput, index) => {
       const field = getMatchedField(data, labelInput);
       if (field) {
         const val = data.get(field);
         if (val !== undefined) {
-          addMatched(field, val, frameId, labelInput, index);
+          addMatched(field, val, frameId, version, labelInput, index);
         }
       } else {
 
@@ -49,19 +57,19 @@ export function matchInputElements(data: Map<string, string>, formFields: Fields
           if (value !== undefined && isInputElementMatch(labelInput, matchStrs)) {
             if (labelInput.type === 'input') {
               // normal input element
-              addMatched(field, value, frameId, labelInput, index);
+              addMatched(field, value, frameId, version, labelInput, index);
             } else {
 
               // handle Select element specially as the value may not be in the options
-              const found = labelInput.options.find(option => option.value === value);
+              const found = labelInput.options.find(option => option.value === value || option.text === value);
               if (found !== undefined) {
-                addMatched(field, value, frameId, labelInput, index);
+                addMatched(field, value, frameId, version, labelInput, index);
               } else {
                 // we may be able to resolve the issue if the field is sex
                 if (field === 'sex') {
                   const optionValue = tryMatchSexOption(value as 'M'|'F'|'X', labelInput.options);
                   if (optionValue !== null) {
-                    addMatched(field, optionValue, frameId, labelInput, index);
+                    addMatched(field, optionValue, frameId, version, labelInput, index);
                   }
                 }
               }
@@ -223,12 +231,13 @@ export interface FillData {
   fillLocation: HTMLInputElement|HTMLSelectElement
 }
 
-export interface MatchData {
+export type MatchedItem = {
   labelText: string,
   data: any,
-  frame: FrameId,
   index: IndexType
-}
+};
+
+export type MatchData = Map<FrameId, [VersionNum, MatchedItem[]]>
 
 export interface StartRequest {
   type: 'Start',
@@ -241,4 +250,4 @@ export interface FillAllRequest {
   value: [FrameId, VersionNum, {index: IndexType, data: any}[]][]
 }
 
-export type Fields = Map<FrameId, LabelInputMessage[]>
+export type Fields = Map<FrameId, [VersionNum, LabelInputMessage[]]>

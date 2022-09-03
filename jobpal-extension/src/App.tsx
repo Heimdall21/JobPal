@@ -20,9 +20,10 @@ function App() {
   useEffect(()=>{
     chrome.runtime.onMessage.addListener((message: MainResponse)=> {
       if (message.type === 'LabelInputResponse') {
+        const version = message.version;
         setFormFields((fields) => fields === null?
-          new Map().set(message.frame, message.data): 
-          new Map(fields.set(message.frame, message.data))
+          new Map().set(message.frame,[version, message.data]): 
+          new Map(fields.set(message.frame, [version, message.data]))
         );
       }
     });

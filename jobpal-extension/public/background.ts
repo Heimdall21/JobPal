@@ -1,5 +1,5 @@
 import { LabelInputMessage, LabelInputRequest, ReadyMessage } from "../src/ContentScripts/listener";
-import { FillAllRequest, StartRequest } from "../src/ContentScripts/input";
+import { FillAllRequest, StartRequest, VersionNum } from "../src/ContentScripts/input";
 
 chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
   const tab = sender.tab;
@@ -26,6 +26,7 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
         type: 'LabelInputResponse',
         data: message.value,
         frame: frameId,
+        version: message.version
       }, {frameId: 0});
     }
   } else if (message.type === 'FillAll') {
@@ -160,7 +161,7 @@ interface StartListenerMessage {
 interface FillListenerMessage {
   type: 'FillListener',
   value: { index: number, data: any }[],
-  version: number
+  version: VersionNum
 }
 
 interface MainResponseTypeTag {
@@ -170,7 +171,8 @@ interface MainResponseTypeTag {
 interface LabelInputResponse {
   data: LabelInputMessage[],
   frame: number,
-  type: MainResponseTypeTag['LabelInputResponse']
+  type: MainResponseTypeTag['LabelInputResponse'],
+  version: VersionNum
 }
 
 export type ListenerResponse = StartListenerMessage | FillListenerMessage;

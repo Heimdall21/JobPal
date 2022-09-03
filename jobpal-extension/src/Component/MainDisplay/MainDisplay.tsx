@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState, useMemo } from "react";
 import * as ReactDOM from "react-dom";
-import { Fields, FillAllRequest, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
+import { Fields, FillAllRequest, FrameId, MatchData, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
 import { getPrefillData } from "../../Lib/storageHandler";
 import { PrefillData } from "../../Lib/StorageType";
 import FieldsDisplay from "../FieldsDisplay";
@@ -83,7 +83,7 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
 
   const [matched, notmatched] = useMemo(
     ()=> data === null || formFields === null?
-      [[], new Map()]:
+      [new Map() as MatchData, new Map()]:
       matchInputElements(transformPrefillData(data, window.location), formFields),
     [data, formFields]);
 
@@ -105,10 +105,10 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
         height="200px"
         onClick={() => {
           if (data !== null && formFields !== null) {
-            const val = arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};});
             chrome.runtime.sendMessage<FillAllRequest>({
               type: "FillAll",
-              value: Array.from(val.entries())
+              value: Array.from(matched.entries())
+                .map(([key, [version, rest]])=>[key, version, rest])
             })
             toast.success('prefill all matched elements');
           }
