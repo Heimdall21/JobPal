@@ -235,9 +235,10 @@ export interface StartRequest {
 }
 export type FrameId = number;
 export type IndexType = number;
+export type VersionNum = number;
 export interface FillAllRequest {
   type: 'FillAll',
-  value: [FrameId, {index: IndexType, data: any}[]][]
+  value: [FrameId, VersionNum, {index: IndexType, data: any}[]][]
 }
 
 export type Fields = Map<FrameId, LabelInputMessage[]>

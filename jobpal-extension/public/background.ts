@@ -30,10 +30,11 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
     }
   } else if (message.type === 'FillAll') {
     // send fill messages to all listeners
-    message.value.forEach(([frameId, val])=>{
+    message.value.forEach(([frameId, version, val])=>{
       chrome.tabs.sendMessage<FillListenerMessage>(tabId, {
         type: 'FillListener',
-        value: val
+        value: val,
+        version: version
       }, {frameId: frameId});
     });
   } else if (message.type === 'Ready') {
@@ -158,7 +159,8 @@ interface StartListenerMessage {
 
 interface FillListenerMessage {
   type: 'FillListener',
-  value: { index: number, data: any }[]
+  value: { index: number, data: any }[],
+  version: number
 }
 
 interface MainResponseTypeTag {
