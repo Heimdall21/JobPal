@@ -1,4 +1,4 @@
-import { LabelInputMessage, LabelInputRequest } from "../src/ContentScripts/listener";
+import { LabelInputMessage, LabelInputRequest, ReadyMessage } from "../src/ContentScripts/listener";
 import { FillAllRequest, StartRequest } from "../src/ContentScripts/input";
 
 chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
@@ -36,6 +36,15 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
         value: val
       }, {frameId: frameId});
     });
+  } else if (message.type === 'Ready') {
+    hasStartedTabId(tabId)
+    .then((hasStarted)=>{
+      if (hasStarted) {
+        chrome.tabs.sendMessage<StartListenerMessage>(tabId, {
+          type: 'StartListener'
+        }, {frameId: sender.frameId})
+      }
+    })
   }
 });
 
@@ -140,7 +149,7 @@ async function removeStartedTabId(tabId: TabId) {
 
 type TabId = number;
 
-type MainRequest = StartRequest | LabelInputRequest | FillAllRequest;
+type MainRequest = StartRequest | LabelInputRequest | FillAllRequest | ReadyMessage;
 
 interface ListenerResponseTypeTag {
   StartListener: 'StartListener',
