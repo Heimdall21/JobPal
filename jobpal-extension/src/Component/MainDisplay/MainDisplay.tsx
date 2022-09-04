@@ -74,7 +74,7 @@ const DummyData = [
   // }
 ]
 
-function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: Fields|null }) {
+function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: Fields }) {
   // const [data, setDate] = useState(DummyData);
   // const renderSectionsList = data.map((
   //   section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
@@ -125,7 +125,7 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
         width="200px"
         radius="20px"
       /> */}
-{formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>}
+<FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>
       {/* {renderSectionsList} */}
     </div>
   );
