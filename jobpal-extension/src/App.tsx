@@ -15,14 +15,13 @@ import { MainResponse } from '../public/background';
 
 function App() {
   const [data, setData] = useState<PrefillData|null>(null);
-  const [formFields, setFormFields] = useState<Fields|null>(null);
+  const [formFields, setFormFields] = useState<Fields>(new Map());
 
   useEffect(()=>{
     chrome.runtime.onMessage.addListener((message: MainResponse)=> {
       if (message.type === 'LabelInputResponse') {
         const version = message.version;
-        setFormFields((fields) => fields === null?
-          new Map().set(message.frame,[version, message.data]): 
+        setFormFields((fields) => 
           new Map(fields.set(message.frame, [version, message.data]))
         );
       }
