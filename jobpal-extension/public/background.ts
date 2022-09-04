@@ -47,6 +47,8 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
         }, {frameId: sender.frameId})
       }
     })
+  } else if (message.type === 'Close') {
+    removeStartedTabId(tabId);
   }
 });
 
@@ -153,7 +155,11 @@ async function removeStartedTabId(tabId: TabId) {
 
 type TabId = number;
 
-type MainRequest = StartRequest | LabelInputRequest | FillAllRequest | ReadyMessage;
+export interface CloseRequest {
+  type: 'Close'
+}
+
+type MainRequest = StartRequest | LabelInputRequest | FillAllRequest | ReadyMessage | CloseRequest;
 
 
 interface StartListenerMessage {
