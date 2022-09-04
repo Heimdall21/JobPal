@@ -1,10 +1,10 @@
  /* button-3 bottom_margin */
 
- ._prefill_all_button {
+ ._edit_prefills {
   position: absolute;
-  top: 10%;
-  left: 10%;
-  background-color: #2ea44f;
+  top: 2%;
+  right: 5px;
+  background-color: #ff0000;
   border: 1px solid rgba(27, 31, 35, .15);
   border-radius: 6px;
   box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
@@ -13,28 +13,30 @@
   font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
   font-size: 12px;
   font-weight: 600;
-  padding: 6px 16px;
-  height: 28px;
-  width: 86px;
+  /* padding: 6px 16px; */
+  width:35px;
+  height: 20px;
+  display: inline-block;
+  text-align: left;
 }
 
-._prefill_all_button:focus:not(:focus-visible):not(.focus-visible) {
+._edit_prefills:focus:not(:focus-visible):not(.focus-visible) {
   box-shadow: none;
   outline: none;
 }
 
-._prefill_all_button:hover {
-  background-color: #2c974b;
+._edit_prefills:hover {
+  background-color: #ff0000;
 }
 
-._prefill_all_button {
-  background-color: #94d3a2;
+._edit_prefills{
+  background-color: #298e46;
   border-color: rgba(27, 31, 35, .1);
   color: rgba(255, 255, 255, .8);
   cursor: default;
 }
 
-._prefill_all_button:active {
+._edit_prefills:active {
   background-color: #298e46;
   box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
 }

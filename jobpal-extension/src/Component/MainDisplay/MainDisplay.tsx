@@ -89,7 +89,7 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
     [data, formFields]);
 
   return (
-    <div>
+    <div className={`_main_display ${styles._main_display}`}>
       <h1 className={`mainDisplayHeading ${styles._jobpal_heading}`}>JobPal</h1>
       <EditButton
         border="none"

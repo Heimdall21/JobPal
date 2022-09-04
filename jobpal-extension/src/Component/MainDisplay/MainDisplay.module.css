@@ -10,3 +10,9 @@
   width: 280px;
   overflow: auto;
 }
+
+._main_display {
+  position: relative;
+  background-color: blue;
+  display: block;
+}

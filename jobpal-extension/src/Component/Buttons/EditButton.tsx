@@ -1,4 +1,5 @@
 import React from "react";
+import styles from './EditButton.module.css';
 
 interface Props {
   border: string;
@@ -21,10 +22,10 @@ const EditButton: React.FC<Props> = ({
 }) => {
   return (
     <button
-      className="button-3 bottom_margin"
+      className={`_edit_prefills ${styles._edit_prefills}`}
       onClick={onClick}
     >
-      Edit button
+      edit
     </button>
   )
 }
