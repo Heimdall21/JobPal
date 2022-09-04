@@ -32,7 +32,7 @@ function App() {
     const onUpdate = onUpdatePrefillData(setData);
     chrome.storage.onChanged.addListener(onUpdate);
 
-    return chrome.storage.onChanged.removeListener(onUpdate);
+    return ()=>chrome.storage.onChanged.removeListener(onUpdate);
   }, []);
 
   useEffect(()=>{
