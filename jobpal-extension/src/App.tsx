@@ -6,7 +6,7 @@ import { Routes, Route, MemoryRouter } from "react-router-dom";
 import { PrefillData } from './Lib/StorageType';
 import Edit from './Pages/EditPage';
 import { useEffect, useState } from 'react';
-import { getPrefillData, storePrefillData } from './Lib/storageHandler';
+import { getPrefillData, onUpdatePrefillData, storePrefillData } from './Lib/storageHandler';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Fields, StartRequest } from './ContentScripts/input';
@@ -26,6 +26,13 @@ function App() {
         );
       }
     });
+  }, []);
+
+  useEffect(()=>{
+    const onUpdate = onUpdatePrefillData(setData);
+    chrome.storage.onChanged.addListener(onUpdate);
+
+    return chrome.storage.onChanged.removeListener(onUpdate);
   }, []);
 
   useEffect(()=>{
@@ -60,7 +67,7 @@ function App() {
             <Route path="edit" element={
               data === null?
               <></>:
-              <Edit storageData={data} updateStorageData={updateStorageDecorator(setData)}/>
+              <Edit storageData={data} />
             }/>
           </Route>
         </Routes>
@@ -69,20 +76,5 @@ function App() {
     </div>
   );
 }
-
-function updateStorageDecorator(setData: React.Dispatch<React.SetStateAction<PrefillData|null>>) {
-  return (data:PrefillData)=>storePrefillData(data,
-  ()=>{
-      if (chrome.runtime.lastError) {
-          console.error(chrome.runtime.lastError);
-          toast.error(chrome.runtime.lastError.message);
-          return;
-      }
-      toast.success("store successfully!");
-      // refresh the form
-      setData(data);
-  });
-}
-
 
 export default App;

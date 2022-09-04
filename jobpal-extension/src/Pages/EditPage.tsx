@@ -9,8 +9,10 @@ import SpecificForm from '../Component/SpecificForm';
 import AdditionalForm from '../Component/AdditionalForm';
 import styles from '../Component/Form.module.css';
 import { useNavigate } from 'react-router-dom';
+import { storePrefillData } from '../Lib/storageHandler';
+import { toast } from 'react-toastify';
 
-function Edit({storageData, updateStorageData}: {storageData: PrefillData, updateStorageData: (newData: PrefillData)=>void}) {
+function Edit({storageData}: {storageData: PrefillData}) {
     let navigate = useNavigate();
 
     const [commonData, setCommonData] = useState<ViewCommonData>(getViewCommonData(storageData));
@@ -20,7 +22,13 @@ function Edit({storageData, updateStorageData}: {storageData: PrefillData, updat
     const handleSubmit = (e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
         const newData = toModel(commonData, additionalCommonData, specificData);
-        updateStorageData(newData);
+        storePrefillData(newData, ()=> {
+            if (chrome.runtime.lastError) {
+                toast.error(chrome.runtime.lastError.message);
+            } else {
+                toast.success("store successfully!");
+            }
+        });
     }
 
     return (
