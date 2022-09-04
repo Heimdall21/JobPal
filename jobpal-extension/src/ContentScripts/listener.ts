@@ -82,9 +82,9 @@ function toLabelInputMessages(inputArr: {
 function onObserveMutation(mutations: MutationRecord[], _observer: MutationObserver) {
     if (timer === null && requireUpdate(mutations)) {
         timer = setTimeout(()=>{
-        updateLabelInputs();
+            updateLabelInputs();
             timer = null;
-        }, 50);
+        }, 1);
     }
 }
 
@@ -105,13 +105,27 @@ function requireUpdate(mutations: MutationRecord[]): boolean {
 }
 
 function updateLabelInputs() {
-    version += 1;
+    const prevLabelInputPairs = labelInputPairs;
     labelInputPairs = getLabelInputPairs(document);
-    chrome.runtime.sendMessage<LabelInputRequest>({
-        type: "LabelInputMessage",
-        value: toLabelInputMessages(labelInputPairs),
-        version
-    });
+    if (isLabelInputsUpdated(prevLabelInputPairs, labelInputPairs)) {
+        version += 1;
+        chrome.runtime.sendMessage<LabelInputRequest>({
+            type: "LabelInputMessage",
+            value: toLabelInputMessages(labelInputPairs),
+            version
+        });
+    }
+}
+
+function isLabelInputsUpdated(old: typeof labelInputPairs, curr: typeof labelInputPairs): boolean {
+    if (old.length !== curr.length) return true;
+    for (let i = 0; i < old.length; i++) {
+        if ((old[i].label !== curr[i].label) ||
+        (old[i].input !== curr[i].input)) {
+            return true
+        }
+    }
+    return false;
 }
 
 function containLabelOrInput(nodes: NodeList): boolean {
