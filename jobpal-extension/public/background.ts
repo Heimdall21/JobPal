@@ -52,7 +52,6 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
 
 chrome.action.onClicked.addListener((tab) => {
   const targetTabId = tab.id;
-  console.log("onClicked", targetTabId);
   if (targetTabId !== undefined) {
     getStartedTabIds()
     .then(startedTabs=>{
@@ -84,7 +83,6 @@ chrome.tabs.onReplaced.addListener((addedTabId, removedTabId)=>{
 });
 
 chrome.tabs.onUpdated.addListener((tabId: number)=>{
-  console.log("onUpdated:", tabId);
   hasStartedTabId(tabId)
   .then((hasStarted)=>{
     if (hasStarted) {
