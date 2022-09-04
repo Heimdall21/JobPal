@@ -84,6 +84,7 @@ chrome.tabs.onReplaced.addListener((addedTabId, removedTabId)=>{
 });
 
 chrome.tabs.onUpdated.addListener((tabId: number)=>{
+  console.log("onUpdated:", tabId);
   hasStartedTabId(tabId)
   .then((hasStarted)=>{
     if (hasStarted) {
@@ -112,11 +113,11 @@ function setStartedTabIds(tabIds: TabId[]): Promise<TabId[]> {
 
 function getStartedTabIds(): Promise<TabId[]> {
   return new Promise((resolve, reject)=>
-  chrome.storage.session.get("startedTabId", (items)=>{
+  chrome.storage.session.get("startedTabIds", (items)=>{
     if (chrome.runtime.lastError) {
       reject(chrome.runtime.lastError.message);
     } else {
-      const startedTabIds = items.startedTabId;
+      const startedTabIds = items.startedTabIds;
       if (startedTabIds === undefined) {
         resolve([]);
       } else {
