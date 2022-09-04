@@ -95,6 +95,9 @@ function injectContentJS(tabId: number) {
   return chrome.scripting.executeScript({
     target: {tabId: tabId },
     files: ['content.bundle.js']
+  }).catch(error=>{
+    console.error("failed to inject script: ", error);
+    removeStartedTabId(tabId);
   });
 }
 
