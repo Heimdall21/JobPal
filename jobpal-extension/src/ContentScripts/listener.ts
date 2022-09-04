@@ -9,13 +9,23 @@ let labelInputPairs: {
 
 let version: number = -1;
 
-chrome.runtime.sendMessage<ReadyMessage>({type: 'Ready'});
+let observer: MutationObserver|null = null;
+
+let timer: ReturnType<typeof setTimeout> | null = null;
 
 chrome.runtime.onMessage.addListener((message: ListenerResponse)=> {
     if (message.type === "StartListener") {
         if (version === -1) {
             version += 1;
             labelInputPairs = getLabelInputPairs(document);
+            observer = new MutationObserver(onObserveMutation);
+            const contanier = document.documentElement || document.body;
+            observer.observe(contanier, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+                characterDataOldValue: true
+            });
         }
         chrome.runtime.sendMessage<LabelInputRequest>({
             type: "LabelInputMessage",
@@ -30,6 +40,9 @@ chrome.runtime.onMessage.addListener((message: ListenerResponse)=> {
         }
     }
 });
+
+// send ready to the background script
+chrome.runtime.sendMessage<ReadyMessage>({type: 'Ready'});
 
 function toLabelInputMessages(inputArr: {
     label: HTMLLabelElement,
@@ -64,6 +77,58 @@ function toLabelInputMessages(inputArr: {
             };
         }
     });
+}
+
+function onObserveMutation(mutations: MutationRecord[], _observer: MutationObserver) {
+    if (timer === null && requireUpdate(mutations)) {
+        timer = setTimeout(()=>{
+        updateLabelInputs();
+            timer = null;
+        }, 50);
+    }
+}
+
+function requireUpdate(mutations: MutationRecord[]): boolean {
+    for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+            if (
+            containLabelOrInput(mutation.addedNodes) ||
+            containLabelOrInput(mutation.removedNodes)
+            ) return true;
+        } else if (mutation.type === 'characterData') {
+            if (mutation.target instanceof HTMLLabelElement) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function updateLabelInputs() {
+    version += 1;
+    labelInputPairs = getLabelInputPairs(document);
+    chrome.runtime.sendMessage<LabelInputRequest>({
+        type: "LabelInputMessage",
+        value: toLabelInputMessages(labelInputPairs),
+        version
+    });
+}
+
+function containLabelOrInput(nodes: NodeList): boolean {
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        if (
+        node instanceof HTMLLabelElement || 
+        node instanceof HTMLInputElement ||
+        node instanceof HTMLSelectElement) {
+            return true;
+        }
+        if (containLabelOrInput(nodes[i].childNodes)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 interface InputTypeTag {
