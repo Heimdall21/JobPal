@@ -1,19 +1,35 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import '../App.css';
 import PrefillAllButton from "./Buttons/PrefillAllButton";
 import PrefillSection from "./PrefillSection";
+import MinimiseButton from "./Buttons/MinimiseButton";
+import CloseButton from "./Buttons/CloseButton";
+import { Dispatch, SetStateAction } from "react";
 
-// ReactDOM.render(
-//   <div>
-//     <h1>Hello, Welcome to React and TypeScript</h1>
-//   </div>,
-//   document.getElementById("root")
-// );
+interface DisplayProps {
+  setMinimised: Dispatch<SetStateAction<boolean>>;
+  setClosed: Dispatch<SetStateAction<boolean>>;
+}
 
-function MainDisplay() {
+function MainDisplay({setMinimised, setClosed}: DisplayProps) {
   return (
-    <div>
+    <div className="App">
       <h1>JobPal</h1>
+      <MinimiseButton
+        border="none"
+        color="black"
+        height="200px"
+        onClick={() => setMinimised(true)}
+        radius="50%"
+        width="200px"
+      />
+      <CloseButton
+        border="none"
+        color="black"
+        height="200px"
+        onClick={() => setClosed(true)}
+        radius="50%"
+        width="200px"
+      />
       <PrefillAllButton 
         border="none"
         color="black"
