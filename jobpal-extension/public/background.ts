@@ -86,7 +86,7 @@ chrome.tabs.onReplaced.addListener((addedTabId, removedTabId)=>{
 
 chrome.tabs.onUpdated.addListener((tabId: number, changeInfo)=>{
   console.log("chagneInfo:", changeInfo);
-  if (changeInfo.url || changeInfo.status) {
+  if (changeInfo.url || changeInfo.status === 'loading') {
     hasStartedTabId(tabId)
     .then((hasStarted)=>{
       if (hasStarted) {
