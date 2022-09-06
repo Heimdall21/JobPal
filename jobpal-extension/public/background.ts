@@ -150,7 +150,7 @@ async function addStartedTabIdIfAbsent(tabId: TabId) {
 
 async function removeStartedTabId(tabId: TabId) {
   const tabIds = await getStartedTabIds();
-  return await setStartedTabIds(tabIds.filter((val) => val === tabId));
+  return await setStartedTabIds(tabIds.filter((val) => val !== tabId));
 }
 
 type TabId = number;
