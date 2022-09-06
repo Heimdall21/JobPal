@@ -2,33 +2,23 @@ import React from 'react';
 import App from '../src/App';
 import ReactDOM from 'react-dom/client';
 
-// const root = ReactDOM.createRoot(
-//   document.getElementById('root')
-// );
+const ROOT_ID = 'jobpal-root';
+const container = document.getElementById(ROOT_ID);
+if (container === null) {
+  const body = document.querySelector('body');
+  const app = document.createElement('div');
+  app.id = ROOT_ID;
+  if (body) {
+    body.appendChild(app)
+    console.log("insert app container")
+  }
 
-// the following does not work as the iframe is not in the same origin.
-// const iframe = document.getElementById("grnhse_iframe");
-// console.log("iframe", iframe);
-// // if (iframe !== null) {
-// //   console.log("labels in iframe:", iframe.contenWindow.document.getElementsByTagName("label"));
-// // }
-const body = document.querySelector('body');
-const app = document.createElement('div');
-app.id = 'react-root'
-if (body) {
-  body.appendChild(app)
-  console.log("insert app container")
-}
-
-const container = document.getElementById('react-root');
-if (container !== null) {
-  const root = ReactDOM.createRoot(container);
+  const root = ReactDOM.createRoot(app);
   root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>);
 }
-
 
 // const root = ReactDOM.createRoot(container);
 // root.render(<App />)
