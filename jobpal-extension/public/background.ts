@@ -84,13 +84,16 @@ chrome.tabs.onReplaced.addListener((addedTabId, removedTabId)=>{
   .catch(error=>console.error("onReplaced: remove: ", error)));
 });
 
-chrome.tabs.onUpdated.addListener((tabId: number)=>{
-  hasStartedTabId(tabId)
-  .then((hasStarted)=>{
-    if (hasStarted) {
-      injectContentJS(tabId);
-    }
-  });
+chrome.tabs.onUpdated.addListener((tabId: number, changeInfo)=>{
+  console.log("chagneInfo:", changeInfo);
+  if (changeInfo.url || changeInfo.status) {
+    hasStartedTabId(tabId)
+    .then((hasStarted)=>{
+      if (hasStarted) {
+        injectContentJS(tabId);
+      }
+    });
+  }
 });
 
 function injectContentJS(tabId: number) {
