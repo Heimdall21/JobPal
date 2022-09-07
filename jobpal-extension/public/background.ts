@@ -14,10 +14,14 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
   }
 
   if (message.type === 'Start') {
+    // receive the start message from the application
+    // broadcast startListener message to all listeners
     chrome.tabs.sendMessage<StartListenerMessage>(tabId, {
       type: 'StartListener'
     });
   } else if (message.type === 'LabelInputMessage') {
+    // receive a list of labels and inputs from a listener
+    // send it to the main application
     const frameId = sender.frameId;
     if (frameId === undefined) {
       console.error('frameId is undefined!');
@@ -39,6 +43,7 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
       }, {frameId: frameId});
     });
   } else if (message.type === 'Ready') {
+    // tell the iframe if the application has started
     hasStartedTabId(tabId)
     .then((hasStarted)=>{
       if (hasStarted) {
@@ -48,6 +53,7 @@ chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
       }
     })
   } else if (message.type === 'Close') {
+    // remove the tab id from the session storage
     removeStartedTabId(tabId);
   }
 });
@@ -58,6 +64,7 @@ chrome.action.onClicked.addListener((tab) => {
     getStartedTabIds()
     .then(startedTabs=>{
       if (!startedTabs.includes(targetTabId)) {
+        // add the tab id to the session storage and inject the content script
         startedTabs.push(targetTabId);
         setStartedTabIds(startedTabs)
         .then(()=>injectContentJS(targetTabId))
@@ -69,6 +76,7 @@ chrome.action.onClicked.addListener((tab) => {
 });
 
 chrome.tabs.onRemoved.addListener((tabId)=>{
+  // remove the tab id from the session storage
   removeStartedTabId(tabId)
   .catch(error=>console.error("onRemoved: ", error));
 });
@@ -85,11 +93,15 @@ chrome.tabs.onReplaced.addListener((addedTabId, removedTabId)=>{
 });
 
 chrome.tabs.onUpdated.addListener((tabId: number, changeInfo)=>{
+  // this will be triggered when the tab is updated
   console.log("chagneInfo:", changeInfo);
+  // only inject the script if we find that the url is changed, or the page
+  // reloads
   if (changeInfo.url || changeInfo.status === 'loading') {
     hasStartedTabId(tabId)
     .then((hasStarted)=>{
       if (hasStarted) {
+        // inject the script so it seems like the extension persists
         injectContentJS(tabId);
       }
     });
@@ -102,10 +114,14 @@ function injectContentJS(tabId: number) {
     files: ['content.bundle.js']
   }).catch(error=>{
     console.error("failed to inject script: ", error);
+    // NOTE: should we remove it if we fail to inject the extension?
     removeStartedTabId(tabId);
   });
 }
 
+// we store a list of started tab ids in the session storage
+// NOTE: we use sesstion storage so that all the data will be gone when the
+// browser is closed
 function setStartedTabIds(tabIds: TabId[]): Promise<TabId[]> {
   return new Promise((resolve, reject)=>
   chrome.storage.session.set({startedTabIds: tabIds}, ()=>{
@@ -175,14 +191,11 @@ interface FillListenerMessage {
   version: VersionNum
 }
 
-interface MainResponseTypeTag {
-  LabelInputResponse: 'LabelInputResponse'
-}
 
 interface LabelInputResponse {
   data: LabelInputMessage[],
   frame: number,
-  type: MainResponseTypeTag['LabelInputResponse'],
+  type: 'LabelInputResponse',
   version: VersionNum
 }
 

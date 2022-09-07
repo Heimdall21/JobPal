@@ -2,6 +2,8 @@ import React from 'react';
 import App from '../src/App';
 import ReactDOM from 'react-dom/client';
 
+// check if the container already exists
+// if there is already a container, do not insert a new container
 const ROOT_ID = 'jobpal-root';
 const container = document.getElementById(ROOT_ID);
 if (container === null) {

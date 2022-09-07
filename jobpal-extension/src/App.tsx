@@ -17,6 +17,7 @@ function App() {
   const [data, setData] = useState<PrefillData|null>(null);
   const [formFields, setFormFields] = useState<Fields>(new Map());
 
+  // when a LabelInputResponse is received, add it to the formFields Map
   useEffect(()=>{
     chrome.runtime.onMessage.addListener((message: MainResponse)=> {
       if (message.type === 'LabelInputResponse') {
@@ -28,6 +29,7 @@ function App() {
     });
   }, []);
 
+  // check if the data has been changed
   useEffect(()=>{
     const onUpdate = onUpdatePrefillData(setData);
     chrome.storage.onChanged.addListener(onUpdate);
@@ -35,13 +37,14 @@ function App() {
     return ()=>chrome.storage.onChanged.removeListener(onUpdate);
   }, []);
 
+  // signal listeners to start
   useEffect(()=>{
     chrome.runtime.sendMessage<StartRequest>({
       type: "Start"
     });
   }, []);
 
-
+  // get the initial data
   useEffect(()=>{
     getPrefillData((newData)=> {
       if (chrome.runtime.lastError) {

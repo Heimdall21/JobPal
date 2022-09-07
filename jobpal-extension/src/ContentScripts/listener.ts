@@ -15,9 +15,11 @@ let timer: ReturnType<typeof setTimeout> | null = null;
 
 chrome.runtime.onMessage.addListener((message: ListenerResponse)=> {
     if (message.type === "StartListener") {
+        // on start: get all the labels and inputs
         if (version === -1) {
             version += 1;
             labelInputPairs = getLabelInputPairs(document);
+            // add an observer so we can detect if there are new forms created
             observer = new MutationObserver(onObserveMutation);
             const contanier = document.documentElement || document.body;
             observer.observe(contanier, {
@@ -27,13 +29,16 @@ chrome.runtime.onMessage.addListener((message: ListenerResponse)=> {
                 characterDataOldValue: true
             });
         }
+        // tell the application what we have found
         chrome.runtime.sendMessage<LabelInputRequest>({
             type: "LabelInputMessage",
             value: toLabelInputMessages(labelInputPairs),
             version
         });
     } else if (message.type === "FillListener") {
-        if (version === -1) return;
+        // fill in the data in the input element
+        if (version === -1) return; // we have not found the labels
+        // the application does not notice that the form has been updated
         if (version !== message.version) return;
         for (const {index, data} of message.value) {
             fillOne({data: data, fillLocation: labelInputPairs[index].input});
@@ -41,7 +46,9 @@ chrome.runtime.onMessage.addListener((message: ListenerResponse)=> {
     }
 });
 
-// send ready to the background script
+// send ready to the background script to check if the application has started
+// it is neccessary as it is possible that an iframe is created after the main
+// application is started
 chrome.runtime.sendMessage<ReadyMessage>({type: 'Ready'});
 
 function toLabelInputMessages(inputArr: {

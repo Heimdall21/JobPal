@@ -6,7 +6,7 @@ import { LabelInputMessage, Option } from './listener';
 // try to match the elements in the page to the data in the storage
 // data: data form the storage
 // formFields: data in labels and input/select elements
-// return an array of matched data and a map of not matched data
+// return a map of matched data and a map of not matched data
 export function matchInputElements(data: Map<string, string>, formFields: Fields): [MatchData, Map<string, string>] {
   const matched: MatchData = new Map();
   const notMatched: Map<string, string> = new Map(data); // copy constructor
