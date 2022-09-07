@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { LabelInputMessage } from "../../ContentScripts/listener";
 import MinimiseButton from "../Buttons/MinimiseButton";
 import CloseButton from "../Buttons/CloseButton";
+import { StopRequest } from "../../ContentScripts/input";
 
 const DummyData = [
   {
@@ -103,7 +104,7 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
         border="none"
         color="black"
         height="200px"
-        onClick={() => setClosed(true)}
+        onClick={() => {setClosed(true); chrome.runtime.sendMessage<StopRequest>({type: "Close"});}}
         radius="50%"
         width="200px"
       />

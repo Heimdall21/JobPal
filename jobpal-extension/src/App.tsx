@@ -46,14 +46,6 @@ function App() {
     });
   }, []);
 
-  useEffect(() => {
-    if (closed) {
-      chrome.runtime.sendMessage<StopRequest>({
-        type: "Close"
-      });
-    }
-  }, [closed])
-
   // get the initial data
   useEffect(()=>{
     getPrefillData((newData)=> {
