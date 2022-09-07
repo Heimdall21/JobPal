@@ -1,0 +1,26 @@
+._section_body {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  width: auto;
+  height: auto;
+  background-color: grey;
+  overflow:auto;
+}
+
+._section_title {
+  font-size: 20px;
+  font-family: sans-serif;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+._section_field {
+  font-size: 11px;
+  font-family: sans-serif;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.bottom_margin {
+  margin-bottom: 10px;
+}

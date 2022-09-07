@@ -17,7 +17,6 @@ export default function GeneralForm({commonData, setCommonData}: {
     function FormInputField<K extends keyof Omit<ViewCommonData,'dateOfBirth'| 'yearOfGrad' |'sex'>>(field: K, labelText: string) {
         const handleChange = (e: ChangeEvent<HTMLInputElement>)=>{
             const val = e.target.value;
-            console.log(field, val);
             updateCommonField(field, val);
         }
 
@@ -30,7 +29,6 @@ export default function GeneralForm({commonData, setCommonData}: {
     function FormSexField() {
         const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
             const val = e.target.value;
-            console.log(val);
             if (val === '' || val === 'M' || val === 'F' || val === 'X') {
                 updateCommonField('sex', val);
             } else {
@@ -53,7 +51,6 @@ export default function GeneralForm({commonData, setCommonData}: {
         const [error, setError] = useState<string|null>(null);
         const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
             const val = e.target.value;
-            console.log("dateOfBirth", val);
             updateCommonField('dateOfBirth', val);
             if (!DateString.validate(val)) {
                 setError("not a valid data")
@@ -105,7 +102,6 @@ function FormYearOfGradField({setField, yearOfGrad}:{
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         const num = parseInt(val, 10);
-        console.log("yearOfGrad", val, num)
         setField(field, val);
         if (!isNaN(num)) {
             if (num < 1900 || num > 2099) {

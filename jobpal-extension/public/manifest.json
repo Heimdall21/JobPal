@@ -12,9 +12,21 @@
    "permissions": [
         "activeTab",
         "storage",
-        "scripting"
+        "scripting",
+        "tabs"
+   ],
+   "host_permissions": [
+     "https://*/*",
+     "http://*/*"
    ],
    "background": {
         "service_worker": "background.bundle.js"
-  }
+  },
+  "content_scripts": [
+     {
+          "js": ["listener.bundle.js"],
+          "matches": ["<all_urls>"],
+          "all_frames": true
+     }
+  ]
 }
