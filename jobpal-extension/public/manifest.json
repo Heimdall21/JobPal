@@ -22,6 +22,12 @@
    "background": {
         "service_worker": "background.bundle.js"
   },
+  "web_accessible_resources": [
+     {
+       "resources": ["jobpal.png"],
+       "matches": ["<all_urls>"]
+     }
+  ],
   "content_scripts": [
      {
           "js": ["listener.bundle.js"],

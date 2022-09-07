@@ -1,6 +1,4 @@
-import * as React from "react";
-import { useEffect, useState, useMemo } from "react";
-import * as ReactDOM from "react-dom";
+import { useEffect, useState, useMemo, Dispatch, SetStateAction } from "react";
 import { Fields, FillAllRequest, FrameId, MatchData, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
 import { getPrefillData } from "../../Lib/storageHandler";
 import { PrefillData } from "../../Lib/StorageType";
@@ -13,6 +11,8 @@ import { fillAll } from "../../Lib/FillForm";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { LabelInputMessage } from "../../ContentScripts/listener";
+import MinimiseButton from "../Buttons/MinimiseButton";
+import CloseButton from "../Buttons/CloseButton";
 
 const DummyData = [
   {
@@ -74,7 +74,7 @@ const DummyData = [
   // }
 ]
 
-function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: Fields }) {
+function MainDisplay({data, formFields, setMinimised, setClosed}: { data: PrefillData|null, formFields: Fields, setMinimised: Dispatch<SetStateAction<Boolean>>, setClosed: Dispatch<SetStateAction<Boolean>> }) {
   // const [data, setDate] = useState(DummyData);
   // const renderSectionsList = data.map((
   //   section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
@@ -91,6 +91,22 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
     <div>
       {/* <h1>Hello, Welcome to React and TypeScript!</h1> */}
       {/* <h1>JobPal</h1> */}
+      <MinimiseButton
+        border="none"
+        color="black"
+        height="200px"
+        onClick={() => setMinimised(true)}
+        radius="50%"
+        width="200px"
+      />
+      <CloseButton
+        border="none"
+        color="black"
+        height="200px"
+        onClick={() => setClosed(true)}
+        radius="50%"
+        width="200px"
+      />
       <EditButton
         border="none"
         color="black"

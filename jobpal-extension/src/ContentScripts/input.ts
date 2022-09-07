@@ -242,6 +242,11 @@ export type MatchData = Map<FrameId, [VersionNum, MatchedItem[]]>
 export interface StartRequest {
   type: 'Start',
 }
+
+export interface StopRequest {
+  type: 'Close',
+}
+
 export type FrameId = number;
 export type IndexType = number;
 export type VersionNum = number;
