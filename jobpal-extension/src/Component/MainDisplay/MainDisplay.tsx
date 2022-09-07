@@ -1,7 +1,5 @@
-import * as React from "react";
-import { useEffect, useState, useMemo } from "react";
-import * as ReactDOM from "react-dom";
-import { Fields, FillAllRequest, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
+import { useEffect, useState, useMemo, Dispatch, SetStateAction } from "react";
+import { Fields, FillAllRequest, FrameId, MatchData, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
 import { getPrefillData } from "../../Lib/storageHandler";
 import { PrefillData } from "../../Lib/StorageType";
 import FieldsDisplay from "../FieldsDisplay";
@@ -15,6 +13,9 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { LabelInputMessage } from "../../ContentScripts/listener";
 import Button from '@mui/material/Button';
+import MinimiseButton from "../Buttons/MinimiseButton";
+import CloseButton from "../Buttons/CloseButton";
+import { StopRequest } from "../../ContentScripts/input";
 
 const DummyData = [
   {
@@ -52,20 +53,42 @@ const DummyData = [
   // }
 ]
 
-function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: Fields|null }) {
+function MainDisplay({data, formFields, setMinimised, setClosed}: { data: PrefillData|null, formFields: Fields, setMinimised: Dispatch<SetStateAction<Boolean>>, setClosed: Dispatch<SetStateAction<Boolean>> }) {
   const [dummyData, setDummyData] = useState(DummyData);
   const renderSectionsList = dummyData.map((section: any) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>);
+  // const [data, setDate] = useState(DummyData);
+  // const renderSectionsList = data.map((
+  //   section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
+  // )
   let navigate = useNavigate();
 
   const [matched, notmatched] = useMemo(
     ()=> data === null || formFields === null?
-      [[], new Map()]:
+      [new Map() as MatchData, new Map()]:
       matchInputElements(transformPrefillData(data, window.location), formFields),
     [data, formFields]);
 
   return (
     <div className={`_main_display ${styles._main_display}`}>
       <h1 className={`mainDisplayHeading ${styles._jobpal_heading}`}>JobPal</h1>
+      {/* <h1>Hello, Welcome to React and TypeScript!</h1> */}
+      {/* <h1>JobPal</h1> */}
+      <MinimiseButton
+        border="none"
+        color="black"
+        height="200px"
+        onClick={() => setMinimised(true)}
+        radius="50%"
+        width="200px"
+      />
+      <CloseButton
+        border="none"
+        color="black"
+        height="200px"
+        onClick={() => {setClosed(true); chrome.runtime.sendMessage<StopRequest>({type: "Close"});}}
+        radius="50%"
+        width="200px"
+      />
       <EditButton
         border="none"
         color="black"
@@ -79,19 +102,13 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
         color="black"
         height="200px"
         onClick={() => {
-          debugger;
-          console.log("test123");
-          console.log('testing');
-          console.log("data: ", data);
-          console.log("formFields: ", formFields);
           if (data !== null && formFields !== null) {
-            const val = arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};});
             chrome.runtime.sendMessage<FillAllRequest>({
               type: "FillAll",
-              value: Array.from(val.entries())
+              value: Array.from(matched.entries())
+                .map(([key, [version, rest]])=>[key, version, rest])
             })
             toast.success('prefill all matched elements');
-            console.log("prefilled all values");
           } 
           
         }}
@@ -99,8 +116,21 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
         width="200px"
       />
       <Button variant="text">Testing</Button>
-      {/* {formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>} */}
       {renderSectionsList}
+      {/* <PrefillSection 
+        title="Personal Details"
+        border="solid"
+        color="black"
+        children="Test child"
+        height="150px"
+        width="200px"
+        radius="20px"
+      /> */}
+
+{/* NOTE: FieldsDisplay demonstrates how matched and notmatched can be used
+<FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/> 
+*/}
+      {/* {renderSectionsList} */}
     </div>
   );
 }
