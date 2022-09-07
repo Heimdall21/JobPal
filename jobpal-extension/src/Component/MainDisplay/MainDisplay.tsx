@@ -14,6 +14,7 @@ import { fillAll } from "../../Lib/FillForm";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { LabelInputMessage } from "../../ContentScripts/listener";
+import Button from '@mui/material/Button';
 
 const DummyData = [
   {
@@ -38,48 +39,22 @@ const DummyData = [
       emailAddress: 'john.doe@testemail.com'
     }
   },
-  {
-    section_title: 'Personal Details',
-    section_fields: {
-      title: 'Mr',
-      firstName: 'John',
-      lastName: 'Doe',
-      country: 'Australia',
-      mobile: '0404040404',
-      emailAddress: 'john.doe@testemail.com'
-    }
-  }
   // {
-  //   section_title: 'Education',
+  //   section_title: 'Personal Details',
   //   section_fields: {
-  //     education: [
-  //       {
-  //         sub_section_title: 'Education 1',
-  //         school: 'UNSW',
-  //         degree: 'Bachelor of Computer Science',
-  //         discipline: 'Software Engineering',
-  //         start_date: '01/01/2017',
-  //         end_date: '31/12/2022'
-  //       }
-  //     ]
+  //     title: 'Mr',
+  //     firstName: 'John',
+  //     lastName: 'Doe',
+  //     country: 'Australia',
+  //     mobile: '0404040404',
+  //     emailAddress: 'john.doe@testemail.com'
   //   }
-  // },
-  // {
-  //   section_title: 'Interviewed before',
-  //   section_fields: {
-  //     workAuthorisation: false,
-  //     sponsorshipRequirements: false,
-  //     visaStatus: "On a student visa that lasts until July 2023"
-  //   }
-
   // }
 ]
 
 function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: Fields|null }) {
-  // const [data, setDate] = useState(DummyData);
-  // const renderSectionsList = data.map((
-  //   section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
-  // )
+  const [dummyData, setDummyData] = useState(DummyData);
+  const renderSectionsList = dummyData.map((section: any) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>);
   let navigate = useNavigate();
 
   const [matched, notmatched] = useMemo(
@@ -123,17 +98,9 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
         radius="50%"
         width="200px"
       />
-      {/* <PrefillSection 
-        title="Personal Details"
-        border="solid"
-        color="black"
-        children="Test child"
-        height="150px"
-        width="200px"
-        radius="20px"
-      /> */}
-{formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>}
-      {/* {renderSectionsList} */}
+      <Button variant="text">Testing</Button>
+      {/* {formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>} */}
+      {renderSectionsList}
     </div>
   );
 }
