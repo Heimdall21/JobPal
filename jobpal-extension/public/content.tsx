@@ -20,6 +20,15 @@ if (container === null) {
   <React.StrictMode>
     <App />
   </React.StrictMode>);
+} else {
+  const isClosed = document.getElementById('jobpal-closed');
+  if (isClosed) {
+    const root = ReactDOM.createRoot(container);
+    root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>);
+  }
 }
 
 // const root = ReactDOM.createRoot(container);
