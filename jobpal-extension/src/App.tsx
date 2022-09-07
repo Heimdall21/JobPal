@@ -4,15 +4,20 @@ import MainDisplay from './Component/MainDisplay';
 
 import Home from './Pages/HomePage';
 import Edit from './Pages/EditPage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LogoButton from './Component/Buttons/LogoButton';
 
 function App() {
   const [minimised, setMinimised] = useState(false);
   const [closed, setClosed] = useState(false);
+  useEffect(() => {
+    if (closed) {
+      chrome.runtime.sendMessage("Close");
+    }
+  }, [closed])
   return (
     <div>
-      {closed ? <></> : minimised ? 
+      {closed ? <div id="jobpal-closed"/> : minimised ? 
         <LogoButton 
           border="none"
           color="black"
