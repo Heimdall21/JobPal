@@ -2,15 +2,15 @@ import { CommonPrefillData } from "../Lib/StorageType";
 
 export const INPUT_MAP: InputMap = {
     givenName: {
-        label: [/first(\\s|_)*name/i, /given(\\s|_)*name/i],
+        label: [/first(\s|_)*name/i, /given(\s|_)*name/i],
         input: [/.*fname.*/i, /.*first_name.*/i, /.*first.*name.*/i]
     },
     familyName: {
-        label: [/last(\\s|_)*name/i, /family(\\s|n)*name/i, /surname/i],
+        label: [/last(\s|_)*name/i, /family(\s|n)*name/i, /surname/i],
         input: [/.*lname.*/, /.*last_name.*/, /.*last.*name.*/]
     },
     additionalName: {
-        label: [/additional(\\s|_)*name/i, /preffered(\\s|_)*name/i,],
+        label: [/additional(\s|_)*name/i, /preffered(\s|_)*name/i,],
         input: [/.*pref.*name/]
     },
     email: {
