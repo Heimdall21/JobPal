@@ -1,6 +1,25 @@
 import { LabelInputMessage, LabelInputRequest, ReadyMessage } from "../src/ContentScripts/listener";
 import { FillAllRequest, StartRequest, VersionNum } from "../src/ContentScripts/input";
 
+chrome.runtime.onInstalled.addListener(()=>{
+  chrome.contextMenus.create({
+    title: "Edit JOBPAL Prefill Form",
+    id: 'jobpal-edit'
+  }, ()=>{
+    if (chrome.runtime.lastError) {
+      console.error(chrome.runtime.lastError);
+    }
+  });
+});
+
+chrome.contextMenus.onClicked.addListener((info)=>{
+  if (info.menuItemId === 'jobpal-edit') {
+    chrome.tabs.create({
+      'url': chrome.runtime.getURL('edit.html')
+    });
+  }
+});
+
 chrome.runtime.onMessage.addListener((message: MainRequest, sender)=>{
   const tab = sender.tab;
   if (tab === undefined) {
@@ -94,7 +113,7 @@ chrome.tabs.onReplaced.addListener((addedTabId, removedTabId)=>{
 
 chrome.tabs.onUpdated.addListener((tabId: number, changeInfo)=>{
   // this will be triggered when the tab is updated
-  console.log("chagneInfo:", changeInfo);
+
   // only inject the script if we find that the url is changed, or the page
   // reloads
   if (changeInfo.url || changeInfo.status === 'loading') {

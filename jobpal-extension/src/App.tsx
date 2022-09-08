@@ -5,7 +5,7 @@ import { Routes, Route, MemoryRouter } from "react-router-dom";
 
 import { PrefillData } from './Lib/StorageType';
 import Edit from './Pages/EditPage';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { getPrefillData, onUpdatePrefillData, storePrefillData } from './Lib/storageHandler';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -48,19 +48,7 @@ function App() {
 
   // get the initial data
   useEffect(()=>{
-    getPrefillData((newData)=> {
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError);
-        return;
-      } else if (newData === undefined) {
-          setData({
-            common: {additional: {}},
-            specific: {}
-          });
-          return;
-      }
-      setData(newData)
-    })
+    initStorageData(setData);
   }, []);
 
   return (
@@ -92,6 +80,23 @@ function App() {
       }
     </div>
   );
+}
+
+export function initStorageData(setData: Dispatch<SetStateAction<PrefillData|null>>) {
+  getPrefillData((newData)=> {
+    if (chrome.runtime.lastError) {
+      console.log('found runtime lasterror');
+      console.error(chrome.runtime.lastError);
+      return;
+    } else if (newData === undefined) {
+        setData({
+          common: {additional: {}},
+          specific: {}
+        });
+        return;
+    }
+    setData(newData)
+  })
 }
 
 export default App;

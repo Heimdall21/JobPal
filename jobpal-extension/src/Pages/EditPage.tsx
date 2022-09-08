@@ -15,6 +15,16 @@ import { toast } from 'react-toastify';
 function Edit({storageData}: {storageData: PrefillData}) {
     let navigate = useNavigate();
 
+    return (
+    <div>
+        <div onClick={()=>navigate('/')}> <>&larr;</> </div>
+        <EditForm storageData={storageData}/>
+    </div>
+    );
+}
+
+function EditForm({storageData}:{storageData: PrefillData}) {
+
     const [commonData, setCommonData] = useState<ViewCommonData>(getViewCommonData(storageData));
     const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>(getViewAdditionalCommonData(storageData));
     const [specificData, setSpecificData] = useState<ViewSpecificData[]>(getViewSpecificData(storageData));
@@ -32,21 +42,18 @@ function Edit({storageData}: {storageData: PrefillData}) {
     }
 
     return (
-    <div>
-        <div onClick={()=>navigate('/')}> <>&larr;</> </div>
-        <form onSubmit={handleSubmit} className={styles.FormContainer}>
-            <div className={styles.Section}>General Information</div>
-            <div>
-                <GeneralForm commonData={commonData} setCommonData={setCommonData} />
-                <AdditionalForm data={additionalCommonData} setAdditional={setAdditionalCommonData}/>
-            </div>
-            <div className={styles.Section}>Information For Specific Job Applications</div>
-            <SpecificForm data={specificData} setData={setSpecificData}/>
-            <div className={styles.SubmitButtonContainer}>
-                <button type="submit" className={styles.SubmitButton}>Save</button>
-            </div>
-        </form>
-    </div>
+    <form onSubmit={handleSubmit} className={styles.FormContainer}>
+        <div className={styles.Section}>General Information</div>
+        <div>
+            <GeneralForm commonData={commonData} setCommonData={setCommonData} />
+            <AdditionalForm data={additionalCommonData} setAdditional={setAdditionalCommonData}/>
+        </div>
+        <div className={styles.Section}>Information For Specific Job Applications</div>
+        <SpecificForm data={specificData} setData={setSpecificData}/>
+        <div className={styles.SubmitButtonContainer}>
+            <button type="submit" className={styles.SubmitButton}>Save</button>
+        </div>
+    </form>
     );
 }
 
