@@ -23,7 +23,7 @@ function Edit({storageData}: {storageData: PrefillData}) {
     );
 }
 
-function EditForm({storageData}:{storageData: PrefillData}) {
+export function EditForm({storageData}:{storageData: PrefillData}) {
 
     const [commonData, setCommonData] = useState<ViewCommonData>(getViewCommonData(storageData));
     const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>(getViewAdditionalCommonData(storageData));

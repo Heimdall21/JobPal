@@ -1,4 +1,5 @@
 const path = require('path');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -17,8 +18,10 @@ module.exports = {
     },
     output: {
         filename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        // sourceMapFilename: "[name].js.map"
     },
+    // devtool: "source-map",
     module: {
         rules: [
             {
@@ -65,11 +68,18 @@ module.exports = {
         ]
     },
     plugins: [
+        new HTMLWebpackPlugin({
+          inject: true,
+          filename: "edit.html",
+          title: "Jobpal Edit",
+          favicon: "public/jobpal.png",
+          template: "public/edit.html",
+          chunks:  ['edit']
+        }),
         new CopyWebpackPlugin({
             patterns: [
                 { from: 'public/manifest.json', to: '[name][ext]' },
-                { from: 'public/*.png', to: '[name][ext]' },
-                { from: 'public/edit.html', to: 'edit.html'}
+                { from: 'public/*.png', to: '[name][ext]' }
             ]
         }),
         new CleanWebpackPlugin()
