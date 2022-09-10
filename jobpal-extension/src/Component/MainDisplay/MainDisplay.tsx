@@ -56,7 +56,7 @@ const DummyData = [
 
 const useStyle = makeStyles(() => ({
   buttonPostion: {
-    
+
   }
 }));
 
@@ -77,47 +77,47 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
 
   return (
     <div className={`_main_display ${styles._main_display}`}>
-      <h1 className={`mainDisplayHeading ${styles._jobpal_heading}`}>JobPal</h1>
-      <EditButton
-        border="none"
-        color="black"
-        height="200px"
-        onClick={() => navigate('/edit')}
-        radius="50%"
-        width="200px"
-      />
-      <PrefillAllButton 
-        border="none"
-        color="black"
-        height="200px"
-        onClick={() => {
-          debugger;
-          console.log("test123");
-          console.log('testing');
-          console.log("data: ", data);
-          console.log("formFields: ", formFields);
-          if (data !== null && formFields !== null) {
-            const val = arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};});
-            chrome.runtime.sendMessage<FillAllRequest>({
-              type: "FillAll",
-              value: Array.from(val.entries())
-            })
-            toast.success('prefill all matched elements');
-            console.log("prefilled all values");
-          } 
-          
-        }}
-        radius="50%"
-        width="200px"
-      />
-      <Button variant="text">Testing</Button>
-      {/* {formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>} */}
       <Grid 
         container 
-        spacing={2}
+        spacing={1}
         direction="column"
+        alignItems="center"
       >
-        {renderSectionsList}
+        <h1 className={`mainDisplayHeading ${styles._jobpal_heading}`}>JobPal</h1>
+        <EditButton
+          border="none"
+          color="black"
+          height="200px"
+          onClick={() => navigate('/edit')}
+          radius="50%"
+          width="200px"
+        />
+        <Button 
+          variant="text"
+          onClick={() => {
+            if (data !== null && formFields !== null) {
+              const val = arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};});
+              chrome.runtime.sendMessage<FillAllRequest>({
+                type: "FillAll",
+                value: Array.from(val.entries())
+              })
+              toast.success('prefill all matched elements');
+              console.log("prefilled all values");
+            } 
+            
+          }}
+        >
+          Prefill all
+        </Button>
+        {/* {formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>} */}
+        <Grid 
+          container 
+          item
+          spacing={2}
+          direction="column"
+        >
+          {renderSectionsList}
+        </Grid>
       </Grid>
     </div>
   );
