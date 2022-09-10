@@ -41,24 +41,18 @@ const DummyData = [
       emailAddress: 'john.doe@testemail.com'
     }
   },
-  // {
-  //   section_title: 'Personal Details',
-  //   section_fields: {
-  //     title: 'Mr',
-  //     firstName: 'John',
-  //     lastName: 'Doe',
-  //     country: 'Australia',
-  //     mobile: '0404040404',
-  //     emailAddress: 'john.doe@testemail.com'
-  //   }
-  // }
-]
-
-const useStyle = makeStyles(() => ({
-  buttonPostion: {
-
+  {
+    section_title: 'Personal Details',
+    section_fields: {
+      title: 'Mr',
+      firstName: 'John',
+      lastName: 'Doe',
+      country: 'Australia',
+      mobile: '0404040404',
+      emailAddress: 'john.doe@testemail.com'
+    }
   }
-}));
+]
 
 function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: Fields|null }) {
   const [dummyData, setDummyData] = useState(DummyData);
@@ -84,31 +78,43 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
         alignItems="center"
       >
         <h1 className={`mainDisplayHeading ${styles._jobpal_heading}`}>JobPal</h1>
-        <EditButton
-          border="none"
-          color="black"
-          height="200px"
-          onClick={() => navigate('/edit')}
-          radius="50%"
-          width="200px"
-        />
-        <Button 
-          variant="text"
-          onClick={() => {
-            if (data !== null && formFields !== null) {
-              const val = arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};});
-              chrome.runtime.sendMessage<FillAllRequest>({
-                type: "FillAll",
-                value: Array.from(val.entries())
-              })
-              toast.success('prefill all matched elements');
-              console.log("prefilled all values");
-            } 
-            
-          }}
+        <Grid
+          container
+          item
+          direction="row"
+          spacing={12}
         >
-          Prefill all
-        </Button>
+          <Grid
+            item
+          >
+            <Button 
+              variant="text"
+              onClick={() => {
+                if (data !== null && formFields !== null) {
+                  const val = arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};});
+                  chrome.runtime.sendMessage<FillAllRequest>({
+                    type: "FillAll",
+                    value: Array.from(val.entries())
+                  })
+                  toast.success('prefill all matched elements');
+                  console.log("prefilled all values");
+                } 
+              }}
+            >
+              Prefill all
+            </Button>
+          </Grid>
+          <Grid
+            item
+          >
+            <Button
+              onClick={() => navigate('/edit')}
+            >
+              Edit
+            </Button>
+          </Grid>
+        </Grid>
+        
         {/* {formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>} */}
         <Grid 
           container 

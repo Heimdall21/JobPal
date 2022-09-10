@@ -12,9 +12,9 @@
   right:5px;
   z-index:9999999999;
   display:flex;
-  overflow:hidden;
   padding-left: 10px;
   padding-right: 10px;
+  overflow-y: auto;
 }
 
 .App-logo {
