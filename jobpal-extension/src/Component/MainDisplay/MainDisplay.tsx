@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { LabelInputMessage } from "../../ContentScripts/listener";
 import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 
 const DummyData = [
   {
@@ -54,7 +55,11 @@ const DummyData = [
 
 function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: Fields|null }) {
   const [dummyData, setDummyData] = useState(DummyData);
-  const renderSectionsList = dummyData.map((section: any) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>);
+  const renderSectionsList = dummyData.map((section: any) => (
+    <Grid item xs={2} >
+      <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
+    </Grid>
+  ));
   let navigate = useNavigate();
 
   const [matched, notmatched] = useMemo(
@@ -100,7 +105,13 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
       />
       <Button variant="text">Testing</Button>
       {/* {formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>} */}
-      {renderSectionsList}
+      <Grid 
+        container 
+        spacing={2}
+        direction="column"
+      >
+        {renderSectionsList}
+      </Grid>
     </div>
   );
 }
