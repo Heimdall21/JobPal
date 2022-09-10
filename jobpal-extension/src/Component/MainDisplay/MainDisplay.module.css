@@ -14,5 +14,6 @@
 ._main_display {
   position: relative;
   background-color: rgb(255, 255, 255);
-  display: block;
+  display: flex;
+  flex-direction: column;
 }
