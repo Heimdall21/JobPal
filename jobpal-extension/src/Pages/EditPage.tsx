@@ -9,9 +9,21 @@ import SpecificForm from '../Component/SpecificForm';
 import AdditionalForm from '../Component/AdditionalForm';
 import styles from '../Component/Form.module.css';
 import { useNavigate } from 'react-router-dom';
+import { storePrefillData } from '../Lib/storageHandler';
+import { toast } from 'react-toastify';
 
-function Edit({storageData, updateStorageData}: {storageData: PrefillData, updateStorageData: (newData: PrefillData)=>void}) {
+function Edit({storageData}: {storageData: PrefillData}) {
     let navigate = useNavigate();
+
+    return (
+    <div>
+        <div onClick={()=>navigate('/')}> <>&larr;</> </div>
+        <EditForm storageData={storageData}/>
+    </div>
+    );
+}
+
+export function EditForm({storageData}:{storageData: PrefillData}) {
 
     const [commonData, setCommonData] = useState<ViewCommonData>(getViewCommonData(storageData));
     const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>(getViewAdditionalCommonData(storageData));
@@ -20,25 +32,28 @@ function Edit({storageData, updateStorageData}: {storageData: PrefillData, updat
     const handleSubmit = (e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
         const newData = toModel(commonData, additionalCommonData, specificData);
-        updateStorageData(newData);
+        storePrefillData(newData, ()=> {
+            if (chrome.runtime.lastError) {
+                toast.error(chrome.runtime.lastError.message);
+            } else {
+                toast.success("store successfully!");
+            }
+        });
     }
 
     return (
-    <div>
-        <div onClick={()=>navigate('/')}> <>&larr;</> </div>
-        <form onSubmit={handleSubmit} className={styles.FormContainer}>
-            <div className={styles.Section}>General Information</div>
-            <div>
-                <GeneralForm commonData={commonData} setCommonData={setCommonData} />
-                <AdditionalForm data={additionalCommonData} setAdditional={setAdditionalCommonData}/>
-            </div>
-            <div className={styles.Section}>Information For Specific Job Applications</div>
-            <SpecificForm data={specificData} setData={setSpecificData}/>
-            <div className={styles.SubmitButtonContainer}>
-                <button type="submit" className={styles.SubmitButton}>Save</button>
-            </div>
-        </form>
-    </div>
+    <form onSubmit={handleSubmit} className={styles.FormContainer}>
+        <div className={styles.Section}>General Information</div>
+        <div>
+            <GeneralForm commonData={commonData} setCommonData={setCommonData} />
+            <AdditionalForm data={additionalCommonData} setAdditional={setAdditionalCommonData}/>
+        </div>
+        <div className={styles.Section}>Information For Specific Job Applications</div>
+        <SpecificForm data={specificData} setData={setSpecificData}/>
+        <div className={styles.SubmitButtonContainer}>
+            <button type="submit" className={styles.SubmitButton}>Save</button>
+        </div>
+    </form>
     );
 }
 

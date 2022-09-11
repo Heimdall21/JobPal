@@ -1,7 +1,5 @@
-import * as React from "react";
-import { useEffect, useState, useMemo } from "react";
-import * as ReactDOM from "react-dom";
-import { Fields, FillAllRequest, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
+import { useEffect, useState, useMemo, Dispatch, SetStateAction } from "react";
+import { Fields, FillAllRequest, FrameId, MatchData, matchInputElements, transformPrefillData } from "../../ContentScripts/input";
 import { getPrefillData } from "../../Lib/storageHandler";
 import { PrefillData } from "../../Lib/StorageType";
 import FieldsDisplay from "../FieldsDisplay";
@@ -15,6 +13,9 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { LabelInputMessage } from "../../ContentScripts/listener";
 import Button from '@mui/material/Button';
+import MinimiseButton from "../Buttons/MinimiseButton";
+import CloseButton from "../Buttons/CloseButton";
+import { StopRequest } from "../../ContentScripts/input";
 import Grid from '@mui/material/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -54,7 +55,7 @@ const DummyData = [
   }
 ]
 
-function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: Fields|null }) {
+function MainDisplay({data, formFields, setMinimised, setClosed}: { data: PrefillData|null, formFields: Fields, setMinimised: Dispatch<SetStateAction<Boolean>>, setClosed: Dispatch<SetStateAction<Boolean>> }) {
   const [dummyData, setDummyData] = useState(DummyData);
   const renderSectionsList = dummyData.map((section: any) => (
     <Grid item xs={2} >
@@ -65,7 +66,7 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
 
   const [matched, notmatched] = useMemo(
     ()=> data === null || formFields === null?
-      [[], new Map()]:
+      [new Map() as MatchData, new Map()]:
       matchInputElements(transformPrefillData(data, window.location), formFields),
     [data, formFields]);
 
@@ -78,6 +79,22 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
         alignItems="center"
       >
         <h1 className={`mainDisplayHeading ${styles._jobpal_heading}`}>JobPal</h1>
+        <MinimiseButton
+          border="none"
+          color="black"
+          height="200px"
+          onClick={() => setMinimised(true)}
+          radius="50%"
+          width="200px"
+        />
+        <CloseButton
+          border="none"
+          color="black"
+          height="200px"
+          onClick={() => {setClosed(true); chrome.runtime.sendMessage<StopRequest>({type: "Close"});}}
+          radius="50%"
+          width="200px"
+        />
         <Grid
           container
           item

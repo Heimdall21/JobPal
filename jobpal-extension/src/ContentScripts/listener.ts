@@ -5,24 +5,51 @@ import { getLabelInputPairs } from "./input";
 let labelInputPairs: {
     label: HTMLLabelElement,
     input: HTMLInputElement|HTMLSelectElement,
-}[]|null = null;
+}[]= [];
+
+let version: number = -1;
+
+let observer: MutationObserver|null = null;
+
+let timer: ReturnType<typeof setTimeout> | null = null;
 
 chrome.runtime.onMessage.addListener((message: ListenerResponse)=> {
     if (message.type === "StartListener") {
-        if (labelInputPairs === null) {
+        // on start: get all the labels and inputs
+        if (version === -1) {
+            version += 1;
             labelInputPairs = getLabelInputPairs(document);
+            // add an observer so we can detect if there are new forms created
+            observer = new MutationObserver(onObserveMutation);
+            const contanier = document.documentElement || document.body;
+            observer.observe(contanier, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+                characterDataOldValue: true
+            });
         }
+        // tell the application what we have found
         chrome.runtime.sendMessage<LabelInputRequest>({
             type: "LabelInputMessage",
-            value: toLabelInputMessages(labelInputPairs)
+            value: toLabelInputMessages(labelInputPairs),
+            version
         });
     } else if (message.type === "FillListener") {
-        if (labelInputPairs === null) return;
+        // fill in the data in the input element
+        if (version === -1) return; // we have not found the labels
+        // the application does not notice that the form has been updated
+        if (version !== message.version) return;
         for (const {index, data} of message.value) {
             fillOne({data: data, fillLocation: labelInputPairs[index].input});
         }
     }
 });
+
+// send ready to the background script to check if the application has started
+// it is neccessary as it is possible that an iframe is created after the main
+// application is started
+chrome.runtime.sendMessage<ReadyMessage>({type: 'Ready'});
 
 function toLabelInputMessages(inputArr: {
     label: HTMLLabelElement,
@@ -59,6 +86,76 @@ function toLabelInputMessages(inputArr: {
     });
 }
 
+function onObserveMutation(mutations: MutationRecord[], _observer: MutationObserver) {
+    if (timer === null && requireUpdate(mutations)) {
+        timer = setTimeout(()=>{
+            updateLabelInputs();
+            timer = null;
+        }, 1);
+    }
+}
+
+function requireUpdate(mutations: MutationRecord[]): boolean {
+    for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+            if (
+            containLabelOrInput(mutation.addedNodes) ||
+            containLabelOrInput(mutation.removedNodes)
+            ) return true;
+        } else if (mutation.type === 'characterData') {
+            if (mutation.target instanceof HTMLLabelElement) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function updateLabelInputs() {
+    const prevLabelInputPairs = labelInputPairs;
+    labelInputPairs = getLabelInputPairs(document);
+    if (isLabelInputsUpdated(prevLabelInputPairs, labelInputPairs)) {
+        version += 1;
+        chrome.runtime.sendMessage<LabelInputRequest>({
+            type: "LabelInputMessage",
+            value: toLabelInputMessages(labelInputPairs),
+            version
+        });
+    }
+}
+
+function isLabelInputsUpdated(old: typeof labelInputPairs, curr: typeof labelInputPairs): boolean {
+    if (old.length !== curr.length) return true;
+    for (let i = 0; i < old.length; i++) {
+        if ((old[i].label !== curr[i].label) ||
+        (old[i].input !== curr[i].input)) {
+            return true
+        }
+    }
+    return false;
+}
+
+function containLabelOrInput(nodes: NodeList): boolean {
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        if ((node instanceof HTMLDivElement) && 
+          (node.id === "jobpal-root")) {
+          return false;
+        }
+        if (
+        node instanceof HTMLLabelElement || 
+        node instanceof HTMLInputElement ||
+        node instanceof HTMLSelectElement) {
+            return true;
+        }
+        if (containLabelOrInput(nodes[i].childNodes)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 interface InputTypeTag {
     input: "input",
     select: "select"
@@ -88,5 +185,10 @@ export type LabelInputMessage = InputType & {
 
 export interface LabelInputRequest {
     type: 'LabelInputMessage',
-    value: LabelInputMessage[]
+    value: LabelInputMessage[],
+    version: number
+}
+
+export interface ReadyMessage {
+    type: 'Ready'
 }
