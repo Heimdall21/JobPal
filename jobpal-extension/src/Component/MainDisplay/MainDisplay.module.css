@@ -8,11 +8,21 @@
   text-align: center;
   margin-top: 20px;
   width: 280px;
-  overflow: auto;
 }
 
 ._main_display {
-  position: relative;
+  position: absolute;
   background-color: rgb(255, 255, 255);
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
+
+._header {
+  width: 280px;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+}
+

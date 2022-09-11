@@ -1,6 +1,7 @@
 import { ViewAdditionalType, ViewSpecificData } from "./ViewFormType"
 import AdditionalForm from "./AdditionalForm";
 import styles from "./Form.module.css";
+import Button from '@mui/material/Button';
 
 export default function SpecificForm({data, setData}: {
     data: ViewSpecificData[], 
@@ -26,7 +27,7 @@ export default function SpecificForm({data, setData}: {
     }
 
     return (<div>
-        <button type="button" onClick={addRow}>Add URL</button>
+        <Button onClick={addRow}>Add URL</Button>
         {data.map(({id, url, additional, ...rest})=><FormRow key={id} _key={url} val={rest} additional={additional} setData={handleDataChange(id)} removeRow={removeRow(id)}/>)}
     </div>);
 }
@@ -47,7 +48,7 @@ function FormRow({_key, val, additional, setData, removeRow}:{
 
     return (<div>
         <div className={styles.RemoveButtonContainer}>
-            <button className={styles.RemoveButton} type="button" onClick={removeRow}>Remove URL</button>
+            <Button onClick={removeRow}>Remove URL</Button>
         </div>
         <input type="text" value={_key} placeholder={"url"} onChange={handleValueChange('url')}></input>
         <input type="text" value={val.companyName} placeholder={"companyName"} onChange={handleValueChange('companyName')}></input>

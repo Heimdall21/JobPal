@@ -50,7 +50,7 @@ export function matchInputElements(data: Map<string, string>, formFields: Fields
             const last_name = data.get('familyName');
             const first_name = data.get('givenName');
             if (last_name && first_name) {
-              value = first_name + last_name;
+              value = first_name + " " + last_name;
             }
           }
           

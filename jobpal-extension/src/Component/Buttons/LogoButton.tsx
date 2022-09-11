@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../App.css";
+import Button from '@mui/material/Button';
 
 interface Props {
   border: string;
@@ -27,7 +28,7 @@ const LogoButton: React.FC<Props> = ({
   },[])
   return (
     <button
-      className="button-3 bottom_margin logo"
+      className="button-3 bottom_margin jobpal-logo"
       onClick={onClick}
     >
       <img 

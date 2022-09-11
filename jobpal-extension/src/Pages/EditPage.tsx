@@ -11,6 +11,40 @@ import styles from '../Component/Form.module.css';
 import { useNavigate } from 'react-router-dom';
 import { storePrefillData } from '../Lib/storageHandler';
 import { toast } from 'react-toastify';
+import { Column, Row, Item } from '@mui-treasury/components/flex';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@mui/material/Button';
+
+const useStyles = makeStyles(() => ({
+  card: {
+    width: '100%',
+    borderRadius: 16,
+    boxShadow: '0 8px 16px 0 #BDC9D7',
+    overflow: 'hidden',
+  },
+  header: {
+    fontFamily: 'Barlow, san-serif',
+    backgroundColor: '#fff',
+  },
+  headline: {
+    color: '#122740',
+    fontSize: '1.25rem',
+    fontWeight: 600,
+  },
+  link: {
+    color: '#2281bb',
+    padding: '0 0.25rem',
+    fontSize: '0.875rem',
+  },
+  actions: {
+    color: '#BDC9D7'
+  },
+  divider: {
+    backgroundColor: '#d9e2ee',
+    margin: '0 20px',
+  }
+}));
+
 
 function Edit({storageData}: {storageData: PrefillData}) {
     let navigate = useNavigate();
@@ -28,6 +62,7 @@ export function EditForm({storageData}:{storageData: PrefillData}) {
     const [commonData, setCommonData] = useState<ViewCommonData>(getViewCommonData(storageData));
     const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>(getViewAdditionalCommonData(storageData));
     const [specificData, setSpecificData] = useState<ViewSpecificData[]>(getViewSpecificData(storageData));
+    const customStyles = useStyles();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
@@ -42,18 +77,22 @@ export function EditForm({storageData}:{storageData: PrefillData}) {
     }
 
     return (
-    <form onSubmit={handleSubmit} className={styles.FormContainer}>
-        <div className={styles.Section}>General Information</div>
-        <div>
-            <GeneralForm commonData={commonData} setCommonData={setCommonData} />
-            <AdditionalForm data={additionalCommonData} setAdditional={setAdditionalCommonData}/>
-        </div>
-        <div className={styles.Section}>Information For Specific Job Applications</div>
-        <SpecificForm data={specificData} setData={setSpecificData}/>
-        <div className={styles.SubmitButtonContainer}>
-            <button type="submit" className={styles.SubmitButton}>Save</button>
-        </div>
-    </form>
+      <Column p={0} gap={0} className={styles.card}>
+        <form onSubmit={handleSubmit} className={styles.FormContainer}>
+          <div className={styles.Section}>General Information</div>
+          <div>
+              <GeneralForm commonData={commonData} setCommonData={setCommonData} />
+              <AdditionalForm data={additionalCommonData} setAdditional={setAdditionalCommonData}/>
+          </div>
+          <div className={styles.Section}>Information For Specific Job Applications</div>
+          <SpecificForm data={specificData} setData={setSpecificData}/>
+          <div className={styles.SubmitButtonContainer}>
+              <Button type="submit" className={styles.SubmitButton}>Save</Button>
+          </div>
+      </form>
+    </Column>
+    
+
     );
 }
 
