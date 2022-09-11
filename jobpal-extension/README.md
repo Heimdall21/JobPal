@@ -17,4 +17,5 @@ git clone https://github.com/Heimdall21/JobPal.git
 
 - Make changes to the extension
 - Run `npm run build`
-- Changes should now be applied on the browser
+- Click the reload button of the extension in chrome://extensions
+- Changes should now be applied on the browser!
