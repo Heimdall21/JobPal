@@ -137,14 +137,6 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
         </Grid>
         
         {formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>}
-        <Grid 
-          container 
-          item
-          spacing={2}
-          direction="column"
-        >
-          {renderSectionsList}
-        </Grid>
       </Grid>
     </div>
   );
