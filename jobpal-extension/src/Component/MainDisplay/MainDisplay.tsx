@@ -18,6 +18,8 @@ import CloseButton from "../Buttons/CloseButton";
 import { StopRequest } from "../../ContentScripts/input";
 import Grid from '@mui/material/Grid';
 import { makeStyles } from '@material-ui/core/styles';
+import { Row, Item } from '@mui-treasury/components/flex';
+
 
 const DummyData = [
   {
@@ -83,28 +85,33 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
         direction="column"
         alignItems="center"
       >
-        <h1 className={`mainDisplayHeading ${styles._jobpal_heading}`}>JobPal</h1>
-        <MinimiseButton
-          border="none"
-          color="black"
-          height="200px"
-          onClick={() => {setMinimised(true); console.log("minimise clicked")}}
-          radius="50%"
-          width="200px"
-        />
-        <CloseButton
-          border="none"
-          color="black"
-          height="200px"
-          onClick={() => {setClosed(true); console.log("close clicked");chrome.runtime.sendMessage<StopRequest>({type: "Close"});}}
-          radius="50%"
-          width="200px"
-        />
+        
+        <div className={`_header ${styles._header}`}>
+
+          <MinimiseButton
+            border="none"
+            color="black"
+            height="200px"
+            onClick={() => {setMinimised(true); console.log("minimise clicked")}}
+            radius="50%"
+            width="200px"
+          />
+          <h1 className={`mainDisplayHeading ${styles._jobpal_heading}`}>JobPal</h1>
+          <CloseButton
+            border="none"
+            color="black"
+            height="200px"
+            onClick={() => {setClosed(true); console.log("close clicked");chrome.runtime.sendMessage<StopRequest>({type: "Close"});}}
+            radius="50%"
+            width="200px"
+          />
+        </div>
+        
         <Grid
           container
           item
           direction="row"
-          spacing={16}
+          spacing={14}
         >
           <Grid
             item
