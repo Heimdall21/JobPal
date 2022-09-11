@@ -11,16 +11,19 @@ function FieldsDisplay({ fields, data,matched, notMatched }:{
     const labelsArrs = Array.from(fields.values()).map(val=>val[1]);
     const labels: LabelInputMessage[] = ([] as LabelInputMessage[]).concat(...labelsArrs);
     const labelDisplays = labels.map((val, index)=><LabelDisplay key={index} text={val.labelText.trim().slice(0, 15)}/>);
+    console.log("humbug: ", matched);
     if (data === null) {
         return <div>
             {labelDisplays}
         </div>
     } else {
-        return (<div>
-            {labelDisplays}
-            <MatchedFields matched={matched}/>
-            <NotMatchedFields notMatched={notMatched}/>
-        </div>);
+        return (
+          <div>
+              {/* {labelDisplays} */}
+              <MatchedFields matched={matched}/>
+              {/* <NotMatchedFields notMatched={notMatched}/> */}
+          </div>
+        );
     }
 }
 

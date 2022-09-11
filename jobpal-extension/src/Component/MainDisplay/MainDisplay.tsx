@@ -63,12 +63,17 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
     </Grid>
   ));
   let navigate = useNavigate();
+  console.log('formFields: ', formFields);
+  console.log('data: ', data);
 
   const [matched, notmatched] = useMemo(
     ()=> data === null || formFields === null?
       [new Map() as MatchData, new Map()]:
       matchInputElements(transformPrefillData(data, window.location), formFields),
     [data, formFields]);
+  console.log('matched: ', matched);
+  console.log('unmatched: ', notmatched);
+
 
   return (
     <div className={`_main_display ${styles._main_display}`}>
@@ -131,7 +136,7 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
           </Grid>
         </Grid>
         
-        {/* {formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>} */}
+        {formFields === null?<></>: <FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>}
         <Grid 
           container 
           item
@@ -146,6 +151,8 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
 }
 
 function arrayToMap<T, K extends keyof T, U>(arr: T[], property: K, selector: ((value: T)=>U)): Map<T[K], U[]> {
+  console.log('inside arrayToMap');
+  console.log('array: ', arr);
   let ret: Map<T[K], U[]> = new Map();
   for (const elem of arr) {
     const key = elem[property];
