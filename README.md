@@ -20,6 +20,7 @@ npm run build
 - Click the 'load unpackaged' button.
 - Select the `dist` folder.
 - You can now use the extension!
+- If you are lost, you may try to follow this link https://developer.chrome.com/docs/extensions/mv3/getstarted/#unpacked
 
 2. Modifying the extension after added to Chrome
 
