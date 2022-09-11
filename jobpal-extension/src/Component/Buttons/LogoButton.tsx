@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../App.css";
+import Button from '@mui/material/Button';
 
 interface Props {
   border: string;
@@ -26,14 +27,14 @@ const LogoButton: React.FC<Props> = ({
     setLogoSrcURL(url);
   },[])
   return (
-    <button
+    <Button
       className="button-3 bottom_margin logo"
       onClick={onClick}
     >
       <img 
         src={logoSrcURL}
       />
-    </button>
+    </Button>
   )
 }
 

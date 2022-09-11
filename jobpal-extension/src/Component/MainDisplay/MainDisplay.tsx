@@ -83,7 +83,7 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
           border="none"
           color="black"
           height="200px"
-          onClick={() => setMinimised(true)}
+          onClick={() => {setMinimised(true); console.log("minimise clicked")}}
           radius="50%"
           width="200px"
         />
@@ -91,7 +91,7 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
           border="none"
           color="black"
           height="200px"
-          onClick={() => {setClosed(true); chrome.runtime.sendMessage<StopRequest>({type: "Close"});}}
+          onClick={() => {setClosed(true); console.log("close clicked");chrome.runtime.sendMessage<StopRequest>({type: "Close"});}}
           radius="50%"
           width="200px"
         />

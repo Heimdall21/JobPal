@@ -18,6 +18,11 @@ function App() {
   const [minimised, setMinimised] = useState<Boolean>(false);
   const [closed, setClosed] = useState<Boolean>(false);
 
+  useEffect(()=> {
+    console.log("change detected")
+    console.log(closed, minimised)
+  }, [closed, minimised])
+
   // when a LabelInputResponse is received, add it to the formFields Map
   useEffect(()=>{
     chrome.runtime.onMessage.addListener((message: MainResponse)=> {

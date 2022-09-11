@@ -1,6 +1,7 @@
 import React from "react";
 import { FiMinimize2 } from "react-icons/fi";
 import { IconContext } from "react-icons";
+import Button from '@mui/material/Button';
 
 interface Props {
   border: string;
@@ -23,12 +24,12 @@ const MinimiseButton: React.FC<Props> = ({
 }) => {
   return (
     <IconContext.Provider value={{}}>
-      <button
+      <Button
         className="button-3 bottom_margin"
         onClick={onClick}
       >
         <FiMinimize2/>
-      </button>
+      </Button>
     </IconContext.Provider>
   )
 }

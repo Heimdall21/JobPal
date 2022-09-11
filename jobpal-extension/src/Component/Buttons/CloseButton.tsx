@@ -1,6 +1,7 @@
 import React from "react";
 import { FiX } from "react-icons/fi";
 import { IconContext } from "react-icons";
+import { Button } from "@mui/material";
 
 interface Props {
   border: string;
@@ -23,12 +24,12 @@ const CloseButton: React.FC<Props> = ({
 }) => {
   return (
     <IconContext.Provider value={{}}>
-      <button
+      <Button
         className="button-3 bottom_margin"
         onClick={onClick}
       >
         <FiX/>
-      </button>
+      </Button>
     </IconContext.Provider>
   )
 }
