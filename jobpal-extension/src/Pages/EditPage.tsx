@@ -1,9 +1,6 @@
 import '../App.css';
-import { useEffect, useState } from 'react';
-import {toast, ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from 'react';
 
-import { getPrefillData, storePrefillData } from '../Lib/storageHandler';
 import { AdditionalPrefillData, PrefillData, CommonPrefillData, ExtendedSpecificPrefillData } from '../Lib/StorageType';
 
 import { ViewCommonData, ViewAdditionalType, ViewSpecificData, ViewCommonKeys } from '../Component/ViewFormType';
@@ -11,70 +8,52 @@ import GeneralForm from '../Component/GeneralForm';
 import SpecificForm from '../Component/SpecificForm';
 import AdditionalForm from '../Component/AdditionalForm';
 import styles from '../Component/Form.module.css';
+import { useNavigate } from 'react-router-dom';
+import { storePrefillData } from '../Lib/storageHandler';
+import { toast } from 'react-toastify';
 
-function Edit() {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [commonData, setCommonData] = useState<ViewCommonData>(new ViewCommonData());
-    const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>([]);
-    const [specificData, setSpecificData] = useState<ViewSpecificData[]>([]);
+function Edit({storageData}: {storageData: PrefillData}) {
+    let navigate = useNavigate();
 
-    function setPrefillData(data: PrefillData) {
-        // set the initial view model
-        setCommonData(getViewCommonData(data));
-        setAdditionalCommonData(getViewAdditionalCommonData(data));
-        setSpecificData(getViewSpecificData(data));
-    }
+    return (
+    <div>
+        <div onClick={()=>navigate('/')}> <>&larr;</> </div>
+        <EditForm storageData={storageData}/>
+    </div>
+    );
+}
 
-    useEffect(()=>{
-        // get initial data
-        getPrefillData((data)=>{
-            setIsLoading(false);
-            if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError);
-                toast.error(chrome.runtime.lastError.message);
-                return;
-            } else if (data === undefined) {
-                return;
-            }
-            setPrefillData(data);
-        })
-    }, []);
+export function EditForm({storageData}:{storageData: PrefillData}) {
+
+    const [commonData, setCommonData] = useState<ViewCommonData>(getViewCommonData(storageData));
+    const [additionalCommonData, setAdditionalCommonData] = useState<ViewAdditionalType>(getViewAdditionalCommonData(storageData));
+    const [specificData, setSpecificData] = useState<ViewSpecificData[]>(getViewSpecificData(storageData));
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
         const newData = toModel(commonData, additionalCommonData, specificData);
-        storePrefillData(newData,
-        ()=>{
+        storePrefillData(newData, ()=> {
             if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError);
                 toast.error(chrome.runtime.lastError.message);
-                return;
+            } else {
+                toast.success("store successfully!");
             }
-            toast.success("store successfully!");
-            // refresh the form
-            setPrefillData(newData);
         });
     }
 
-    if (isLoading) {
-        return <></>
-    }
     return (
-    <div>
-        <form onSubmit={handleSubmit} className={styles.FormContainer}>
-            <div className={styles.Section}>General Information</div>
-            <div>
-                <GeneralForm commonData={commonData} setCommonData={setCommonData} />
-                <AdditionalForm data={additionalCommonData} setAdditional={setAdditionalCommonData}/>
-            </div>
-            <div className={styles.Section}>Information For Specific Job Applications</div>
-            <SpecificForm data={specificData} setData={setSpecificData}/>
-            <div className={styles.SubmitButtonContainer}>
-                <button type="submit" className={styles.SubmitButton}>Save</button>
-            </div>
-        </form>
-        <ToastContainer autoClose={300} position={'bottom-right'}/>
-    </div>
+    <form onSubmit={handleSubmit} className={styles.FormContainer}>
+        <div className={styles.Section}>General Information</div>
+        <div>
+            <GeneralForm commonData={commonData} setCommonData={setCommonData} />
+            <AdditionalForm data={additionalCommonData} setAdditional={setAdditionalCommonData}/>
+        </div>
+        <div className={styles.Section}>Information For Specific Job Applications</div>
+        <SpecificForm data={specificData} setData={setSpecificData}/>
+        <div className={styles.SubmitButtonContainer}>
+            <button type="submit" className={styles.SubmitButton}>Save</button>
+        </div>
+    </form>
     );
 }
 

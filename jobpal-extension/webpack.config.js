@@ -1,5 +1,5 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -11,17 +11,17 @@ module.exports = {
         historyApiFallback: true
     },
     entry: {
-        index: path.resolve(__dirname, "./src/index.tsx"),
-        input: path.resolve(__dirname, "./src/ContentScripts/input.ts"),
-        content: path.resolve(__dirname, "./public/content.js"),
-        background: path.resolve(__dirname, "./public/background.js")
-        // options: path.resolve(__dirname, "./src/index-options.js"),
-        // foreground: path.resolve(__dirname, "./src/index-foreground.js")
+        content: path.resolve(__dirname, "./public/content.tsx"),
+        background: path.resolve(__dirname, "./public/background.ts"),
+        listener: path.resolve(__dirname, "./src/ContentScripts/listener.ts"),
+        edit: path.resolve(__dirname, "./src/edit.tsx")
     },
     output: {
         filename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        // sourceMapFilename: "[name].js.map"
     },
+    // devtool: "source-map",
     module: {
         rules: [
             {
@@ -68,16 +68,17 @@ module.exports = {
         ]
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: 'public/index.html',
-            chunks: ['index']
+        new HTMLWebpackPlugin({
+          inject: true,
+          filename: "edit.html",
+          title: "Jobpal Edit",
+          favicon: "public/jobpal.png",
+          template: "public/edit.html",
+          chunks:  ['edit']
         }),
         new CopyWebpackPlugin({
             patterns: [
                 { from: 'public/manifest.json', to: '[name][ext]' },
-                // { from: 'src/background.js', to: '[name].[ext]' },
-                // { from: 'src/inject_script.js', to: '[name].[ext]' },
                 { from: 'public/*.png', to: '[name][ext]' }
             ]
         }),
