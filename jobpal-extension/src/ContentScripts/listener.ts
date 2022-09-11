@@ -138,6 +138,10 @@ function isLabelInputsUpdated(old: typeof labelInputPairs, curr: typeof labelInp
 function containLabelOrInput(nodes: NodeList): boolean {
     for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
+        if ((node instanceof HTMLDivElement) && 
+          (node.id === "jobpal-root")) {
+          return false;
+        }
         if (
         node instanceof HTMLLabelElement || 
         node instanceof HTMLInputElement ||

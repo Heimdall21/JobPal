@@ -1,15 +1,14 @@
 import './App.css';
-import logo from './logo.svg';
 import MainDisplay from './Component/MainDisplay/MainDisplay';
 import { Routes, Route, MemoryRouter } from "react-router-dom";
 
 import { PrefillData } from './Lib/StorageType';
 import Edit from './Pages/EditPage';
 import { useEffect, useState } from 'react';
-import { getPrefillData, onUpdatePrefillData, storePrefillData } from './Lib/storageHandler';
-import {toast, ToastContainer} from 'react-toastify';
+import { initStorageData, onUpdatePrefillData } from './Lib/storageHandler';
+import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Fields, StartRequest, StopRequest } from './ContentScripts/input';
+import { Fields, StartRequest } from './ContentScripts/input';
 import { MainResponse } from '../public/background';
 import LogoButton from './Component/Buttons/LogoButton';
 
@@ -48,19 +47,7 @@ function App() {
 
   // get the initial data
   useEffect(()=>{
-    getPrefillData((newData)=> {
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError);
-        return;
-      } else if (newData === undefined) {
-          setData({
-            common: {additional: {}},
-            specific: {}
-          });
-          return;
-      }
-      setData(newData)
-    })
+    initStorageData(setData);
   }, []);
 
   return (

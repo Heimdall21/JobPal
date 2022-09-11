@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import {PrefillData} from "./StorageType"
 
 const profileQueryKey = 'profile';
@@ -28,3 +29,19 @@ export const onUpdatePrefillData = (callback: ((data:PrefillData)=>void))=>{
         }
     };
 }
+
+export function initStorageData(setData: Dispatch<SetStateAction<PrefillData|null>>) {
+    getPrefillData((newData)=> {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+        return;
+      } else if (newData === undefined) {
+          setData({
+            common: {additional: {}},
+            specific: {}
+          });
+          return;
+      }
+      setData(newData)
+    })
+  }
