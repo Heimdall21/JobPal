@@ -28,7 +28,7 @@ const LogoButton: React.FC<Props> = ({
   },[])
   return (
     <button
-      className="button-3 bottom_margin logo"
+      className="button-3 bottom_margin jobpal-logo"
       onClick={onClick}
     >
       <img 
