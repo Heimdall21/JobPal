@@ -1,4 +1,5 @@
 import React from "react";
+import styles from './PrefillAllButton.module.css';
 
 interface Props {
   border: string;
@@ -21,10 +22,10 @@ const PrefillAllButton: React.FC<Props> = ({
 }) => {
   return (
     <button
-      className="button-3 bottom_margin"
+      className={`prefillAll ${styles._prefill_all_button}`}
       onClick={onClick}
     >
-      Prefill Button!
+      Prefill all
     </button>
   )
 }

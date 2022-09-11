@@ -7,10 +7,12 @@ import PrefillAllButton from "../Buttons/PrefillAllButton";
 import EditButton from "../Buttons/EditButton";
 import PrefillSection from "../PrefillSection/PrefillSection";
 import { toToastItem } from "react-toastify/dist/utils";
+import styles from "./MainDisplay.module.css";
 import { fillAll } from "../../Lib/FillForm";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { LabelInputMessage } from "../../ContentScripts/listener";
+import Button from '@mui/material/Button';
 import MinimiseButton from "../Buttons/MinimiseButton";
 import CloseButton from "../Buttons/CloseButton";
 import { StopRequest } from "../../ContentScripts/input";
@@ -38,44 +40,22 @@ const DummyData = [
       emailAddress: 'john.doe@testemail.com'
     }
   },
-  {
-    section_title: 'Personal Details',
-    section_fields: {
-      title: 'Mr',
-      firstName: 'John',
-      lastName: 'Doe',
-      country: 'Australia',
-      mobile: '0404040404',
-      emailAddress: 'john.doe@testemail.com'
-    }
-  }
   // {
-  //   section_title: 'Education',
+  //   section_title: 'Personal Details',
   //   section_fields: {
-  //     education: [
-  //       {
-  //         sub_section_title: 'Education 1',
-  //         school: 'UNSW',
-  //         degree: 'Bachelor of Computer Science',
-  //         discipline: 'Software Engineering',
-  //         start_date: '01/01/2017',
-  //         end_date: '31/12/2022'
-  //       }
-  //     ]
+  //     title: 'Mr',
+  //     firstName: 'John',
+  //     lastName: 'Doe',
+  //     country: 'Australia',
+  //     mobile: '0404040404',
+  //     emailAddress: 'john.doe@testemail.com'
   //   }
-  // },
-  // {
-  //   section_title: 'Interviewed before',
-  //   section_fields: {
-  //     workAuthorisation: false,
-  //     sponsorshipRequirements: false,
-  //     visaStatus: "On a student visa that lasts until July 2023"
-  //   }
-
   // }
 ]
 
 function MainDisplay({data, formFields, setMinimised, setClosed}: { data: PrefillData|null, formFields: Fields, setMinimised: Dispatch<SetStateAction<Boolean>>, setClosed: Dispatch<SetStateAction<Boolean>> }) {
+  const [dummyData, setDummyData] = useState(DummyData);
+  const renderSectionsList = dummyData.map((section: any) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>);
   // const [data, setDate] = useState(DummyData);
   // const renderSectionsList = data.map((
   //   section) => <PrefillSection section_title={section.section_title} section_fields={section.section_fields}/>
@@ -89,7 +69,8 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
     [data, formFields]);
 
   return (
-    <div>
+    <div className={`_main_display ${styles._main_display}`}>
+      <h1 className={`mainDisplayHeading ${styles._jobpal_heading}`}>JobPal</h1>
       {/* <h1>Hello, Welcome to React and TypeScript!</h1> */}
       {/* <h1>JobPal</h1> */}
       <MinimiseButton
@@ -128,11 +109,14 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
                 .map(([key, [version, rest]])=>[key, version, rest])
             })
             toast.success('prefill all matched elements');
-          }
+          } 
+          
         }}
         radius="50%"
         width="200px"
       />
+      <Button variant="text">Testing</Button>
+      {renderSectionsList}
       {/* <PrefillSection 
         title="Personal Details"
         border="solid"
@@ -142,7 +126,10 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
         width="200px"
         radius="20px"
       /> */}
-<FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/>
+
+{/* NOTE: FieldsDisplay demonstrates how matched and notmatched can be used
+<FieldsDisplay fields={formFields} data={data} matched={matched} notMatched={notmatched}/> 
+*/}
       {/* {renderSectionsList} */}
     </div>
   );
