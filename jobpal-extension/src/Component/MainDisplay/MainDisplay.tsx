@@ -85,9 +85,7 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
         direction="column"
         alignItems="center"
       >
-        
         <div className={`_header ${styles._header}`}>
-
           <MinimiseButton
             border="none"
             color="black"
@@ -111,7 +109,7 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
           container
           item
           direction="row"
-          spacing={14}
+          spacing={13}
         >
           <Grid
             item
@@ -138,7 +136,7 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
             <Button
               onClick={() => navigate('/edit')}
             >
-              Edit
+              Edit all
             </Button>
           </Grid>
         </Grid>

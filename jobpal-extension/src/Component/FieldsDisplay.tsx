@@ -64,7 +64,7 @@ function FieldsDisplay({ fields, data,matched, notMatched }:{
                 <Link className={styles.link}>Edit section</Link>
               </Item>
             </Row>
-            <MatchedFields matched={matched}/>
+            <MatchedFields matched={matched} />
             {/* {labelDisplays} */}
             {/* <NotMatchedFields notMatched={notMatched}/> */}
           </Column>
