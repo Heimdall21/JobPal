@@ -82,7 +82,7 @@ function MainDisplay({data, formFields}: { data: PrefillData|null, formFields: F
           container
           item
           direction="row"
-          spacing={12}
+          spacing={16}
         >
           <Grid
             item
