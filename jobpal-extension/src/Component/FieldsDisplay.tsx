@@ -60,9 +60,7 @@ function FieldsDisplay({ fields, data,matched, notMatched }:{
           <Column p={0} gap={0} className={styles.card}>
             <Row wrap p={2} alignItems={'baseline'} className={styles.header}>
               <Item stretched className={styles.headline}>Matched</Item>
-              <Item className={styles.actions}>
-                <Link className={styles.link}>Edit section</Link>
-              </Item>
+
             </Row>
             <MatchedFields matched={matched} />
             {/* {labelDisplays} */}
@@ -79,11 +77,10 @@ function LabelDisplay({text}:{text:string}) {
 function MatchedFields({matched}:{matched: MatchData}) {
     const styles = useStyles();
     return (
-    <>
+    <div style={{padding: 10}}>
     {([] as MatchedItem[]).concat(...Array.from(matched.values()).map(val=>val[1]))
     .map(({labelText, data}, index) => (
-        <div key={index}>
-          {/* {`${labelText}: ${data}`} */}
+        <div key={index} style={{paddingTop: 10}}>
           <Grid
             item
             direction="row"
@@ -101,7 +98,7 @@ function MatchedFields({matched}:{matched: MatchData}) {
         </div>
       )
     )}
-    </>);
+    </div>);
 }
 
 function NotMatchedFields({notMatched}:{notMatched: Map<string, string>}) {

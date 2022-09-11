@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ViewAdditionalType, ViewCommonKeys } from "./ViewFormType";
 import styles from "./Form.module.css";
+import Button from '@mui/material/Button';
 
 export default function AdditionalForm({setAdditional, data}: {
     data: ViewAdditionalType,
@@ -36,7 +37,7 @@ export default function AdditionalForm({setAdditional, data}: {
 
     return (<div>
         <div className={styles.Category}>Additional Information</div>
-        <button type="button" onClick={addNewRow}>Add Information</button>
+        <Button onClick={addNewRow}>Add Information</Button>
         {data.map((elem)=><Row key={elem.id} _key={elem.key} value={elem.value} 
             updateRow={updateRow(elem.id)} 
             removeRow={removeRow(elem.id)}
@@ -71,7 +72,7 @@ function Row({_key, value, updateRow, removeRow, hasDuplicatedKey}:{
 
     return (<div>
         <div className={styles.RemoveButtonContainer}>
-            <button type="button" className={styles.RemoveButton} onClick={removeRow}>Remove Row</button>
+            <Button onClick={removeRow}>Remove Row</Button>
         </div>
         <input type="text" value={_key} placeholder={"key"} onChange={handleKeyChange}></input>
         <input type="text" value={value} placeholder={"value"} onChange={handleValueChange}></input>

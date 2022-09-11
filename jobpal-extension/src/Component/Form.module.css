@@ -40,7 +40,7 @@
     color: red;
 }
 
-.FormContainer button {
+/* .FormContainer button {
     background-color: #04AA6D;
     color: white;
     padding: 12px 20px;
@@ -51,7 +51,7 @@
 
 .FormContainer button:hover {
     background-color: #45a049;
-}
+} */
 
 .FormContainer div.SubmitButtonContainer {
     display: flex;

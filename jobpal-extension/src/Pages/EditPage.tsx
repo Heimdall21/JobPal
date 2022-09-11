@@ -13,6 +13,7 @@ import { storePrefillData } from '../Lib/storageHandler';
 import { toast } from 'react-toastify';
 import { Column, Row, Item } from '@mui-treasury/components/flex';
 import { makeStyles } from '@material-ui/core/styles';
+import Button from '@mui/material/Button';
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -86,7 +87,7 @@ export function EditForm({storageData}:{storageData: PrefillData}) {
           <div className={styles.Section}>Information For Specific Job Applications</div>
           <SpecificForm data={specificData} setData={setSpecificData}/>
           <div className={styles.SubmitButtonContainer}>
-              <button type="submit" className={styles.SubmitButton}>Save</button>
+              <Button type="submit" className={styles.SubmitButton}>Save</Button>
           </div>
       </form>
     </Column>
