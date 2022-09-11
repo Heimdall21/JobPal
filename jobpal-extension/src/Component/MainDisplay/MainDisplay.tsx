@@ -108,15 +108,14 @@ function MainDisplay({data, formFields, setMinimised, setClosed}: { data: Prefil
               variant="text"
               onClick={() => {
                 if (data !== null && formFields !== null) {
-                  const val = arrayToMap(matched, 'frame', ({data, index})=>{return {data,index};});
                   chrome.runtime.sendMessage<FillAllRequest>({
                     type: "FillAll",
-                    value: Array.from(val.entries())
+                    value: Array.from(matched.entries())
+                      .map(([key, [version, rest]])=>[key, version, rest])
                   })
                   toast.success('prefill all matched elements');
-                  console.log("prefilled all values");
-                } 
-              }}
+                }
+              }}      
             >
               Prefill all
             </Button>
