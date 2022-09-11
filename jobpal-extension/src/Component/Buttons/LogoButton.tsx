@@ -27,14 +27,14 @@ const LogoButton: React.FC<Props> = ({
     setLogoSrcURL(url);
   },[])
   return (
-    <Button
+    <button
       className="button-3 bottom_margin logo"
       onClick={onClick}
     >
       <img 
         src={logoSrcURL}
       />
-    </Button>
+    </button>
   )
 }
 
