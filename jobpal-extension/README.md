@@ -3,7 +3,6 @@
 ```sh
 git clone https://github.com/Heimdall21/JobPal.git
 ```
-to clone it.
 
 1. How to add the extension to Chrome
 
